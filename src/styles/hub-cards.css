@@ -1,0 +1,149 @@
+/*
+  Service Hub card system (Synapse look) — loaded after synapse.css.
+  Shared pieces: .sc-* (title / Arabic / top tags), .card-meta (icon + text lines), .card-price,
+  .card-code (copyable code). Page cards: specialties (.sp-*), COE rows (.coe-*), locations (.loc-*).
+*/
+
+.servhub-app .hub-card { padding: 18px; border: 1px solid var(--border); box-shadow: 0 1px 2px rgba(2, 54, 53, .04), 0 8px 20px rgba(82, 82, 100, .06); transition: transform var(--ds-duration-fast) var(--ds-ease-settle), box-shadow var(--ds-duration-fast) var(--ds-ease-settle), border-color var(--ds-duration-fast); }
+.servhub-app .hub-card:hover { transform: translateY(-2px); }
+.servhub-app .hub-grid { gap: 16px; }
+
+/* ---- Card pieces ---- */
+.servhub-app .sc-card { display: flex; flex-direction: column; gap: 8px; }
+.servhub-app .sc-top { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; min-height: 24px; }
+.servhub-app .sc-title { font: 700 16px/1.35 var(--ds-font-family); color: var(--text-primary); display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.servhub-app .sc-ar { font-size: 14px; color: var(--text-body); text-align: right; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.servhub-app .card-meta { display: flex; flex-wrap: wrap; gap: 6px 14px; font-size: 14px; color: var(--text-body); }
+.servhub-app .card-meta-stack { flex-direction: column; }
+.servhub-app .card-meta-item { display: inline-flex; align-items: flex-start; gap: 6px; min-width: 0; }
+.servhub-app .card-meta-icon { display: inline-flex; color: var(--ds-color-primary); margin-top: 2px; flex: none; }
+.servhub-app .card-price { margin-top: auto; padding-top: 12px; border-top: 1px dashed var(--border); display: flex; align-items: flex-end; justify-content: space-between; gap: 10px; }
+.servhub-app .card-price-label { font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--muted); }
+.servhub-app .card-price-values { display: flex; flex-direction: column; align-items: flex-end; }
+.servhub-app .card-price-before { font-size: 13px; color: var(--muted); }
+.servhub-app .card-price-amount { font: 700 22px/1.1 var(--ds-font-family); color: var(--ds-color-primary-700); white-space: nowrap; }
+.servhub-app.dark .card-price-amount { color: #7ce8c1; }
+.servhub-app .card-price-amount small { font-size: 13px; font-weight: 600; color: var(--muted); }
+.servhub-app .card-price-amount.na { font-size: 16px; color: var(--muted); }
+.servhub-app .card-code { display: inline-flex; align-items: center; gap: 6px; padding: 3px 8px; border: 1px solid var(--border); border-radius: 6px; background: var(--ds-color-surface-recessed); font: 600 12.5px var(--mono); color: var(--text-body); cursor: pointer; transition: all var(--ds-duration-fast); }
+.servhub-app .card-code:hover { border-color: var(--ds-color-primary-300); color: var(--ds-color-primary); }
+.servhub-app .card-code.copied { border-color: var(--ds-color-primary); color: var(--ds-color-primary); background: var(--ds-color-surface-selected); }
+.servhub-app.dark .card-code { background: #2a2b31; }
+
+/* ---- Specialties ---- */
+.servhub-app .sp-grid { grid-template-columns: repeat(auto-fill, minmax(320px, 1fr)); }
+.servhub-app .sp-card { display: flex; flex-direction: row; align-items: center; gap: 14px; width: 100%; text-align: left; cursor: pointer; font: inherit; color: inherit; }
+.servhub-app .sp-card:focus-visible { outline: none; box-shadow: var(--ds-focus-ring); }
+.servhub-app .sp-body { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+.servhub-app .sp-name { font: 700 16px var(--ds-font-family); color: var(--text-primary); }
+.servhub-app .sp-ar { font-size: 14px; color: var(--text-body); text-align: left; }
+.servhub-app .sp-meta { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 6px; }
+.servhub-app .sp-go { flex: none; color: var(--muted); transition: transform var(--ds-duration-fast), color var(--ds-duration-fast); }
+.servhub-app .sp-card:hover .sp-go { color: var(--ds-color-primary); transform: translateX(3px); }
+
+/* ---- COE: one center per row ---- */
+.servhub-app .coe-card { padding: 0; }
+.servhub-app .coe-card:hover { transform: none; }
+.servhub-app .coe-card > summary { display: flex; align-items: flex-start; gap: 16px; padding: 18px 20px; cursor: pointer; list-style: none; }
+.servhub-app .coe-card > summary::after { margin: 14px 0 0 auto; }
+.servhub-app .coe-icon { flex: none; width: 52px; height: 52px; border-radius: 14px; display: grid; place-items: center; background: linear-gradient(135deg, #1a8a73 0%, #0d594b 100%); color: #fff; box-shadow: var(--ds-shadow-button); }
+.servhub-app .coe-head { display: flex; flex-direction: column; gap: 8px; flex: 1; min-width: 0; }
+.servhub-app .coe-name { font: 700 18px var(--ds-font-family); color: var(--text-primary); }
+.servhub-app .coe-tags { display: flex; flex-wrap: wrap; gap: 6px; }
+.servhub-app .hub-fold.coe-card > :not(summary) { padding: 0 20px 20px 88px; }
+.servhub-app .coe-body { display: flex; flex-direction: column; gap: 14px; }
+.servhub-app .coe-blocks { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 14px; }
+.servhub-app .coe-block { background: var(--ds-color-surface-muted); border: 1px solid var(--border); border-radius: 12px; padding: 14px 16px; }
+@media (max-width: 720px) { .servhub-app .hub-fold.coe-card > :not(summary) { padding: 0 16px 16px; } }
+
+/* ---- Locations ---- */
+.servhub-app .loc-card { padding: 0; overflow: hidden; display: flex; flex-direction: column; }
+.servhub-app .loc-cover { position: relative; height: 190px; overflow: hidden; }
+.servhub-app .loc-cover img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; display: block; }
+.servhub-app .loc-cover { background: radial-gradient(260px 160px at 20% 10%, rgba(64, 255, 184, .25), transparent 70%), linear-gradient(135deg, #0d594b 0%, #023635 100%); }
+.servhub-app .loc-placeholder { position: absolute; inset: 0; display: grid; place-items: center; color: rgba(216, 248, 235, .8); }
+.servhub-app .loc-area { position: absolute; left: 12px; bottom: 12px; padding: 4px 10px; border-radius: 999px; background: rgba(2, 54, 53, .78); color: #fff; font: 600 13px var(--ds-font-family); }
+.servhub-app .loc-body { padding: 16px 18px 18px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+.servhub-app .loc-actions { margin-top: auto; display: flex; flex-wrap: wrap; gap: 8px; padding-top: 4px; }
+.servhub-app .loc-actions .btn { flex: 1 1 auto; }
+
+/* Buttons rendered as links */
+.servhub-app a.btn, .servhub-app a.btn:hover { text-decoration: none; }
+
+/* ---- Labelled fields (legacy "CODE: value" rows) ---- */
+.servhub-app .card-fields { margin: 4px 0 0; display: flex; flex-direction: column; }
+.servhub-app .card-field { display: grid; grid-template-columns: minmax(128px, 42%) 1fr; gap: 10px; align-items: baseline; padding: 6px 0; border-bottom: 1px dashed var(--border); }
+.servhub-app .card-field:last-child { border-bottom: none; }
+.servhub-app .card-field dt { font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--text-body); }
+.servhub-app .card-field dd { margin: 0; font-size: 14px; font-weight: 600; color: var(--text-primary); overflow-wrap: anywhere; }
+.servhub-app .card-field dd.strong { font-size: 17px; font-weight: 700; color: var(--ds-color-primary-700); }
+.servhub-app.dark .card-field dd.strong { color: #7ce8c1; }
+.servhub-app .card-field .card-code { vertical-align: middle; }
+.servhub-app .coe-head .card-fields { max-width: 720px; }
+.servhub-app .coe-head .card-field { grid-template-columns: 170px 1fr; }
+
+/* Code and price values as pills, like the legacy "Consultation Fees" badge. */
+.servhub-app .card-field .card-code,
+.servhub-app .card-field dd.strong > .card-pill { display: inline-flex; align-items: center; gap: 8px; max-width: 100%; padding: 5px 12px; border: none; border-radius: 8px; background: var(--ds-color-surface-selected); font: 700 14px/1.3 var(--ds-font-family); color: var(--ds-color-primary-700); text-align: start; white-space: normal; overflow-wrap: anywhere; box-shadow: inset 0 0 0 1px var(--ds-color-primary-line); }
+.servhub-app .card-field .card-code svg { flex: none; opacity: .7; }
+.servhub-app .card-field .card-code:hover { box-shadow: inset 0 0 0 1.5px var(--ds-color-primary-300); }
+.servhub-app .card-field .card-code.copied { background: var(--ds-status-success-bg); color: var(--ds-status-success-text); }
+.servhub-app .card-field dd.strong > .card-pill { font-size: 16px; }
+.servhub-app.dark .card-field .card-code,
+.servhub-app.dark .card-field dd.strong > .card-pill { color: #7ce8c1; }
+
+/* Specialty card: text only, teal accent bar on the left (no letter avatar). */
+.servhub-app .sp-card { position: relative; padding-left: 22px; }
+.servhub-app .sp-card::before { content: ''; position: absolute; left: 0; top: 14px; bottom: 14px; width: 4px; border-radius: 0 4px 4px 0; background: linear-gradient(180deg, #1a8a73 0%, #0d594b 100%); transition: top var(--ds-duration-fast), bottom var(--ds-duration-fast); }
+.servhub-app .sp-card:hover::before { top: 8px; bottom: 8px; }
+
+/* ---- COE v2: blocks one per row; header fields as pills (user choice 2026-09-29) ---- */
+.servhub-app .coe-blocks { display: flex; flex-direction: column; gap: 12px; }
+.servhub-app .coe-block { background: var(--ds-color-surface-muted); border: 1px solid var(--border); border-left: 3px solid var(--ds-color-primary); border-radius: 10px; padding: 12px 16px; }
+.servhub-app .coe-block-title { font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--ds-color-primary); margin-bottom: 6px; }
+.servhub-app .coe-fields { margin: 2px 0 0; }
+.servhub-app .coe-field dt { font-size: 11.5px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--text-body); }
+.servhub-app .coe-field dd { margin: 0; font-size: 14.5px; font-weight: 600; color: var(--text-primary); overflow-wrap: anywhere; }
+
+/* Header fields: one wrapping line of "Label: value" capsules */
+.servhub-app .coe-fields-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.servhub-app .coe-fields-pills .coe-field { display: inline-flex; align-items: baseline; gap: 6px; padding: 5px 12px; border-radius: 999px; background: var(--ds-color-surface-selected); box-shadow: inset 0 0 0 1px var(--ds-color-primary-line); }
+.servhub-app .coe-fields-pills dt { font-size: 11px; color: var(--ds-color-primary); }
+.servhub-app .coe-fields-pills dt::after { content: ':'; }
+.servhub-app .coe-fields-pills dd { font-size: 14px; }
+
+
+/* ---- Locations without a photo: "Map" look (user choice 2026-09-29) ---- */
+.servhub-app .loc-cover.loc-ph-map { height: 160px; }
+.servhub-app .loc-cover.loc-ph-map {
+  background:
+    linear-gradient(115deg, transparent 46%, rgba(255, 255, 255, .95) 46%, rgba(255, 255, 255, .95) 49%, transparent 49%),
+    linear-gradient(25deg, transparent 60%, rgba(255, 255, 255, .9) 60%, rgba(255, 255, 255, .9) 62.5%, transparent 62.5%),
+    repeating-linear-gradient(0deg, rgba(18, 110, 92, .07) 0 1px, transparent 1px 22px),
+    repeating-linear-gradient(90deg, rgba(18, 110, 92, .07) 0 1px, transparent 1px 22px),
+    linear-gradient(135deg, #e3f3ec 0%, #eef6f3 100%);
+}
+.servhub-app .loc-ph-map-pin { position: absolute; left: 50%; top: 46%; transform: translate(-50%, -50%); color: var(--ds-color-primary); filter: drop-shadow(0 6px 8px rgba(2, 54, 53, .25)); }
+.servhub-app .loc-cover.loc-ph-map .loc-area { background: var(--ds-color-primary); }
+.servhub-app.dark .loc-cover.loc-ph-map { background: linear-gradient(135deg, rgba(64, 255, 184, .08) 0%, rgba(64, 255, 184, .03) 100%); }
+
+/* Context bar: "Doctors · Orthopedics" when a list is opened from a specialty / clinic hub. */
+.servhub-app .ctx-bar { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 14px; padding: 10px 14px; border-radius: 12px; background: var(--ds-color-surface-selected); border: 1px solid var(--ds-color-primary-line); }
+.servhub-app .ctx-text { display: inline-flex; align-items: baseline; gap: 8px; min-width: 0; font-family: var(--ds-font-family); }
+.servhub-app .ctx-kind { font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--ds-color-primary); }
+.servhub-app .ctx-sep { color: var(--muted); }
+.servhub-app .ctx-name { font-size: 17px; font-weight: 700; color: var(--text-primary); }
+.servhub-app .ctx-bar .btn { gap: 6px; }
+.servhub-app .hub-viewer-hint { font-size: 12.5px; color: var(--muted); margin: -4px 0 8px; }
+
+/* SharePoint file viewer (Excel sheets as tables, PDF / images in-page) */
+.servhub-app .spf { display: flex; flex-direction: column; gap: 10px; }
+.servhub-app .spf-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
+.servhub-app .spf-tabs { flex-wrap: wrap; }
+.servhub-app .spf-sheet-name { font-weight: 700; color: var(--ds-color-primary); }
+.servhub-app .spf-table-wrap { max-height: 72vh; overflow: auto; border: 1px solid var(--border); border-radius: 10px; }
+.servhub-app .spf-table { border-collapse: separate; border-spacing: 0; font-size: 13.5px; min-width: 100%; }
+.servhub-app .spf-table th { position: sticky; top: 0; z-index: 1; background: var(--ds-color-surface-selected); color: var(--ds-color-primary-700); font-weight: 700; text-align: start; padding: 8px 12px; border-bottom: 1px solid var(--ds-color-primary-line); white-space: nowrap; }
+.servhub-app .spf-table td { padding: 7px 12px; border-bottom: 1px solid var(--border); border-inline-end: 1px solid var(--border); color: var(--text-primary); white-space: pre-wrap; vertical-align: top; }
+.servhub-app .spf-table tr:nth-child(even) td { background: var(--ds-color-surface-muted); }
+.servhub-app .spf-image { max-width: 100%; border-radius: 10px; border: 1px solid var(--border); }

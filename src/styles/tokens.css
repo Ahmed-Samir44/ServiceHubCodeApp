@@ -1,0 +1,55 @@
+/* Design tokens — ported verbatim from doctor-new-request.html (:root + .medreq-app.dark) */
+/* ServiceHub: only change is the app wrapper class, .medreq-app -> .servhub-app */
+:root {
+  --brand-gold-600:#2B160A; --gold-dark:#A5845B; --gold-light:#F0C893; --brand-gold:#A5845B;
+  --brand-gold-100:#F9F3ED; --green-dark:#49604C; --brand-green:#49604C; --brand-green-700:#2E372D;
+  --brand-green-200:#D1E0B1; --brand-green-100:#F5F7F5; --ink:#211C1E; --brand-black:#211C1E;
+  --neutral-400:#D9D9D9; --neutral-200:#F7F7F7; --canvas:#F7F4EE; --border:#E8E0D3; --border-hover:#D8CBB4;
+  --text-primary:#211C1E; --text-body:#514A44; --muted:#8A8079; --dim:#B3A99E; --danger:#B23A3A;
+  --amber-soft:rgba(201,138,30,.12); --gold-soft:rgba(165,132,91,.12); --green-soft:rgba(73,96,76,.12);
+  --danger-soft:rgba(178,58,58,.10);
+  --grad-gold:linear-gradient(135deg,#A5845B 0%,#F0C893 100%); --grad-green:linear-gradient(135deg,#49604C 0%,#A3B189 100%);
+  --grad-nav:linear-gradient(135deg,#2B160A 0%,#211C1E 100%); --grad-sidebar:linear-gradient(160deg,#0D1A0B 0%,#0A150A 100%);
+  --grad-card:linear-gradient(180deg,#FFFFFF 0%,#F9F3ED 100%);
+  --sidebar-text:rgba(255,255,255,.78); --sidebar-text-active:#FFFFFF; --sidebar-label:rgba(255,255,255,.40); --sidebar-active-bg:rgba(165,132,91,.22);
+  --sidebar-ink-base:255,255,255;
+  --sans:'Outfit',-apple-system,sans-serif; --body:'Inter',-apple-system,sans-serif; --mono:'JetBrains Mono',monospace;
+  --r-sm:8px; --r-md:12px; --r-lg:16px; --r-xl:22px;
+  --shadow-sm:0 1px 3px rgba(33,28,30,.06); --shadow-gold:0 6px 20px rgba(165,132,91,.22);
+}
+.servhub-app.dark {
+  --canvas: #121212; --text-primary: #fff; --text-body: #aaa; --border: rgba(255,255,255,.1);
+  --border-hover: rgba(255,255,255,.2); --neutral-200: #242424; --neutral-400: #444; --brand-black: #fff;
+  --grad-card: linear-gradient(180deg,#1e1e1e 0%,#1a1a1a 100%);
+  --brand-green-100: #1a221a; --brand-green-200: #2a352a; --brand-gold-100: #2a2218;
+  --brand-gold-600: #E8C79A; --gold-dark: #D9B486; --gold-light: #B98F5C;
+  --muted: #ADA398; --dim: #9A9187; --danger: #E07575;
+  --amber-soft: rgba(230,168,68,.16); --gold-soft: rgba(217,180,134,.16); --green-soft: rgba(163,177,137,.16);
+  --danger-soft: rgba(224,117,117,.14);
+  --surface-1: #1e1e1e; --surface-2: #242424; --amber-ink: #E6A844;
+  --brand-green-700: #B7C9A0;
+  --shadow-sm: 0 1px 3px rgba(0,0,0,.4); --shadow-gold: 0 6px 20px rgba(0,0,0,.5);
+}
+.servhub-app.dark .ro-card, .servhub-app.dark .action-card,
+.servhub-app.dark .modal-box, .servhub-app.dark .pick-card, .servhub-app.dark .type-tile, .servhub-app.dark .type-opt,
+.servhub-app.dark .dropzone, .servhub-app.dark .patient-result, .servhub-app.dark .ss-list, .servhub-app.dark .toast,
+.servhub-app.dark .type-pill button, .servhub-app.dark .cselect .field-input, .servhub-app.dark .attach-row { background: var(--surface-1); border-color:var(--border); }
+.servhub-app.dark .field-input, .servhub-app.dark .cselect .field-input { background: rgba(255,255,255,.06); color: #fff; border-color: var(--border); }
+.servhub-app.dark .field-input::placeholder { color: var(--dim); }
+.servhub-app.dark .field-input:disabled { background: var(--neutral-200); color: var(--muted); }
+.servhub-app.dark .req-table th { border-bottom-color: var(--border); color: var(--dim); }
+.servhub-app.dark .req-table td { border-bottom-color: var(--border); color: #ddd; }
+.servhub-app.dark .req-table tr:hover td { background: rgba(255,255,255,.03); }
+.servhub-app.dark .page-hdr { background: linear-gradient(180deg,#181818 0%, #141210 100%); border-bottom-color: var(--border); }
+.servhub-app.dark .pick-card:hover, .servhub-app.dark .type-tile:hover, .servhub-app.dark .type-opt:hover, .servhub-app.dark .region-opt:hover,
+.servhub-app.dark .dropzone:hover, .servhub-app.dark .dropzone.dragover, .servhub-app.dark .ss-row:hover { background: rgba(217,180,134,.08); }
+.servhub-app.dark .pick-card.selected, .servhub-app.dark .type-tile.selected, .servhub-app.dark .type-opt.selected { background: rgba(217,180,134,.12); }
+.servhub-app.dark .sbadge-amber { color: var(--amber-ink); }
+.servhub-app.dark .pr-src.new { color: var(--amber-ink); }
+.servhub-app.dark .btn-outline:hover { background: rgba(255,255,255,.05); }
+.servhub-app.dark .wcircle { background: var(--neutral-200); }
+.servhub-app.dark .seg-count { background: rgba(255,255,255,.1); }
+.servhub-app.dark .empty-icon { background: var(--brand-gold-100); }
+.servhub-app.dark .toast { box-shadow: 0 4px 16px rgba(0,0,0,.5); }
+.servhub-app.dark .modal-overlay { background: rgba(0,0,0,.6); }
+.servhub-app.dark ::selection { background: rgba(217,180,134,.35); color: #fff; }

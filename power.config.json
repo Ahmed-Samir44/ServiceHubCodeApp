@@ -1,0 +1,41 @@
+{
+  "version": "1.0",
+  "appId": null,
+  "appDisplayName": "ServiceHub",
+  "region": "prod",
+  "appType": "CodeApp",
+  "environmentId": "cd78a59b-e16f-e4aa-b0a1-8e450a70ed56",
+  "description": " ",
+  "buildPath": "./dist",
+  "buildEntryPoint": "index.html",
+  "localAppUrl": "http://localhost:3000",
+  "logoPath": "Default",
+  "connectionReferences": {
+    "7c2a967d-e08f-485e-ae3c-e579722878aa": {
+      "id": "/providers/Microsoft.PowerApps/apis/shared_commondataserviceforapps",
+      "displayName": "Microsoft Dataverse",
+      "dataSources": [
+        "commondataserviceforapps"
+      ],
+      "authenticationType": "Oauth",
+      "dataSets": {}
+    },
+    "75268d48-60be-449b-a101-f6bda38904f6": {
+      "id": "/providers/Microsoft.PowerApps/apis/shared_sharepointonline",
+      "displayName": "SharePoint",
+      "dataSources": [
+        "allcpgs"
+      ],
+      "dataSets": {
+        "https://andalusiagroupegypt.sharepoint.com/sites/Apps": {
+          "dataSources": {
+            "allcpgs": {
+              "tableName": "AllCPGs"
+            }
+          }
+        }
+      }
+    }
+  },
+  "databaseReferences": {}
+}

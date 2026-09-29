@@ -1,0 +1,424 @@
+/*
+  Synapse / HMIS Design System layer (user decision 2026-09-29: apply Synapse to the whole app).
+
+  Loaded AFTER tokens.css + base.css + app.css. It:
+    1. defines the Synapse --ds-* tokens (values from hmis-design-system v3 tokens.css),
+    2. re-points the legacy variables used by base.css/app.css at those tokens, so every existing
+       component re-skins without renaming classes,
+    3. applies the Synapse sizing contract (Urbanist, 14px body/tables/labels, 40px table rows,
+       44px fields, 32/40px buttons, 8px control radius, 16px card radius, teal focus ring).
+  Lanes: system/deterministic = teal. Analytics gold / AI purple are defined for future use only.
+*/
+
+/* ================= 1. Tokens ================= */
+.servhub-app {
+  /* System lane (teal) */
+  --ds-color-primary: #126e5c;
+  --ds-color-primary-deep: #023635;
+  --ds-color-primary-soft: #d9f8ec;
+  --ds-color-primary-mint: #40ffb8;
+  --ds-color-primary-line: rgba(18, 110, 92, .14);
+  --ds-color-primary-50: #f0faf7;
+  --ds-color-primary-100: #d9f3ea;
+  --ds-color-primary-200: #b7e7d7;
+  --ds-color-primary-300: #82d2ba;
+  --ds-color-primary-400: #4bb69a;
+  --ds-color-primary-500: #278f76;
+  --ds-color-primary-600: #126e5c;
+  --ds-color-primary-700: #0d594b;
+  --ds-color-primary-800: #0a463c;
+  --ds-color-primary-900: #073a33;
+
+  /* Neutrals */
+  --ds-color-neutral-50: #f8fafc;
+  --ds-color-neutral-100: #f1f5f9;
+  --ds-color-neutral-200: #e2e8f0;
+  --ds-color-neutral-300: #cbd5e1;
+  --ds-color-neutral-400: #94a3b8;
+  --ds-color-neutral-500: #64748b;
+  --ds-color-neutral-600: #475569;
+  --ds-color-neutral-700: #334155;
+
+  /* Analytics (gold) and AI (purple) lanes — reserved, not used for normal features */
+  --ds-color-analytics: #c99b3b;
+  --ds-color-analytics-deep: #a07118;
+  --ds-color-analytics-soft: #fbefd6;
+  --ds-color-ai: #8d73de;
+  --ds-color-ai-deep: #6046aa;
+  --ds-color-ai-soft: #eee9fb;
+
+  /* Status tones */
+  --ds-status-success-text: #176148;
+  --ds-status-success-bg: rgba(64, 255, 184, .2);
+  --ds-status-high-text: #8f5c0d;
+  --ds-status-high-bg: rgba(255, 225, 160, .55);
+  --ds-status-urgent-text: #a23e3e;
+  --ds-status-urgent-bg: rgba(255, 196, 196, .55);
+  --ds-status-draft-text: #67736f;
+  --ds-status-draft-bg: rgba(211, 218, 216, .75);
+  --ds-status-info-text: #185c67;
+  --ds-status-info-bg: rgba(185, 230, 235, .4);
+  --ds-color-danger: #dc2626;
+  --ds-color-danger-soft: #fef2f2;
+
+  /* Surfaces & text */
+  --ds-color-surface-raised: #ffffff;
+  --ds-color-surface-muted: #f5f7f6;
+  --ds-color-surface-recessed: #f1f5f9;
+  --ds-color-surface-hover: #f1f5f9;
+  --ds-color-surface-selected: #eff8f4;
+  --ds-color-surface-overlay: rgba(3, 17, 15, .58);
+  --ds-color-text-primary: #263037;
+  --ds-color-text-secondary: #4d5860;
+  --ds-color-text-muted: #737981;
+  --ds-color-border: rgba(79, 81, 96, .14);
+  --ds-color-border-strong: rgba(26, 74, 66, .2);
+
+  /* Type */
+  --ds-font-family: 'Urbanist', ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Arial, sans-serif;
+
+  /* Radius, shadow, motion */
+  --ds-radius-control: 8px;
+  --ds-radius-tag: 4px;
+  --ds-radius-card: 16px;
+  --ds-shadow-sm: 0 13px 28px rgba(82, 82, 100, .11), inset 0 1px 0 rgba(255, 255, 255, .88);
+  --ds-shadow-lg: 0 30px 70px rgba(76, 73, 105, .19), inset 0 1px 0 rgba(255, 255, 255, .9);
+  --ds-shadow-button: 0 10px 22px rgba(2, 54, 53, .17), inset 0 1px 0 rgba(255, 255, 255, .13);
+  --ds-shadow-button-hover: 0 13px 28px rgba(2, 54, 53, .23);
+  --ds-shadow-dialog: 0 20px 25px -5px rgba(0, 0, 0, .1), 0 8px 10px -6px rgba(0, 0, 0, .1);
+  --ds-focus-ring: 0 0 0 3px rgba(18, 110, 92, .18);
+  --ds-ease-settle: cubic-bezier(.16, 1, .3, 1);
+  --ds-duration-fast: 180ms;
+
+  /* Shell */
+  --ds-shell-nav: radial-gradient(420px 260px at 0% 0%, rgba(64, 255, 184, .14), transparent 70%), linear-gradient(180deg, #064642 0%, #023635 100%);
+  --ds-shell-bg:
+    radial-gradient(980px 760px at -4% 30%, rgba(205, 224, 230, .7) 0%, transparent 68%),
+    radial-gradient(980px 780px at 102% 12%, rgba(55, 111, 82, .14) 0%, transparent 70%),
+    radial-gradient(760px 520px at 70% 105%, rgba(141, 115, 222, .07) 0%, transparent 70%),
+    radial-gradient(640px 440px at 30% 100%, rgba(201, 155, 59, .06) 0%, transparent 70%),
+    #eef1f4;
+
+  /* ---- 2. Legacy variables (base.css / app.css) re-pointed at Synapse ---- */
+  --brand-gold: var(--ds-color-primary);
+  --gold-dark: var(--ds-color-primary);
+  --gold-light: var(--ds-color-primary-300);
+  --brand-gold-600: var(--ds-color-primary-deep);
+  --brand-gold-100: var(--ds-color-surface-selected);
+  --gold-soft: rgba(18, 110, 92, .08);
+  --grad-gold: linear-gradient(180deg, #16806b 0%, #126e5c 100%);
+  --shadow-gold: var(--ds-shadow-button);
+  --brand-green: var(--ds-color-primary-700);
+  --green-dark: var(--ds-color-primary-700);
+  --brand-green-700: var(--ds-status-success-text);
+  --brand-green-200: var(--ds-color-primary-200);
+  --brand-green-100: var(--ds-color-surface-muted);
+  --green-soft: var(--ds-status-success-bg);
+  --grad-green: linear-gradient(180deg, #16806b 0%, #126e5c 100%);
+  --ink: var(--ds-color-text-primary);
+  --brand-black: var(--ds-color-text-primary);
+  --text-primary: var(--ds-color-text-primary);
+  --text-body: var(--ds-color-text-secondary);
+  --muted: var(--ds-color-text-muted);
+  --dim: #7c858d;
+  --canvas: #eef1f4;
+  --border: var(--ds-color-border);
+  --border-hover: var(--ds-color-border-strong);
+  --neutral-400: var(--ds-color-neutral-300);
+  --neutral-200: var(--ds-color-neutral-100);
+  --danger: var(--ds-color-danger);
+  --danger-soft: var(--ds-color-danger-soft);
+  --amber-soft: var(--ds-status-high-bg);
+  --amber-ink: var(--ds-status-high-text);
+  --grad-nav: var(--ds-shell-nav);
+  --grad-sidebar: var(--ds-shell-nav);
+  --grad-card: linear-gradient(180deg, #ffffff 0%, #ffffff 100%);
+  --sidebar-text: rgba(255, 255, 255, .8);
+  --sidebar-text-active: #ffffff;
+  --sidebar-label: rgba(216, 248, 235, .55);
+  --sidebar-active-bg: rgba(64, 255, 184, .14);
+  --surface-hover: var(--ds-color-surface-hover);
+  --sans: var(--ds-font-family);
+  --body: var(--ds-font-family);
+  --r-sm: 8px;
+  --r-md: 8px;
+  --r-lg: 16px;
+  --r-xl: 16px;
+  --shadow-sm: var(--ds-shadow-sm);
+}
+
+/* ---- Dark mode (the app toggles `.dark` on .servhub-app) ---- */
+.servhub-app.dark {
+  --ds-color-primary: #1f9a80;
+  --ds-color-primary-deep: #78d9bd;
+  --ds-color-primary-300: #4bb69a;
+  --ds-color-surface-raised: #23242a;
+  --ds-color-surface-muted: #202126;
+  --ds-color-surface-hover: #2c3532;
+  --ds-color-surface-selected: #173a32;
+  --ds-color-text-primary: #f1f5f3;
+  --ds-color-text-secondary: #c3cdca;
+  --ds-color-text-muted: #b3bfbb;
+  --ds-color-border: rgba(255, 255, 255, .08);
+  --ds-color-border-strong: rgba(64, 255, 184, .16);
+  --ds-status-success-text: #7ce8c1;
+  --ds-status-success-bg: rgba(64, 255, 184, .12);
+  --ds-status-high-text: #f3c56b;
+  --ds-status-high-bg: rgba(243, 197, 107, .14);
+  --ds-color-danger: #f28b8b;
+  --ds-color-danger-soft: rgba(242, 139, 139, .12);
+  --ds-shadow-sm: 0 16px 34px rgba(0, 0, 0, .35);
+  --ds-shadow-button: 0 10px 22px rgba(0, 0, 0, .35);
+  --ds-focus-ring: 0 0 0 3px rgba(64, 255, 184, .22);
+  --ds-shell-bg:
+    radial-gradient(900px 700px at -4% 30%, rgba(18, 110, 92, .16) 0%, transparent 68%),
+    radial-gradient(900px 700px at 102% 12%, rgba(141, 115, 222, .08) 0%, transparent 70%),
+    #1c1d22;
+
+  --canvas: #1c1d22;
+  --surface-1: var(--ds-color-surface-raised);
+  --surface-2: var(--ds-color-surface-muted);
+  --neutral-200: #2a2b31;
+  --neutral-400: #3a3c44;
+  --dim: #9aa6a2;
+  --gold-dark: var(--ds-color-primary-deep);
+  --brand-gold-600: var(--ds-color-primary-deep);
+  --brand-gold-100: var(--ds-color-surface-selected);
+  --gold-soft: rgba(64, 255, 184, .08);
+  --brand-green: #7ce8c1;
+  --brand-green-100: var(--ds-color-surface-muted);
+  --grad-card: linear-gradient(180deg, #23242a 0%, #23242a 100%);
+  --brand-black: var(--ds-color-text-primary);
+  /* tokens.css `.servhub-app.dark` sets these with higher specificity than the light mapping above,
+     so every one it touches is restated here. */
+  --text-primary: var(--ds-color-text-primary);
+  --text-body: var(--ds-color-text-secondary);
+  --muted: var(--ds-color-text-muted);
+  --border: var(--ds-color-border);
+  --border-hover: var(--ds-color-border-strong);
+  --gold-light: var(--ds-color-primary-300);
+  --brand-green-200: rgba(64, 255, 184, .2);
+  --brand-green-700: var(--ds-status-success-text);
+  --green-soft: var(--ds-status-success-bg);
+  --amber-soft: var(--ds-status-high-bg);
+  --amber-ink: var(--ds-status-high-text);
+  --danger: var(--ds-color-danger);
+  --danger-soft: var(--ds-color-danger-soft);
+  --shadow-sm: var(--ds-shadow-sm);
+  --shadow-gold: var(--ds-shadow-button);
+}
+
+/* ================= 3. Shell ================= */
+.servhub-app { background: var(--ds-shell-bg); background-attachment: fixed; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
+.servhub-app .navbar { background: var(--ds-shell-nav); height: 52px; }
+.servhub-app .sidebar { top: 52px; height: calc(100vh - 52px); width: 236px; }
+.servhub-app .sb-label { font-size: 12px; letter-spacing: 1.2px; }
+.servhub-app .sb-item { font-size: 14px; padding: 9px 12px; }
+.servhub-app .sb-item:hover { background: rgba(255, 255, 255, .06); }
+.servhub-app .sb-item.active { background: var(--sidebar-active-bg); border: 1px solid rgba(64, 255, 184, .22); color: #fff; font-weight: 600; }
+.servhub-app .sb-item.active svg { color: var(--ds-color-primary-mint); }
+.servhub-app .sb-app { font-size: 15px; }
+.servhub-app .sb-org { font-size: 11px; }
+.servhub-app .theme-btn { font-size: 13px; }
+.servhub-app .nav-title { font-size: 15px; }
+.servhub-app .nav-user { font-size: 13px; }
+.servhub-app .nav-brand { background: linear-gradient(135deg, #40ffb8 0%, #126e5c 100%); color: #023635; }
+.servhub-app .nav-dot { background: var(--ds-color-primary-mint); }
+.servhub-app .region-chip { font-size: 13px; }
+
+.servhub-app .page-hdr { background: transparent; border-bottom: 1px solid var(--border); padding: 18px 24px; }
+.servhub-app.dark .page-hdr { background: transparent; }
+.servhub-app .page-title { font-size: clamp(19px, 1.65vw, 24px); font-weight: 700; letter-spacing: 0; line-height: 1.2; }
+.servhub-app .page-sub { font-size: 14px; color: var(--muted); }
+
+/* ================= Surfaces ================= */
+.servhub-app .bento { background: var(--ds-color-surface-raised); border-radius: var(--ds-radius-card); box-shadow: var(--ds-shadow-sm); border-color: var(--border); padding: 20px; }
+.servhub-app .ro-card,
+.servhub-app .action-card { border-radius: var(--ds-radius-card); background: var(--ds-color-surface-raised); }
+.servhub-app .sub-hdr { font-size: 12px; letter-spacing: 1px; color: var(--ds-color-primary); }
+.servhub-app .modal-box { border-radius: var(--ds-radius-card); box-shadow: var(--ds-shadow-dialog); background: var(--ds-color-surface-raised); }
+.servhub-app .modal-overlay { background: var(--ds-color-surface-overlay); }
+.servhub-app .modal-title { font-size: 18px; font-weight: 700; }
+.servhub-app .empty-title { font-size: 16px; }
+.servhub-app .empty-sub { font-size: 14px; }
+.servhub-app .toast { border-left-color: var(--ds-color-primary); font-size: 14px; background: var(--ds-color-surface-raised); }
+
+/* ================= Buttons (sm 32 / md 40) ================= */
+.servhub-app .btn { height: 40px; padding: 0 16px; font: 600 14px var(--ds-font-family); border-radius: var(--ds-radius-control); }
+.servhub-app .btn-sm { height: 32px; padding: 0 12px; font-size: 13px; }
+.servhub-app .btn-primary { background: var(--ds-color-primary); color: #fff; box-shadow: var(--ds-shadow-button); }
+.servhub-app .btn-primary:hover { background: var(--ds-color-primary-700); box-shadow: var(--ds-shadow-button-hover); }
+.servhub-app.dark .btn-primary:hover { background: #17b393; }
+.servhub-app .btn-outline { color: var(--text-primary); border-color: var(--ds-color-border-strong); background: var(--ds-color-surface-raised); }
+.servhub-app .btn-outline:hover { background: var(--ds-color-surface-hover); border-color: var(--ds-color-primary-300); color: var(--text-primary); }
+.servhub-app .btn-ghost { color: var(--text-body); }
+.servhub-app .btn-ghost:hover { background: var(--ds-color-surface-hover); }
+.servhub-app .btn:focus-visible,
+.servhub-app .seg-btn:focus-visible,
+.servhub-app .sb-item:focus-visible { outline: none; box-shadow: var(--ds-focus-ring); }
+.servhub-app .btn:disabled { opacity: .45; cursor: not-allowed; }
+
+.servhub-app .seg-group { background: var(--ds-color-surface-recessed); padding: 3px; }
+.servhub-app.dark .seg-group { background: #2a2b31; }
+.servhub-app .seg-btn { font: 600 14px var(--ds-font-family); padding: 7px 14px; }
+.servhub-app .seg-btn.active { background: var(--ds-color-primary); color: #fff; box-shadow: var(--ds-shadow-button); }
+.servhub-app .theme-btn.active { background: var(--ds-color-primary); box-shadow: none; }
+
+/* ================= Fields (44px) ================= */
+.servhub-app .field-input { height: 44px; padding: 0 12px; font-size: 14px; border-radius: var(--ds-radius-control); border-color: var(--ds-color-neutral-300); background: var(--ds-color-surface-raised); }
+.servhub-app textarea.field-input { height: auto; min-height: 88px; padding: 10px 12px; line-height: 1.5; }
+.servhub-app .field-input:focus { border-color: var(--ds-color-primary); box-shadow: var(--ds-focus-ring); }
+.servhub-app .field-lbl { font-size: 14px; font-weight: 600; text-transform: none; letter-spacing: 0; color: var(--text-body); margin-bottom: 6px; }
+.servhub-app .field-err { font-size: 13px; }
+.servhub-app.dark .field-input { background: rgba(255, 255, 255, .04); border-color: rgba(255, 255, 255, .12); }
+
+/* ================= Tables (40px rows, 14px normal case) ================= */
+.servhub-app .req-table { font-size: 14px; }
+.servhub-app .req-table th { height: 40px; padding: 8px 16px; font: 600 14px var(--ds-font-family); text-transform: none; letter-spacing: 0; color: var(--text-body); background: var(--ds-color-neutral-50); }
+.servhub-app .req-table td { height: 40px; padding: 8px 16px; }
+.servhub-app .req-table tr:hover td { background: var(--ds-color-surface-hover); }
+.servhub-app.dark .req-table th { background: #202126; color: var(--text-body); }
+
+/* ================= Tags & key/values ================= */
+.servhub-app .sbadge { border-radius: var(--ds-radius-tag); font: 600 12px var(--ds-font-family); padding: 2px 8px; letter-spacing: 0; }
+.servhub-app .sbadge-gold { background: var(--ds-status-info-bg); color: var(--ds-status-info-text); }
+.servhub-app .sbadge-green { background: var(--ds-status-success-bg); color: var(--ds-status-success-text); }
+.servhub-app .sbadge-amber { background: var(--ds-status-high-bg); color: var(--ds-status-high-text); }
+.servhub-app .sbadge-red { background: var(--ds-status-urgent-bg); color: var(--ds-status-urgent-text); }
+.servhub-app .sbadge-gray { background: var(--ds-status-draft-bg); color: var(--ds-status-draft-text); }
+.servhub-app .kv-item { font-size: 14px; padding: 6px 0; }
+.servhub-app .kv-item .k { font-size: 14px; color: var(--text-body); }
+.servhub-app .kv-item .v { font-size: 14px; }
+.servhub-app .section-note { font-size: 13px; }
+.servhub-app .code-chip { border-radius: var(--ds-radius-tag); }
+
+/* ================= Pick cards / region options (hover tints were gold) ================= */
+.servhub-app .pick-card:hover,
+.servhub-app .type-tile:hover { border-color: var(--ds-color-primary-300); background: var(--ds-color-surface-selected); box-shadow: 0 10px 22px rgba(2, 54, 53, .1); }
+.servhub-app .pick-card.selected,
+.servhub-app .type-tile.selected { border-color: var(--ds-color-primary); background: var(--ds-color-surface-selected); box-shadow: 0 10px 22px rgba(2, 54, 53, .12); }
+.servhub-app .pc-icon,
+.servhub-app .tt-icon { box-shadow: 0 6px 14px rgba(2, 54, 53, .18); }
+.servhub-app .pc-title { font-size: 15px; }
+.servhub-app .pc-desc { font-size: 13px; }
+.servhub-app.dark .pick-card:hover,
+.servhub-app.dark .region-opt:hover,
+.servhub-app.dark .ss-row:hover { background: rgba(64, 255, 184, .06); }
+.servhub-app.dark ::selection { background: rgba(64, 255, 184, .3); }
+.servhub-app ::selection { background: rgba(18, 110, 92, .2); }
+
+/* ================= Service Hub specifics (app.css) ================= */
+.servhub-app .hub-card:hover { border-color: var(--ds-color-primary-300); box-shadow: 0 10px 22px rgba(2, 54, 53, .1); }
+.servhub-app .rich-text.ProseMirror:focus { border-color: var(--ds-color-primary); box-shadow: var(--ds-focus-ring); }
+.servhub-app .hub-card-title { font-size: 16px; }
+.servhub-app .hub-card-sub { font-size: 14px; }
+.servhub-app .hub-card-meta { font-size: 13px; color: var(--ds-color-primary); }
+.servhub-app .hub-count { font-size: 14px; color: var(--ds-color-primary); }
+.servhub-app .hub-text { font-size: 14px; }
+.servhub-app .hub-muted { font-size: 14px; }
+.servhub-app .hub-link-btn { font-size: 14px; border-radius: 12px; }
+.servhub-app .hub-link-btn:hover { background: var(--ds-color-surface-selected); border-color: var(--ds-color-primary-300); }
+.servhub-app .hub-multi-opt { font-size: 14px; }
+.servhub-app .hub-multi-opt:hover { background: var(--ds-color-surface-hover); }
+.servhub-app .hub-page .field-lbl { color: var(--text-body); }
+.servhub-app .hub-fee-list li { font-size: 15px; background: var(--ds-color-surface-muted); border: 1px solid var(--border); }
+.servhub-app .hub-fee-list li.first { background: var(--ds-color-surface-selected); box-shadow: inset 0 0 0 1.5px var(--ds-color-primary-300); }
+.servhub-app .hub-fee-amount { color: var(--ds-color-primary-700); }
+.servhub-app.dark .hub-fee-amount { color: #7ce8c1; }
+.servhub-app .hub-doctor-photo { border-color: var(--ds-color-primary-soft); }
+.servhub-app .text-size-btn.active { background: var(--ds-color-primary-mint); color: #023635; }
+.servhub-app .text-size-toggle { background: rgba(255, 255, 255, .08); }
+
+@media (prefers-reduced-motion: reduce) {
+  .servhub-app *, .servhub-app *::before, .servhub-app *::after { transition-duration: 0ms !important; animation-duration: 0ms !important; }
+}
+
+/* ================= Dropdown (replaces native <select>, same look as the Business Unit picker) ================= */
+.servhub-app .dd { position: relative; min-width: 0; }
+.servhub-app .dd-btn { display: flex; align-items: center; justify-content: space-between; gap: 8px; text-align: start; cursor: pointer; }
+.servhub-app .dd-btn:disabled { cursor: not-allowed; opacity: .55; background: var(--ds-color-surface-recessed); }
+.servhub-app .dd-value { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; flex: 1; min-width: 0; }
+.servhub-app .dd-value.placeholder { color: var(--muted); }
+.servhub-app .dd-arrow { display: inline-block; flex: none; font-size: 9px; color: var(--muted); transition: transform var(--ds-duration-fast) var(--ds-ease-settle); }
+.servhub-app .dd.open .dd-arrow { transform: rotate(180deg); color: var(--ds-color-primary); }
+.servhub-app .dd.open .dd-btn { border-color: var(--ds-color-primary); box-shadow: var(--ds-focus-ring); }
+.servhub-app .dd-menu { position: absolute; top: calc(100% + 4px); left: 0; right: 0; min-width: 180px; z-index: 60; background: var(--ds-color-surface-raised); border: 1px solid var(--ds-color-border-strong); border-radius: 12px; box-shadow: var(--ds-shadow-dialog), 0 12px 28px rgba(2, 54, 53, .12); padding: 4px; }
+.servhub-app .dd-list { max-height: 280px; overflow-y: auto; }
+.servhub-app .dd-menu.dd-list { max-height: 300px; }
+.servhub-app .dd-search { position: relative; margin: 2px 2px 6px; }
+.servhub-app .dd-search svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+.servhub-app .dd-search input { width: 100%; height: 36px; padding: 0 10px 0 30px; border: 1px solid var(--ds-color-neutral-300); border-radius: var(--ds-radius-control); font: 14px var(--ds-font-family); color: var(--text-primary); background: var(--ds-color-surface-muted); outline: none; }
+.servhub-app .dd-search input:focus { border-color: var(--ds-color-primary); box-shadow: var(--ds-focus-ring); }
+.servhub-app .dd-group { padding: 8px 10px 4px; font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--ds-color-primary); }
+.servhub-app .dd-opt { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 36px; padding: 7px 10px; border-radius: var(--ds-radius-control); font-size: 14px; color: var(--text-primary); cursor: pointer; }
+.servhub-app .dd-opt-label { overflow-wrap: anywhere; }
+.servhub-app .dd-opt.active,
+.servhub-app .dd-opt:hover { background: var(--ds-color-surface-hover); }
+.servhub-app .dd-opt.selected { color: var(--ds-color-primary); font-weight: 600; background: var(--ds-color-surface-selected); }
+.servhub-app .dd-opt svg { flex: none; }
+.servhub-app .dd-empty { padding: 10px; font-size: 14px; color: var(--muted); }
+/* Multi-select rows (Business Unit) share the option look. */
+.servhub-app .dd-check { justify-content: flex-start; }
+.servhub-app .dd-check input { accent-color: var(--ds-color-primary); width: 16px; height: 16px; }
+.servhub-app .dd-check.group { font-weight: 700; }
+.servhub-app .dd-check.child { padding-inline-start: 28px; }
+
+/* ================= Scrollbars (thin, teal thumb on a light track) ================= */
+.servhub-app,
+.servhub-app * { scrollbar-width: thin; scrollbar-color: rgba(18, 110, 92, .45) transparent; }
+.servhub-app.dark,
+.servhub-app.dark * { scrollbar-color: rgba(64, 255, 184, .35) transparent; }
+.servhub-app .sidebar { scrollbar-width: none; }
+
+/* Inputs with a leading icon (base.css .search-select / .cselect): keep room for the icon after the
+   Synapse 12px field padding above. */
+.servhub-app .search-select .field-input { padding-left: 36px; padding-right: 30px; }
+.servhub-app .search-select .ss-icon,
+.servhub-app .cselect .cs-icon { left: 12px; display: inline-flex; align-items: center; color: var(--muted); }
+.servhub-app .search-select .ss-icon svg { width: 16px; height: 16px; }
+.servhub-app .cselect .field-input { padding-left: 36px; padding-right: 48px; }
+
+/* Back links ("← Back to …") look like the light (outline) buttons, so they read as buttons. */
+.servhub-app .back-link { display: inline-flex; align-items: center; gap: 8px; height: 38px; margin-bottom: 12px; padding: 0 14px; border: 1px solid var(--ds-color-border-strong); border-radius: var(--ds-radius-control); background: var(--ds-color-surface-raised); box-shadow: 0 1px 2px rgba(2, 54, 53, .05); font: 600 14px var(--ds-font-family); letter-spacing: 0; text-transform: none; color: var(--text-primary); cursor: pointer; transition: background var(--ds-duration-fast), border-color var(--ds-duration-fast); }
+.servhub-app .back-link:hover { background: var(--ds-color-surface-hover); border-color: var(--ds-color-primary-300); color: var(--text-primary); }
+.servhub-app .back-link svg { width: 16px; height: 16px; transition: transform var(--ds-duration-fast); }
+.servhub-app .back-link:hover svg { transform: translateX(-2px); }
+.servhub-app .back-link:focus-visible { outline: none; box-shadow: var(--ds-focus-ring); }
+.servhub-app.dark .back-link { color: var(--text-primary); }
+.servhub-app .hub-link-ext { margin-left: auto; flex: none; opacity: .55; }
+
+/* ================= Grid filters (model-driven behaviour) ================= */
+/* "Filter by" callout under a column header */
+.servhub-app .col-filter { position: fixed; z-index: 420; width: 300px; display: flex; flex-direction: column; gap: 10px; padding: 14px; background: var(--ds-color-surface-raised); border: 1px solid var(--ds-color-border-strong); border-radius: 12px; box-shadow: var(--ds-shadow-dialog), 0 12px 28px rgba(2, 54, 53, .14); }
+.servhub-app .col-filter-title { font: 700 15px var(--ds-font-family); color: var(--text-primary); }
+.servhub-app .col-filter-value .field-input { width: 100%; }
+.servhub-app .col-filter-value > div { max-height: 220px; overflow-y: auto; }
+.servhub-app .col-filter-actions { display: flex; gap: 8px; }
+.servhub-app .col-filter-actions .btn { flex: 1; }
+.servhub-app .col-filtered-icon { color: var(--ds-color-primary); flex: none; }
+
+/* "Edit filters" as a right-side panel (the grid stays visible) */
+.servhub-app .side-panel-overlay { justify-content: flex-end; align-items: stretch; background: rgba(3, 17, 15, .18); backdrop-filter: none; }
+.servhub-app .side-panel { width: min(560px, 100vw); max-width: none; height: 100vh; border-radius: 0; display: flex; flex-direction: column; animation: sidePanelIn .22s var(--ds-ease-settle); }
+.servhub-app .side-panel .modal-body { flex: 1; overflow-y: auto; }
+.servhub-app .side-panel .attach-row { grid-template-columns: 1fr 1fr !important; }
+.servhub-app .side-panel .attach-row > :nth-child(3) { grid-column: 1 / 2; }
+@keyframes sidePanelIn { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
+
+/* Lookup filter value: record chips + search */
+.servhub-app .lookup-pick { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.servhub-app .lookup-pick-chips { display: flex; flex-wrap: wrap; gap: 6px; }
+.servhub-app .lookup-chip { display: inline-flex; align-items: center; gap: 4px; padding: 3px 4px 3px 10px; border-radius: 999px; background: var(--ds-color-surface-selected); box-shadow: inset 0 0 0 1px var(--ds-color-primary-line); font-size: 13px; font-weight: 600; color: var(--ds-color-primary-700); }
+.servhub-app .lookup-chip button { display: inline-flex; padding: 1px; border: none; background: none; color: inherit; cursor: pointer; opacity: .7; }
+.servhub-app .lookup-chip button:hover { opacity: 1; color: var(--ds-color-danger); }
+.servhub-app .lookup-pick-search { position: relative; }
+.servhub-app .lookup-pick-search svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); color: var(--muted); pointer-events: none; }
+.servhub-app .lookup-pick-search .field-input { padding-left: 34px; }
+.servhub-app .lookup-pick .dd-menu { top: auto; position: relative; margin-top: 2px; }
+
+/* Grid header: sort arrow always visible when sorted; menu chevron only on hover/focus (MDA-like). */
+.servhub-app .col-sort-icon { color: var(--ds-color-primary); flex: none; }
+.servhub-app .col-menu-chevron { flex: none; opacity: 0; transition: opacity var(--ds-duration-fast); }
+.servhub-app .req-table th:hover .col-menu-chevron,
+.servhub-app .req-table th button:focus-visible .col-menu-chevron,
+.servhub-app .req-table th button[aria-expanded="true"] .col-menu-chevron { opacity: .7; }

@@ -1,0 +1,1244 @@
+{
+  "name": "cr301_newdoctordataset",
+  "title": "New Doctor Datasets",
+  "schema": {
+    "type": "array",
+    "items": {
+      "type": "object",
+      "x-ms-dataverse-entity": true,
+      "x-ms-dataverse-entityset": "cr301_newdoctordatasets",
+      "x-ms-dataverse-primary-id": "cr301_newdoctordatasetid",
+      "x-ms-dataverse-primary-name": "cr301_title",
+      "properties": {
+        "cr18c_bu": {
+          "type": "string",
+          "title": "BU",
+          "x-ms-dataverse-attribute": "cr18c_bu",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "cr18c_BU"
+        },
+        "cr18c_buname": {
+          "type": "string",
+          "title": "cr18c_buname",
+          "x-ms-dataverse-attribute": "cr18c_buname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr18c_BUName",
+          "x-ms-read-only": true,
+          "maxLength": 160
+        },
+        "cr18c_exclusiveness": {
+          "type": "string",
+          "title": "Exclusiveness",
+          "x-ms-dataverse-attribute": "cr18c_exclusiveness",
+          "x-ms-dataverse-type": "PicklistType",
+          "x-ms-schema-name": "cr18c_Exclusiveness",
+          "enum": [
+            "Exclusive",
+            "Non Exclusive"
+          ],
+          "x-ms-enum-values": [
+            1,
+            0
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "523a9196-42f1-f011-8406-000d3a4b5321",
+          "x-ms-isGlobal": true,
+          "x-ms-optionsetdisplayname": "Doctor Exclusiveness",
+          "x-ms-optionSetType": "Picklist"
+        },
+        "cr18c_exclusivenessname": {
+          "type": "string",
+          "title": "cr18c_exclusivenessname",
+          "x-ms-dataverse-attribute": "cr18c_exclusivenessname",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "cr18c_exclusivenessName",
+          "x-ms-read-only": true
+        },
+        "cr18c_firstpriority": {
+          "type": "string",
+          "title": "First Priority",
+          "x-ms-dataverse-attribute": "cr18c_firstpriority",
+          "x-ms-dataverse-type": "PicklistType",
+          "x-ms-schema-name": "cr18c_FirstPriority",
+          "enum": [
+            "Yes",
+            "No"
+          ],
+          "x-ms-enum-values": [
+            0,
+            1
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "182fe83e-3c43-f111-88b5-000d3a4b5321",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "First Priority",
+          "x-ms-optionSetType": "Picklist"
+        },
+        "cr18c_firstpriorityname": {
+          "type": "string",
+          "title": "cr18c_firstpriorityname",
+          "x-ms-dataverse-attribute": "cr18c_firstpriorityname",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "cr18c_firstpriorityName",
+          "x-ms-read-only": true
+        },
+        "cr18c_lastsyncedon": {
+          "type": "string",
+          "title": "Last Synced On",
+          "x-ms-dataverse-attribute": "cr18c_lastsyncedon",
+          "x-ms-dataverse-type": "DateTimeType",
+          "x-ms-schema-name": "cr18c_LastSyncedOn"
+        },
+        "cr18c_manualspecialty": {
+          "type": "string",
+          "title": "Manual Specialty",
+          "x-ms-dataverse-attribute": "cr18c_manualspecialty",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "cr18c_ManualSpecialty"
+        },
+        "cr18c_manualspecialtyname": {
+          "type": "string",
+          "title": "cr18c_manualspecialtyname",
+          "x-ms-dataverse-attribute": "cr18c_manualspecialtyname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr18c_ManualSpecialtyName",
+          "x-ms-read-only": true,
+          "maxLength": 850
+        },
+        "cr18c_manualsubspecialty": {
+          "type": "string",
+          "title": "Manual SubSpecialty",
+          "x-ms-dataverse-attribute": "cr18c_manualsubspecialty",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "cr18c_ManualSubSpecialty"
+        },
+        "cr18c_manualsubspecialtyname": {
+          "type": "string",
+          "title": "cr18c_manualsubspecialtyname",
+          "x-ms-dataverse-attribute": "cr18c_manualsubspecialtyname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr18c_ManualSubSpecialtyName",
+          "x-ms-read-only": true,
+          "maxLength": 850
+        },
+        "cr18c_tag": {
+          "type": "string",
+          "title": "Tag",
+          "x-ms-dataverse-attribute": "cr18c_tag",
+          "x-ms-dataverse-type": "MultiSelectPicklistType",
+          "x-ms-schema-name": "cr18c_Tag",
+          "enum": [
+            "PM"
+          ],
+          "x-ms-enum-values": [
+            989230000
+          ],
+          "Color": [
+            null
+          ],
+          "x-ms-optionsetmetadataid": "0e4a6fd9-83b2-f111-aaac-00224882d001",
+          "x-ms-isGlobal": true,
+          "x-ms-optionsetdisplayname": "Account Tag",
+          "x-ms-optionSetType": "Picklist"
+        },
+        "cr18c_tagname": {
+          "type": "string",
+          "title": "cr18c_tagname",
+          "x-ms-dataverse-attribute": "cr18c_tagname",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "cr18c_tagName",
+          "x-ms-read-only": true
+        },
+        "cr301_businessunit": {
+          "type": "string",
+          "title": "Business Unit",
+          "x-ms-dataverse-attribute": "cr301_businessunit",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "cr301_BusinessUnit"
+        },
+        "cr301_businessunitname": {
+          "type": "string",
+          "title": "cr301_businessunitname",
+          "x-ms-dataverse-attribute": "cr301_businessunitname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr301_BusinessUnitName",
+          "x-ms-read-only": true,
+          "maxLength": 850
+        },
+        "cr301_contracttype": {
+          "type": "string",
+          "title": "Contract Type",
+          "x-ms-dataverse-attribute": "cr301_contracttype",
+          "x-ms-dataverse-type": "PicklistType",
+          "x-ms-schema-name": "cr301_ContractType",
+          "enum": [
+            "Full Time",
+            "Modified Time",
+            "Part Time",
+            "Fulltime - ShiftBased"
+          ],
+          "x-ms-enum-values": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "Color": [
+            null,
+            null,
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "a6d1fcd2-ca8b-f011-b4cc-6045bdf37b46",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "Contract Type",
+          "x-ms-optionSetType": "Picklist"
+        },
+        "cr301_contracttypename": {
+          "type": "string",
+          "title": "cr301_contracttypename",
+          "x-ms-dataverse-attribute": "cr301_contracttypename",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "cr301_contracttypeName",
+          "x-ms-read-only": true
+        },
+        "cr301_degree": {
+          "type": "string",
+          "title": "Degree",
+          "x-ms-dataverse-attribute": "cr301_degree",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "cr301_Degree"
+        },
+        "cr301_degreename": {
+          "type": "string",
+          "title": "cr301_degreename",
+          "x-ms-dataverse-attribute": "cr301_degreename",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr301_DegreeName",
+          "x-ms-read-only": true,
+          "maxLength": 850
+        },
+        "cr301_doctorkey": {
+          "type": "string",
+          "title": "DoctorKey",
+          "x-ms-dataverse-attribute": "cr301_doctorkey",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr301_DoctorKey",
+          "maxLength": 100
+        },
+        "cr301_doctornamear": {
+          "type": "string",
+          "title": "Doctor Name Ar",
+          "x-ms-dataverse-attribute": "cr301_doctornamear",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr301_DoctorNameAr",
+          "maxLength": 100
+        },
+        "cr301_drnotes": {
+          "type": "string",
+          "title": "DR Notes",
+          "x-ms-dataverse-attribute": "cr301_drnotes",
+          "x-ms-dataverse-type": "MemoType",
+          "x-ms-schema-name": "cr301_DRNotes",
+          "maxLength": 4000
+        },
+        "cr301_flag": {
+          "type": "string",
+          "title": "Flag",
+          "x-ms-dataverse-attribute": "cr301_flag",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr301_Flag",
+          "maxLength": 100
+        },
+        "cr301_lastchgusermds": {
+          "type": "string",
+          "title": "Last Chg User MDS",
+          "x-ms-dataverse-attribute": "cr301_lastchgusermds",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr301_LastChgUserMDS",
+          "maxLength": 100
+        },
+        "cr301_nationality": {
+          "type": "string",
+          "title": "Nationality",
+          "x-ms-dataverse-attribute": "cr301_nationality",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "cr301_Nationality"
+        },
+        "cr301_nationalityname": {
+          "type": "string",
+          "title": "cr301_nationalityname",
+          "x-ms-dataverse-attribute": "cr301_nationalityname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr301_NationalityName",
+          "x-ms-read-only": true,
+          "maxLength": 850
+        },
+        "cr301_newdoctordatasetid": {
+          "type": "string",
+          "title": "New Doctor Dataset",
+          "x-ms-dataverse-attribute": "cr301_newdoctordatasetid",
+          "x-ms-dataverse-type": "UniqueidentifierType",
+          "x-ms-schema-name": "cr301_NewDoctorDatasetId",
+          "x-ms-dataverse-primary-id": true,
+          "required": true,
+          "x-ms-keyType": "primary"
+        },
+        "cr301_opdflag": {
+          "type": "string",
+          "title": "OPD Flag",
+          "x-ms-dataverse-attribute": "cr301_opdflag",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr301_OPDFlag",
+          "maxLength": 100
+        },
+        "cr301_qualificationsandexperience": {
+          "type": "string",
+          "title": "Qualifications and Experience",
+          "x-ms-dataverse-attribute": "cr301_qualificationsandexperience",
+          "x-ms-dataverse-type": "MemoType",
+          "x-ms-schema-name": "cr301_QualificationsandExperience",
+          "maxLength": 4000
+        },
+        "cr301_qualificationsandexperiencear": {
+          "type": "string",
+          "title": "Qualifications and Experience(AR)",
+          "x-ms-dataverse-attribute": "cr301_qualificationsandexperiencear",
+          "x-ms-dataverse-type": "MemoType",
+          "x-ms-schema-name": "cr301_QualificationsandExperienceAR",
+          "maxLength": 4000
+        },
+        "cr301_scopeofservice": {
+          "type": "string",
+          "title": "Scope of Service",
+          "x-ms-dataverse-attribute": "cr301_scopeofservice",
+          "x-ms-dataverse-type": "MemoType",
+          "x-ms-schema-name": "cr301_ScopeofService",
+          "maxLength": 4000
+        },
+        "cr301_scopeofservicear": {
+          "type": "string",
+          "title": "Scope of Service(AR)",
+          "x-ms-dataverse-attribute": "cr301_scopeofservicear",
+          "x-ms-dataverse-type": "MemoType",
+          "x-ms-schema-name": "cr301_ScopeofServiceAR",
+          "maxLength": 4000
+        },
+        "cr301_sharepointid": {
+          "type": "string",
+          "title": "SharePoint ID",
+          "x-ms-dataverse-attribute": "cr301_sharepointid",
+          "x-ms-dataverse-type": "IntegerType",
+          "x-ms-schema-name": "cr301_SharePointID"
+        },
+        "cr301_specialty": {
+          "type": "string",
+          "title": "Specialty",
+          "x-ms-dataverse-attribute": "cr301_specialty",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "cr301_Specialty"
+        },
+        "cr301_specialtyname": {
+          "type": "string",
+          "title": "cr301_specialtyname",
+          "x-ms-dataverse-attribute": "cr301_specialtyname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr301_SpecialtyName",
+          "x-ms-read-only": true,
+          "maxLength": 850
+        },
+        "cr301_stardoctor": {
+          "type": "string",
+          "title": "Star Doctor",
+          "x-ms-dataverse-attribute": "cr301_stardoctor",
+          "x-ms-dataverse-type": "PicklistType",
+          "x-ms-schema-name": "cr301_StarDoctor",
+          "enum": [
+            "First Priority",
+            "Yes",
+            "No"
+          ],
+          "x-ms-enum-values": [
+            3,
+            1,
+            2
+          ],
+          "Color": [
+            null,
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "21df3ab7-ca8b-f011-b4cc-6045bdf37b46",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "Star Doctor",
+          "x-ms-optionSetType": "Picklist"
+        },
+        "cr301_stardoctorname": {
+          "type": "string",
+          "title": "cr301_stardoctorname",
+          "x-ms-dataverse-attribute": "cr301_stardoctorname",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "cr301_stardoctorName",
+          "x-ms-read-only": true
+        },
+        "cr301_subspecialty": {
+          "type": "string",
+          "title": "SubSpecialty",
+          "x-ms-dataverse-attribute": "cr301_subspecialty",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "cr301_SubSpecialty"
+        },
+        "cr301_subspecialtyname": {
+          "type": "string",
+          "title": "cr301_subspecialtyname",
+          "x-ms-dataverse-attribute": "cr301_subspecialtyname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr301_SubSpecialtyName",
+          "x-ms-read-only": true,
+          "maxLength": 850
+        },
+        "cr301_title": {
+          "type": "string",
+          "title": "Title",
+          "x-ms-dataverse-attribute": "cr301_title",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr301_Title",
+          "x-ms-dataverse-primary-name": true,
+          "required": true,
+          "maxLength": 850
+        },
+        "cr603_bimaping": {
+          "type": "string",
+          "title": "BI Maping",
+          "x-ms-dataverse-attribute": "cr603_bimaping",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr603_BIMaping",
+          "maxLength": 1000
+        },
+        "cr603_insuranceissues": {
+          "type": "string",
+          "title": "Insurance Issues",
+          "x-ms-dataverse-attribute": "cr603_insuranceissues",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr603_InsuranceIssues",
+          "maxLength": 4000
+        },
+        "cr603_staffexlimitation": {
+          "type": "string",
+          "title": "Staff Ex Limitation",
+          "x-ms-dataverse-attribute": "cr603_staffexlimitation",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "cr603_StaffExLimitation",
+          "maxLength": 3000
+        },
+        "createdby": {
+          "type": "string",
+          "title": "Created By",
+          "x-ms-dataverse-attribute": "createdby",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "CreatedBy",
+          "x-ms-read-only": true
+        },
+        "createdbyname": {
+          "type": "string",
+          "title": "createdbyname",
+          "x-ms-dataverse-attribute": "createdbyname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "CreatedByName",
+          "x-ms-read-only": true,
+          "maxLength": 100
+        },
+        "createdbyyominame": {
+          "type": "string",
+          "title": "createdbyyominame",
+          "x-ms-dataverse-attribute": "createdbyyominame",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "CreatedByYomiName",
+          "x-ms-read-only": true,
+          "required": true,
+          "maxLength": 100
+        },
+        "createdon": {
+          "type": "string",
+          "title": "Created On",
+          "x-ms-dataverse-attribute": "createdon",
+          "x-ms-dataverse-type": "DateTimeType",
+          "x-ms-schema-name": "CreatedOn",
+          "x-ms-read-only": true
+        },
+        "createdonbehalfby": {
+          "type": "string",
+          "title": "Created By (Delegate)",
+          "x-ms-dataverse-attribute": "createdonbehalfby",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "CreatedOnBehalfBy",
+          "x-ms-read-only": true
+        },
+        "createdonbehalfbyname": {
+          "type": "string",
+          "title": "createdonbehalfbyname",
+          "x-ms-dataverse-attribute": "createdonbehalfbyname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "CreatedOnBehalfByName",
+          "x-ms-read-only": true,
+          "maxLength": 100
+        },
+        "createdonbehalfbyyominame": {
+          "type": "string",
+          "title": "createdonbehalfbyyominame",
+          "x-ms-dataverse-attribute": "createdonbehalfbyyominame",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "CreatedOnBehalfByYomiName",
+          "x-ms-read-only": true,
+          "required": true,
+          "maxLength": 100
+        },
+        "importsequencenumber": {
+          "type": "string",
+          "title": "Import Sequence Number",
+          "x-ms-dataverse-attribute": "importsequencenumber",
+          "x-ms-dataverse-type": "IntegerType",
+          "x-ms-schema-name": "ImportSequenceNumber"
+        },
+        "kerolos_activatedon": {
+          "type": "string",
+          "title": "Master Activated On",
+          "x-ms-dataverse-attribute": "kerolos_activatedon",
+          "x-ms-dataverse-type": "DateTimeType",
+          "x-ms-schema-name": "kerolos_activatedon"
+        },
+        "kerolos_businessunit": {
+          "type": "string",
+          "title": "Business Unit",
+          "x-ms-dataverse-attribute": "kerolos_businessunit",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "kerolos_businessunit"
+        },
+        "kerolos_businessunitname": {
+          "type": "string",
+          "title": "kerolos_businessunitname",
+          "x-ms-dataverse-attribute": "kerolos_businessunitname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "kerolos_businessunitName",
+          "x-ms-read-only": true,
+          "maxLength": 160
+        },
+        "kerolos_cvfile": {
+          "type": "string",
+          "title": "Curriculum Vitae",
+          "x-ms-dataverse-attribute": "kerolos_cvfile",
+          "x-ms-dataverse-type": "FileType",
+          "x-ms-schema-name": "kerolos_cvfile",
+          "x-ms-read-only": true
+        },
+        "kerolos_cvfile_name": {
+          "type": "string",
+          "title": "kerolos_cvfile_name",
+          "x-ms-dataverse-attribute": "kerolos_cvfile_name",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "kerolos_cvfile_Name",
+          "x-ms-read-only": true,
+          "maxLength": 200
+        },
+        "kerolos_email": {
+          "type": "string",
+          "title": "Email Address",
+          "x-ms-dataverse-attribute": "kerolos_email",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "kerolos_email",
+          "maxLength": 200
+        },
+        "kerolos_fullname": {
+          "type": "string",
+          "title": "Physician Full Name",
+          "x-ms-dataverse-attribute": "kerolos_fullname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "kerolos_fullname",
+          "maxLength": 150
+        },
+        "kerolos_invitationexpireson": {
+          "type": "string",
+          "title": "Invitation Expires On",
+          "x-ms-dataverse-attribute": "kerolos_invitationexpireson",
+          "x-ms-dataverse-type": "DateTimeType",
+          "x-ms-schema-name": "kerolos_invitationexpireson"
+        },
+        "kerolos_invitationrespondedon": {
+          "type": "string",
+          "title": "Invitation Responded On",
+          "x-ms-dataverse-attribute": "kerolos_invitationrespondedon",
+          "x-ms-dataverse-type": "DateTimeType",
+          "x-ms-schema-name": "kerolos_invitationrespondedon"
+        },
+        "kerolos_invitationsenton": {
+          "type": "string",
+          "title": "Invitation Sent On",
+          "x-ms-dataverse-attribute": "kerolos_invitationsenton",
+          "x-ms-dataverse-type": "DateTimeType",
+          "x-ms-schema-name": "kerolos_invitationsenton"
+        },
+        "kerolos_invitationtoken": {
+          "type": "string",
+          "title": "Invitation Token",
+          "x-ms-dataverse-attribute": "kerolos_invitationtoken",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "kerolos_invitationtoken",
+          "maxLength": 100
+        },
+        "kerolos_mobilenumber": {
+          "type": "string",
+          "title": "Mobile Number",
+          "x-ms-dataverse-attribute": "kerolos_mobilenumber",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "kerolos_mobilenumber",
+          "maxLength": 30
+        },
+        "kerolos_nationalid": {
+          "type": "string",
+          "title": "National ID",
+          "x-ms-dataverse-attribute": "kerolos_nationalid",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "kerolos_nationalid",
+          "maxLength": 50
+        },
+        "kerolos_notes": {
+          "type": "string",
+          "title": "Strategic Notes & Clinical Objectives",
+          "x-ms-dataverse-attribute": "kerolos_notes",
+          "x-ms-dataverse-type": "MemoType",
+          "x-ms-schema-name": "kerolos_notes",
+          "maxLength": 4000
+        },
+        "kerolos_overallstatus": {
+          "type": "string",
+          "title": "Overall Status",
+          "x-ms-dataverse-attribute": "kerolos_overallstatus",
+          "x-ms-dataverse-type": "PicklistType",
+          "x-ms-schema-name": "kerolos_overallstatus",
+          "enum": [
+            "Draft",
+            "Pending Approval",
+            "Pending Info",
+            "Rejected",
+            "Invitation Pending",
+            "Invitation Sent",
+            "Invitation Accepted",
+            "Invitation Declined",
+            "Invitation Expired",
+            "Interview Scheduled",
+            "Interview Held",
+            "Panel Approved",
+            "Panel Hold",
+            "Panel Rejected",
+            "Credentialing Pending",
+            "Credentialing Complete",
+            "Contracting",
+            "Contract Signed",
+            "Master Activated",
+            "Closed"
+          ],
+          "x-ms-enum-values": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6,
+            7,
+            8,
+            9,
+            10,
+            11,
+            12,
+            13,
+            14,
+            15,
+            16,
+            17,
+            18,
+            19,
+            20
+          ],
+          "Color": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "b3d65140-88ba-f111-aaae-00224882d001",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "Overall Status",
+          "x-ms-optionSetType": "Picklist"
+        },
+        "kerolos_overallstatusname": {
+          "type": "string",
+          "title": "kerolos_overallstatusname",
+          "x-ms-dataverse-attribute": "kerolos_overallstatusname",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "kerolos_overallstatusName",
+          "x-ms-read-only": true
+        },
+        "kerolos_programmanager": {
+          "type": "string",
+          "title": "Program Manager",
+          "x-ms-dataverse-attribute": "kerolos_programmanager",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "kerolos_programmanager"
+        },
+        "kerolos_programmanagername": {
+          "type": "string",
+          "title": "kerolos_programmanagername",
+          "x-ms-dataverse-attribute": "kerolos_programmanagername",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "kerolos_programmanagerName",
+          "x-ms-read-only": true,
+          "maxLength": 200
+        },
+        "kerolos_programmanageryominame": {
+          "type": "string",
+          "title": "kerolos_programmanageryominame",
+          "x-ms-dataverse-attribute": "kerolos_programmanageryominame",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "kerolos_programmanagerYomiName",
+          "x-ms-read-only": true,
+          "maxLength": 200
+        },
+        "kerolos_referralsource": {
+          "type": "string",
+          "title": "Referral Source",
+          "x-ms-dataverse-attribute": "kerolos_referralsource",
+          "x-ms-dataverse-type": "PicklistType",
+          "x-ms-schema-name": "kerolos_referralsource",
+          "enum": [
+            "University Partnership",
+            "BD Referral",
+            "Conference",
+            "Existing Relationship",
+            "Medical Society",
+            "Direct Inquiry"
+          ],
+          "x-ms-enum-values": [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          "Color": [
+            null,
+            null,
+            null,
+            null,
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "287aaa31-88ba-f111-aaae-00224882d001",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "Referral Source",
+          "x-ms-optionSetType": "Picklist"
+        },
+        "kerolos_referralsourcename": {
+          "type": "string",
+          "title": "kerolos_referralsourcename",
+          "x-ms-dataverse-attribute": "kerolos_referralsourcename",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "kerolos_referralsourceName",
+          "x-ms-read-only": true
+        },
+        "kerolos_referredby": {
+          "type": "string",
+          "title": "Referred By",
+          "x-ms-dataverse-attribute": "kerolos_referredby",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "kerolos_referredby",
+          "maxLength": 200
+        },
+        "kerolos_slastatus": {
+          "type": "string",
+          "title": "SLA Status",
+          "x-ms-dataverse-attribute": "kerolos_slastatus",
+          "x-ms-dataverse-type": "PicklistType",
+          "x-ms-schema-name": "kerolos_slastatus",
+          "enum": [
+            "On Track",
+            "Warning",
+            "Overdue",
+            "Complete"
+          ],
+          "x-ms-enum-values": [
+            1,
+            2,
+            3,
+            4
+          ],
+          "Color": [
+            null,
+            null,
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "bcd65140-88ba-f111-aaae-00224882d001",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "SLA Status",
+          "x-ms-optionSetType": "Picklist"
+        },
+        "kerolos_slastatusname": {
+          "type": "string",
+          "title": "kerolos_slastatusname",
+          "x-ms-dataverse-attribute": "kerolos_slastatusname",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "kerolos_slastatusName",
+          "x-ms-read-only": true
+        },
+        "kerolos_specialty": {
+          "type": "string",
+          "title": "Specialty",
+          "x-ms-dataverse-attribute": "kerolos_specialty",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "kerolos_Specialty"
+        },
+        "kerolos_specialtyname": {
+          "type": "string",
+          "title": "kerolos_specialtyname",
+          "x-ms-dataverse-attribute": "kerolos_specialtyname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "kerolos_SpecialtyName",
+          "x-ms-read-only": true,
+          "maxLength": 850
+        },
+        "kerolos_submittedon": {
+          "type": "string",
+          "title": "Submitted On",
+          "x-ms-dataverse-attribute": "kerolos_submittedon",
+          "x-ms-dataverse-type": "DateTimeType",
+          "x-ms-schema-name": "kerolos_submittedon"
+        },
+        "modifiedby": {
+          "type": "string",
+          "title": "Modified By",
+          "x-ms-dataverse-attribute": "modifiedby",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "ModifiedBy",
+          "x-ms-read-only": true
+        },
+        "modifiedbyname": {
+          "type": "string",
+          "title": "modifiedbyname",
+          "x-ms-dataverse-attribute": "modifiedbyname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "ModifiedByName",
+          "x-ms-read-only": true,
+          "maxLength": 100
+        },
+        "modifiedbyyominame": {
+          "type": "string",
+          "title": "modifiedbyyominame",
+          "x-ms-dataverse-attribute": "modifiedbyyominame",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "ModifiedByYomiName",
+          "x-ms-read-only": true,
+          "required": true,
+          "maxLength": 100
+        },
+        "modifiedon": {
+          "type": "string",
+          "title": "Modified On",
+          "x-ms-dataverse-attribute": "modifiedon",
+          "x-ms-dataverse-type": "DateTimeType",
+          "x-ms-schema-name": "ModifiedOn",
+          "x-ms-read-only": true
+        },
+        "modifiedonbehalfby": {
+          "type": "string",
+          "title": "Modified By (Delegate)",
+          "x-ms-dataverse-attribute": "modifiedonbehalfby",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "ModifiedOnBehalfBy",
+          "x-ms-read-only": true
+        },
+        "modifiedonbehalfbyname": {
+          "type": "string",
+          "title": "modifiedonbehalfbyname",
+          "x-ms-dataverse-attribute": "modifiedonbehalfbyname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "ModifiedOnBehalfByName",
+          "x-ms-read-only": true,
+          "maxLength": 100
+        },
+        "modifiedonbehalfbyyominame": {
+          "type": "string",
+          "title": "modifiedonbehalfbyyominame",
+          "x-ms-dataverse-attribute": "modifiedonbehalfbyyominame",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "ModifiedOnBehalfByYomiName",
+          "x-ms-read-only": true,
+          "required": true,
+          "maxLength": 100
+        },
+        "overriddencreatedon": {
+          "type": "string",
+          "title": "Record Created On",
+          "x-ms-dataverse-attribute": "overriddencreatedon",
+          "x-ms-dataverse-type": "DateTimeType",
+          "x-ms-schema-name": "OverriddenCreatedOn"
+        },
+        "ownerid": {
+          "type": "string",
+          "title": "Owner",
+          "x-ms-dataverse-attribute": "ownerid",
+          "x-ms-dataverse-type": "OwnerType",
+          "x-ms-schema-name": "OwnerId",
+          "required": true
+        },
+        "owneridname": {
+          "type": "string",
+          "title": "owneridname",
+          "x-ms-dataverse-attribute": "owneridname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "OwnerIdName",
+          "x-ms-read-only": true,
+          "required": true,
+          "maxLength": 100
+        },
+        "owneridtype": {
+          "type": "string",
+          "title": "owneridtype",
+          "x-ms-dataverse-attribute": "owneridtype",
+          "x-ms-dataverse-type": "EntityNameType",
+          "x-ms-schema-name": "OwnerIdType",
+          "required": true
+        },
+        "owneridyominame": {
+          "type": "string",
+          "title": "owneridyominame",
+          "x-ms-dataverse-attribute": "owneridyominame",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "OwnerIdYomiName",
+          "x-ms-read-only": true,
+          "required": true,
+          "maxLength": 100
+        },
+        "owningbusinessunit": {
+          "type": "string",
+          "title": "Owning Business Unit",
+          "x-ms-dataverse-attribute": "owningbusinessunit",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "OwningBusinessUnit",
+          "x-ms-read-only": true
+        },
+        "owningbusinessunitname": {
+          "type": "string",
+          "title": "owningbusinessunitname",
+          "x-ms-dataverse-attribute": "owningbusinessunitname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "OwningBusinessUnitName",
+          "x-ms-read-only": true,
+          "required": true,
+          "maxLength": 100
+        },
+        "owningteam": {
+          "type": "string",
+          "title": "Owning Team",
+          "x-ms-dataverse-attribute": "owningteam",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "OwningTeam",
+          "x-ms-read-only": true
+        },
+        "owninguser": {
+          "type": "string",
+          "title": "Owning User",
+          "x-ms-dataverse-attribute": "owninguser",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "OwningUser",
+          "x-ms-read-only": true
+        },
+        "serhub_bookingpriority": {
+          "type": "string",
+          "title": "BookingPriority",
+          "x-ms-dataverse-attribute": "serhub_bookingpriority",
+          "x-ms-dataverse-type": "BooleanType",
+          "x-ms-schema-name": "serhub_BookingPriority",
+          "enum": [
+            "No",
+            "Yes"
+          ],
+          "x-ms-enum-values": [
+            0,
+            1
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "ef57768a-c784-f111-ab0f-7ced8d92541b",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "BookingPriority",
+          "x-ms-optionSetType": "Boolean"
+        },
+        "serhub_bookingpriorityname": {
+          "type": "string",
+          "title": "serhub_bookingpriorityname",
+          "x-ms-dataverse-attribute": "serhub_bookingpriorityname",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "serhub_bookingpriorityName",
+          "x-ms-read-only": true
+        },
+        "serhub_excludedfromdiscount": {
+          "type": "string",
+          "title": "ExcludedFromDiscount",
+          "x-ms-dataverse-attribute": "serhub_excludedfromdiscount",
+          "x-ms-dataverse-type": "BooleanType",
+          "x-ms-schema-name": "serhub_ExcludedFromDiscount",
+          "enum": [
+            "No",
+            "Yes"
+          ],
+          "x-ms-enum-values": [
+            0,
+            1
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "3a5826a5-c784-f111-ab0f-7ced8d92541b",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "ExcludedFromDiscount",
+          "x-ms-optionSetType": "Boolean"
+        },
+        "serhub_excludedfromdiscountname": {
+          "type": "string",
+          "title": "serhub_excludedfromdiscountname",
+          "x-ms-dataverse-attribute": "serhub_excludedfromdiscountname",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "serhub_excludedfromdiscountName",
+          "x-ms-read-only": true
+        },
+        "serhub_homecare": {
+          "type": "string",
+          "title": "HomeCare",
+          "x-ms-dataverse-attribute": "serhub_homecare",
+          "x-ms-dataverse-type": "BooleanType",
+          "x-ms-schema-name": "serhub_HomeCare",
+          "enum": [
+            "No",
+            "Yes"
+          ],
+          "x-ms-enum-values": [
+            0,
+            1
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "39fa5f3b-c784-f111-ab0f-7ced8d92541b",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "HomeCare",
+          "x-ms-optionSetType": "Boolean"
+        },
+        "serhub_homecarename": {
+          "type": "string",
+          "title": "serhub_homecarename",
+          "x-ms-dataverse-attribute": "serhub_homecarename",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "serhub_homecareName",
+          "x-ms-read-only": true
+        },
+        "serhub_overbooking": {
+          "type": "string",
+          "title": "OverBooking",
+          "x-ms-dataverse-attribute": "serhub_overbooking",
+          "x-ms-dataverse-type": "BooleanType",
+          "x-ms-schema-name": "serhub_OverBooking",
+          "enum": [
+            "No",
+            "Yes"
+          ],
+          "x-ms-enum-values": [
+            0,
+            1
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "aeaba054-c784-f111-ab0f-7ced8d92541b",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "OverBooking",
+          "x-ms-optionSetType": "Boolean"
+        },
+        "serhub_overbookingname": {
+          "type": "string",
+          "title": "serhub_overbookingname",
+          "x-ms-dataverse-attribute": "serhub_overbookingname",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "serhub_overbookingName",
+          "x-ms-read-only": true
+        },
+        "servhub_doctornameen": {
+          "type": "string",
+          "title": "Doctor Name  EN",
+          "x-ms-dataverse-attribute": "servhub_doctornameen",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "servhub_DoctorNameEN",
+          "maxLength": 100
+        },
+        "servhub_examinationage": {
+          "type": "string",
+          "title": "Examination Age",
+          "x-ms-dataverse-attribute": "servhub_examinationage",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "servhub_ExaminationAge",
+          "maxLength": 4000
+        },
+        "servhub_procedureclinics": {
+          "type": "string",
+          "title": "Procedure Clinics",
+          "x-ms-dataverse-attribute": "servhub_procedureclinics",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "servhub_ProcedureClinics",
+          "maxLength": 100
+        },
+        "servhub_region": {
+          "type": "string",
+          "title": "Region",
+          "x-ms-dataverse-attribute": "servhub_region",
+          "x-ms-dataverse-type": "LookupType",
+          "x-ms-schema-name": "servhub_Region"
+        },
+        "servhub_regionname": {
+          "type": "string",
+          "title": "servhub_regionname",
+          "x-ms-dataverse-attribute": "servhub_regionname",
+          "x-ms-dataverse-type": "StringType",
+          "x-ms-schema-name": "servhub_RegionName",
+          "x-ms-read-only": true,
+          "maxLength": 850
+        },
+        "statecode": {
+          "type": "string",
+          "title": "Status",
+          "x-ms-dataverse-attribute": "statecode",
+          "x-ms-dataverse-type": "StateType",
+          "x-ms-schema-name": "statecode",
+          "required": true,
+          "enum": [
+            "Active",
+            "Inactive"
+          ],
+          "x-ms-enum-values": [
+            0,
+            1
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "34c78490-558b-f011-b4cb-6045bdf397df",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "Status",
+          "x-ms-optionSetType": "State"
+        },
+        "statecodename": {
+          "type": "string",
+          "title": "statecodename",
+          "x-ms-dataverse-attribute": "statecodename",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "statecodeName",
+          "x-ms-read-only": true
+        },
+        "statuscode": {
+          "type": "string",
+          "title": "Status Reason",
+          "x-ms-dataverse-attribute": "statuscode",
+          "x-ms-dataverse-type": "StatusType",
+          "x-ms-schema-name": "statuscode",
+          "enum": [
+            "Active",
+            "Inactive"
+          ],
+          "x-ms-enum-values": [
+            1,
+            2
+          ],
+          "Color": [
+            null,
+            null
+          ],
+          "x-ms-optionsetmetadataid": "3ec78490-558b-f011-b4cb-6045bdf397df",
+          "x-ms-isGlobal": false,
+          "x-ms-optionsetdisplayname": "Status Reason",
+          "x-ms-optionSetType": "Status"
+        },
+        "statuscodename": {
+          "type": "string",
+          "title": "statuscodename",
+          "x-ms-dataverse-attribute": "statuscodename",
+          "x-ms-dataverse-type": "VirtualType",
+          "x-ms-schema-name": "statuscodeName",
+          "x-ms-read-only": true
+        },
+        "timezoneruleversionnumber": {
+          "type": "string",
+          "title": "Time Zone Rule Version Number",
+          "x-ms-dataverse-attribute": "timezoneruleversionnumber",
+          "x-ms-dataverse-type": "IntegerType",
+          "x-ms-schema-name": "TimeZoneRuleVersionNumber"
+        },
+        "utcconversiontimezonecode": {
+          "type": "string",
+          "title": "UTC Conversion Time Zone Code",
+          "x-ms-dataverse-attribute": "utcconversiontimezonecode",
+          "x-ms-dataverse-type": "IntegerType",
+          "x-ms-schema-name": "UTCConversionTimeZoneCode"
+        },
+        "versionnumber": {
+          "type": "string",
+          "title": "Version Number",
+          "x-ms-dataverse-attribute": "versionnumber",
+          "x-ms-dataverse-type": "BigIntType",
+          "x-ms-schema-name": "VersionNumber",
+          "x-ms-read-only": true
+        }
+      },
+      "required": [
+        "cr301_newdoctordatasetid",
+        "cr301_title",
+        "createdbyyominame",
+        "createdonbehalfbyyominame",
+        "modifiedbyyominame",
+        "modifiedonbehalfbyyominame",
+        "ownerid",
+        "owneridname",
+        "owneridtype",
+        "owneridyominame",
+        "owningbusinessunitname",
+        "statecode"
+      ]
+    }
+  }
+}

@@ -1,0 +1,50 @@
+/* Doctor profile — "Sidebar" layout (user choice 2026-09-29). */
+
+.servhub-app .pf-top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; margin-bottom: 12px; }
+.servhub-app .pf-top .back-link { margin-bottom: 0; }
+.servhub-app .pf-top .hub-toolbar { margin-bottom: 0; }
+
+/* Identity: photo + names */
+.servhub-app .pf-identity { display: flex; align-items: center; gap: 18px; flex-wrap: wrap; }
+.servhub-app .pf-identity .hub-doctor-photo { flex: none; width: 104px; height: 104px; margin: 0; border: 3px solid var(--ds-color-surface-raised); box-shadow: 0 0 0 2.5px var(--ds-color-primary), 0 8px 18px rgba(2, 54, 53, .14); }
+.servhub-app .pf-identity-center { flex-direction: column; text-align: center; gap: 12px; }
+.servhub-app .pf-names { display: flex; flex-direction: column; gap: 3px; min-width: 0; }
+.servhub-app .pf-name { font: 700 22px/1.25 var(--ds-font-family); color: var(--text-primary); }
+.servhub-app .pf-user { font-size: 14px; color: var(--muted); }
+.servhub-app .pf-ar { font-size: 17px; font-weight: 600; color: var(--ds-color-primary-700); }
+.servhub-app.dark .pf-ar { color: #7ce8c1; }
+.servhub-app .pf-ar { text-align: left; }
+.servhub-app .pf-identity-center .pf-ar { text-align: center; }
+
+/* Section titles + text */
+.servhub-app .pf-title { font-size: 12.5px; font-weight: 700; letter-spacing: .8px; text-transform: uppercase; color: var(--ds-color-primary); margin: 0 0 10px; }
+.servhub-app .pf-section { margin-bottom: 16px; }
+.servhub-app .pf-section .hub-text { font-size: 15px; line-height: 1.7; }
+.servhub-app .pf-lang { font-size: 12px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--text-body); margin-bottom: 6px; }
+.servhub-app .pf-facts { margin: 0; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
+.servhub-app .pf-facts .svc-f dd { font-size: 15px; }
+.servhub-app .pf-exceptions { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
+.servhub-app .pf-table-wrap { overflow-x: auto; }
+.servhub-app .pf-fee-table { min-width: 320px; }
+.servhub-app .pf-fee-table th:not(:first-child), .servhub-app .pf-fee-table td:not(:first-child) { text-align: right; }
+.servhub-app .pf-fee-table td:not(:first-child) { font-weight: 700; color: var(--ds-color-primary-700); white-space: nowrap; }
+.servhub-app .pf-fee-table td:not(:first-child):not(:nth-child(2)) { font-weight: 600; color: var(--text-primary); }
+
+/* Sidebar layout */
+.servhub-app .pf-sidebar-layout { display: grid; grid-template-columns: minmax(300px, 360px) 1fr; gap: 16px; align-items: start; }
+.servhub-app .pf-aside { position: sticky; top: 64px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 0; }
+.servhub-app .pf-aside .pf-title { margin: 12px 0 4px; }
+.servhub-app .pf-aside .pf-fee-table { min-width: 0; }
+.servhub-app .pf-main { min-width: 0; }
+@media (max-width: 980px) {
+  .servhub-app .pf-sidebar-layout { grid-template-columns: 1fr; }
+  .servhub-app .pf-aside { position: static; }
+}
+
+/* Rich-text field values (tiles / card fields) */
+.servhub-app .rich-value { font-size: inherit; font-weight: inherit; line-height: 1.5; }
+.servhub-app .rich-value p { margin: 0; }
+.servhub-app .rich-text table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
+.servhub-app .rich-text td, .servhub-app .rich-text th { border: 1px solid var(--border); padding: 4px 8px; }
+.servhub-app .pf-aside .pf-fee-table th { white-space: nowrap; font-size: 10.5px; letter-spacing: .3px; padding: 7px 8px; }
+.servhub-app .pf-aside .pf-fee-table td { padding: 8px; }

@@ -1,0 +1,187 @@
+/* ServiceHub additions on top of tokens.css + base.css (both kept verbatim).
+   Scoped to .servhub-app like base.css — never global selectors. */
+
+/* Rich-text (CKEditor) values: base.css zeroes margin/padding on every element inside the app,
+   which pushes list bullets outside their card. Restore list indentation and paragraph spacing,
+   as the legacy page's .ck-content rules did. */
+/* Padding on both sides: Arabic (RTL) items inside an LTR list put their marker on the right. */
+.servhub-app .rich-text ul,
+.servhub-app .rich-text ol { padding-inline: 1.4em; margin: 4px 0; }
+.servhub-app .rich-text.ProseMirror:focus { outline: none; border-color: var(--brand-gold); box-shadow: 0 0 0 3px rgba(165,132,91,.12); }
+.servhub-app .rich-text li { margin-bottom: 2px; }
+.servhub-app .rich-text p { margin: 0 0 6px; }
+.servhub-app .rich-text p:last-child { margin-bottom: 0; }
+.servhub-app .rich-text img { max-width: 100%; height: auto; }
+.servhub-app .rich-text a { color: var(--gold-dark); text-decoration: underline; }
+
+/* ---- Andalusia Service Hub sections (legacy web resource screens) ---- */
+.servhub-app .hub-filters { display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 12px; align-items: end; }
+.servhub-app .hub-filter { display: flex; flex-direction: column; position: relative; min-width: 0; }
+.servhub-app .hub-search { grid-column: span 2; }
+.servhub-app .hub-search-wrap { position: relative; display: block; }
+.servhub-app .hub-search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--dim); pointer-events: none; }
+.servhub-app .hub-search-wrap .field-input { padding-left: 30px; }
+.servhub-app .hub-refresh { justify-self: start; align-self: end; }
+.servhub-app .hub-results-row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--border); }
+.servhub-app .hub-count { font-size: 12px; font-weight: 700; color: var(--gold-dark); }
+.servhub-app .hub-multi-btn { display: flex; justify-content: space-between; align-items: center; text-align: left; cursor: pointer; }
+.servhub-app .hub-multi-arrow { font-size: 9px; color: var(--dim); }
+.servhub-app .hub-multi-menu { position: absolute; top: 100%; left: 0; right: 0; z-index: 30; margin-top: 4px; max-height: 260px; overflow-y: auto; background: var(--surface-1, #fff); border: 1px solid var(--border); border-radius: var(--r-md); box-shadow: 0 8px 24px rgba(0,0,0,.12); padding: 4px; }
+.servhub-app .hub-multi-opt { display: flex; align-items: center; gap: 8px; padding: 7px 9px; border-radius: var(--r-sm); font-size: 12.5px; cursor: pointer; color: var(--text-primary); }
+.servhub-app .hub-multi-opt:hover { background: var(--gold-soft); }
+.servhub-app .hub-multi-opt.group { font-weight: 700; }
+.servhub-app .hub-multi-opt.child { padding-left: 26px; }
+.servhub-app .hub-multi-opt input { accent-color: var(--brand-gold); }
+
+.servhub-app .hub-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 14px; margin-bottom: 16px; }
+.servhub-app .hub-card { position: relative; display: flex; flex-direction: column; margin-bottom: 0; transition: box-shadow .2s, border-color .2s; }
+.servhub-app .hub-card:hover { border-color: var(--gold-light); box-shadow: 0 6px 16px rgba(165,132,91,.14); }
+.servhub-app .hub-card-hdr { display: flex; gap: 12px; align-items: flex-start; margin-bottom: 10px; padding-right: 26px; }
+.servhub-app .hub-avatar { flex: none; width: 42px; height: 42px; border-radius: 12px; background: var(--grad-gold); color: #fff; display: flex; align-items: center; justify-content: center; box-shadow: var(--shadow-gold); }
+.servhub-app .hub-avatar-lg { width: 60px; height: 60px; border-radius: 16px; }
+.servhub-app .hub-card-names { min-width: 0; }
+.servhub-app .hub-card-title { font-family: var(--sans); font-size: 14px; font-weight: 700; color: var(--text-primary); line-height: 1.3; }
+.servhub-app .hub-card-sub { font-size: 12px; color: var(--dim); margin-top: 2px; text-align: left; }
+.servhub-app .hub-card .kv-grid { margin-bottom: 8px; }
+.servhub-app .hub-fees { margin-bottom: 12px; }
+.servhub-app .hub-badges { display: flex; flex-wrap: wrap; gap: 6px; }
+.servhub-app .hub-badges .sbadge { white-space: normal; }
+.servhub-app .hub-card-action { margin-top: auto; }
+.servhub-app .hub-more { display: flex; justify-content: center; margin-bottom: 16px; }
+.servhub-app .hub-muted { font-size: 12px; color: var(--dim); }
+
+.servhub-app .hub-flag { position: absolute; top: 12px; right: 12px; font-size: 13px; cursor: help; display: flex; align-items: center; gap: 4px; z-index: 2; outline: none; }
+.servhub-app .hub-flag-date { font-size: 10px; font-weight: 700; color: var(--danger); }
+.servhub-app .hub-flag-tip { display: none; position: absolute; top: 100%; right: 0; margin-top: 6px; width: 260px; background: var(--surface-1, #fff); border: 1px solid var(--border); border-radius: var(--r-md); box-shadow: 0 8px 24px rgba(0,0,0,.14); padding: 8px 10px; font-size: 11.5px; color: var(--text-primary); cursor: default; }
+.servhub-app .hub-flag:hover .hub-flag-tip, .servhub-app .hub-flag:focus .hub-flag-tip { display: block; }
+.servhub-app .hub-flag-item + .hub-flag-item { border-top: 1px dashed var(--border); margin-top: 6px; padding-top: 6px; }
+.servhub-app .hub-flag-title { font-weight: 700; color: var(--danger); }
+.servhub-app .hub-flag-dates { color: var(--dim); font-size: 10.5px; margin-top: 2px; }
+
+.servhub-app .hub-profile-hdr { display: flex; gap: 16px; align-items: center; }
+.servhub-app .hub-profile-title { font-family: var(--sans); font-size: 18px; font-weight: 700; color: var(--text-primary); }
+.servhub-app .hub-fee-block { margin-bottom: 12px; }
+.servhub-app .hub-two-lang { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.servhub-app .hub-text { font-size: 12.5px; line-height: 1.6; color: var(--text-body); }
+.servhub-app .hub-pre { white-space: pre-wrap; }
+@media (max-width: 720px) {
+  .servhub-app .hub-search { grid-column: auto; }
+  .servhub-app .hub-two-lang { grid-template-columns: 1fr; }
+}
+.servhub-app .hub-exception { font-size: 12px; line-height: 1.5; color: var(--text-primary); background: var(--danger-soft); border-left: 3px solid var(--danger); padding: 8px 11px; border-radius: var(--r-sm); margin-bottom: 8px; }
+.servhub-app .hub-exception:last-child { margin-bottom: 0; }
+.servhub-app .hub-exception strong { color: var(--danger); }
+.servhub-app .hub-card-body { margin-top: 10px; }
+.servhub-app .hub-ar { text-align: right; }
+.servhub-app .hub-count-note { margin: -6px 0 12px; }
+.servhub-app .hub-filter .seg-group { align-self: flex-start; }
+.servhub-app .hub-grid-sm { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+.servhub-app .hub-card-btn { text-align: left; cursor: pointer; font: inherit; gap: 4px; }
+.servhub-app .hub-card-btn:focus-visible, .servhub-app .hub-tile:focus-visible { outline: 2px solid var(--brand-gold); outline-offset: 2px; }
+.servhub-app .hub-tiles { display: grid; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; margin-top: 16px; }
+.servhub-app .hub-tile { display: flex; flex-direction: column; align-items: center; gap: 10px; padding: 18px 12px; text-align: center; font: inherit; }
+.servhub-app .hub-fold { padding: 0; }
+.servhub-app .hub-fold > summary { cursor: pointer; padding: 12px 16px; margin: 0; list-style: none; }
+.servhub-app .hub-fold > summary::-webkit-details-marker { display: none; }
+.servhub-app .hub-fold > summary::after { content: '▼'; margin-left: auto; font-size: 10px; color: var(--dim); transition: transform .2s; }
+.servhub-app .hub-fold[open] > summary::after { transform: rotate(180deg); }
+.servhub-app .hub-fold > :not(summary) { padding: 0 16px; }
+.servhub-app .hub-fold[open] { padding-bottom: 12px; }
+.servhub-app .hub-note { border-top: 1px dashed var(--border); padding-top: 8px; margin-top: 8px; font-size: 12.5px; }
+.servhub-app .hub-note strong { display: block; margin-bottom: 4px; color: var(--text-primary); }
+.servhub-app .hub-fold-card > summary { display: flex; align-items: flex-start; gap: 10px; padding: 14px 16px; }
+.servhub-app .hub-fold-card > summary .hub-card-names { display: flex; flex-direction: column; gap: 2px; flex: 1; }
+.servhub-app .hub-fold-card > summary::after { margin-top: 4px; }
+.servhub-app .hub-subblock { margin-top: 12px; padding-top: 10px; border-top: 1px solid var(--border); }
+.servhub-app .hub-photo { width: 100%; height: 170px; object-fit: cover; border-radius: var(--r-md); margin-bottom: 12px; background: var(--neutral-200); }
+.servhub-app a.hub-card-action { display: inline-flex; justify-content: center; align-items: center; gap: 6px; text-decoration: none; }
+.servhub-app .hub-copy { display: inline-flex; align-items: center; gap: 6px; }
+.servhub-app .hub-mono { font-family: var(--mono); font-size: 12px; letter-spacing: .3px; }
+.servhub-app .hub-account { margin-top: 14px; max-width: 640px; }
+.servhub-app .hub-card-tags { display: flex; gap: 6px; margin-bottom: 8px; }
+.servhub-app .hub-card-meta { font-size: 11.5px; color: var(--gold-dark); font-weight: 600; margin-top: 4px; }
+.servhub-app .hub-card-warn { border-color: var(--amber-ink, #E6A844); box-shadow: 0 0 0 1px rgba(230,168,68,.35); }
+.servhub-app .hub-price { color: var(--brand-green); }
+.servhub-app .hub-list { display: flex; flex-direction: column; gap: 10px; margin-bottom: 16px; }
+.servhub-app .hub-list .ro-card { margin-bottom: 0; }
+.servhub-app .hub-prices { display: flex; flex-direction: column; align-items: flex-end; gap: 2px; white-space: nowrap; }
+.servhub-app .hub-price-before { font-size: 11px; color: var(--dim); text-decoration: line-through; }
+.servhub-app .hub-prices .hub-price { font-weight: 700; font-size: 13px; }
+.servhub-app .hub-gap { margin-top: 14px; }
+.servhub-app .hub-viewer-hdr { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
+.servhub-app .hub-frame { width: 100%; height: 72vh; border: 1px solid var(--border); border-radius: var(--r-md); background: #fff; }
+.servhub-app .hub-link-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
+.servhub-app .hub-link-btn { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: var(--r-lg); background: var(--surface-1, #fff); color: var(--text-primary); font: 600 12.5px var(--sans); text-align: left; text-decoration: none; cursor: pointer; transition: all .2s; }
+.servhub-app .hub-link-btn:hover { border-color: var(--gold-light); background: var(--brand-gold-100); transform: translateY(-1px); }
+.servhub-app .hub-link-btn.active, .servhub-app .hub-card-active { border-color: var(--brand-gold); background: var(--brand-gold-100); }
+.servhub-app .hub-link-btn:focus-visible { outline: 2px solid var(--brand-gold); outline-offset: 2px; }
+.servhub-app .hub-viewer-actions { display: inline-flex; gap: 6px; }
+.servhub-app .hub-card-btn:disabled { opacity: .55; cursor: not-allowed; }
+.servhub-app .hub-self-start { align-self: flex-start; margin-bottom: 4px; }
+.servhub-app .hub-table-wrap { overflow-x: auto; }
+.servhub-app .hub-table { width: 100%; }
+.servhub-app .hub-table td { vertical-align: top; font-size: 12.5px; }
+.servhub-app .hub-table td .rich-text { min-width: 180px; }
+/* Fold arrow: explicit glyph per state (a transform on the inline ::after was not applied). */
+.servhub-app .hub-fold > summary::after { display: inline-block; transform: none; }
+.servhub-app .hub-fold[open] > summary::after { content: '▲'; transform: none; }
+
+/* Doctors per row (user choice) — narrow screens fall back to as many cards as fit. */
+.servhub-app .hub-toolbar { display: flex; align-items: center; justify-content: flex-end; gap: 10px; margin-bottom: 10px; }
+.servhub-app .hub-toolbar .field-lbl { margin-bottom: 0; }
+@media (max-width: 900px) {
+  .servhub-app .hub-grid-cols { grid-template-columns: repeat(auto-fill, minmax(260px, 1fr)) !important; }
+}
+
+/* Text size toggle in the navbar (A / A / A, growing). */
+.servhub-app .text-size-toggle { display: inline-flex; align-items: center; gap: 2px; padding: 2px; border-radius: 999px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.18); }
+.servhub-app .text-size-btn { background: none; border: none; color: rgba(255,255,255,.75); font-family: var(--sans); font-weight: 700; line-height: 1; padding: 4px 8px; border-radius: 999px; cursor: pointer; }
+.servhub-app .text-size-btn.size-0 { font-size: 11px; }
+.servhub-app .text-size-btn.size-1 { font-size: 13.5px; }
+.servhub-app .text-size-btn.size-2 { font-size: 16px; }
+.servhub-app .text-size-btn:hover { color: #fff; }
+.servhub-app .text-size-btn.active { background: var(--grad-gold); color: #fff; }
+.servhub-app .text-size-btn:focus-visible { outline: 2px solid var(--gold-light); outline-offset: 1px; }
+
+/* Doctor cards — legacy layout: round photo on top, centred names; width capped so wide screens
+   don't stretch them. */
+.servhub-app .hub-doctor-area { margin: 0 auto; }
+.servhub-app .hub-doctor-hdr { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; padding: 4px 8px 12px; margin-bottom: 8px; border-bottom: 1px solid var(--border); }
+.servhub-app .hub-doctor-hdr .hub-card-sub { text-align: center; }
+.servhub-app .hub-doctor-hdr .hub-card-title { font-size: 15px; }
+.servhub-app .hub-doctor-photo { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--gold-soft); object-fit: cover; margin-bottom: 10px; background: var(--brand-gold-100); }
+.servhub-app .hub-doctor-photo.large { width: 110px; height: 110px; margin-bottom: 0; }
+.servhub-app div.hub-doctor-photo { border-radius: 50%; }
+/* Consultation fees: one per line, larger. */
+.servhub-app .hub-fee-list { list-style: none; margin: 6px 0 0; padding: 0; display: flex; flex-direction: column; gap: 6px; }
+.servhub-app .hub-fee-list li { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 8px 12px; border-radius: var(--r-md); background: var(--gold-soft); font-family: var(--sans); font-size: 14px; }
+.servhub-app .hub-fee-list li.first { background: var(--brand-gold-100); box-shadow: inset 0 0 0 1.5px var(--gold-light); }
+.servhub-app .hub-fee-bu { font-weight: 700; color: var(--text-primary); }
+.servhub-app .hub-fee-amount { font-weight: 800; color: var(--brand-green); white-space: nowrap; }
+
+/* Readability for call-center use: labels and secondary names were too faint (--dim). */
+.servhub-app .hub-page .kv-item .k { color: var(--text-body); font-weight: 500; font-size: 12px; }
+.servhub-app .hub-page .hub-card-sub { color: var(--text-body); }
+.servhub-app .hub-page .field-lbl { color: var(--muted); }
+.servhub-app .hub-page .hub-muted { color: var(--muted); }
+/* Doctor photo: keep the face (top of the image) in the circle. */
+.servhub-app img.hub-doctor-photo { object-position: 50% 8%; }
+
+/* Filter cells never push the page wider than the screen (the price-sort buttons overflowed). */
+.servhub-app .hub-filters > * { min-width: 0; }
+.servhub-app .hub-filter-wide { grid-column: span 2; }
+.servhub-app .hub-filter .seg-group { flex-wrap: wrap; max-width: 100%; }
+@media (max-width: 720px) { .servhub-app .hub-filter-wide { grid-column: auto; } }
+/* Safety net: a wide child inside the content area scrolls itself instead of the whole page. */
+.servhub-app .main { min-width: 0; overflow-x: clip; }
+
+/* The page scrollbar belongs to the app's own document (the code app runs in its own frame), so it is
+   styled here too. Only scrollbar colours — no layout resets on html/body (they break the player). */
+html:has(.servhub-app) { scrollbar-width: thin; scrollbar-color: rgba(18, 110, 92, .45) #eef1f4; background: #eef1f4; }
+html:has(.servhub-app.dark) { scrollbar-color: rgba(64, 255, 184, .35) #1c1d22; background: #1c1d22; }
+/* base.css offsets the default 8px page margin on the left/top only; do the same on the right and
+   bottom so no white strip shows next to the scrollbar (body itself is never restyled). */
+.servhub-app { margin-right: -8px; margin-bottom: -8px; }
+
+/* Plain-text "points" lists are the .rich-text element itself (not nested), so indent them too. */
+.servhub-app ul.rich-text, .servhub-app ol.rich-text { padding-inline: 1.4em; margin: 0; }

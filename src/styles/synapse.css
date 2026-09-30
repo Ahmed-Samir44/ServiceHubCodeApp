@@ -314,7 +314,7 @@
 .servhub-app .hub-card-title { font-size: 16px; }
 .servhub-app .hub-card-sub { font-size: 14px; }
 .servhub-app .hub-card-meta { font-size: 13px; color: var(--ds-color-primary); }
-.servhub-app .hub-count { font-size: 14px; color: var(--ds-color-primary); }
+.servhub-app .hub-count { display: inline-flex; align-items: center; width: fit-content; padding: 4px 12px; border-radius: 999px; background: var(--ds-color-surface-selected); border: 1px solid var(--ds-color-primary-line); font-size: 13px; font-weight: 700; color: var(--ds-color-primary-700); }
 .servhub-app .hub-text { font-size: 14px; }
 .servhub-app .hub-muted { font-size: 14px; }
 .servhub-app .hub-link-btn { font-size: 14px; border-radius: 12px; }

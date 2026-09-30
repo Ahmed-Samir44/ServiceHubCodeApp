@@ -1,5 +1,5 @@
 import { lazy, Suspense, useCallback, useState, type KeyboardEvent } from 'react';
-import { HambergerMenu, Moon, Sun1 } from 'iconsax-react';
+import { ArrowDown2, HambergerMenu, Moon, Sun1 } from 'iconsax-react';
 import { DEFAULT_HUB_SECTION_ID, type HubSectionId } from './hubSections';
 import { DEFAULT_NAV_ITEM_ID, NAV_GROUPS, SERVICE_HUB_ITEM, getNavItem, type NavItem } from './navigation';
 import { usePermissions } from './permissionsContext';
@@ -7,7 +7,7 @@ import { REGION_LABEL, REGION_MARK, type Region } from './region';
 import { useRegionContext } from './regionContext';
 import { RegionModal } from './RegionModal';
 import { useCurrentUser } from './useCurrentUser';
-import { TEXT_SIZES, readTextSize, textZoom, writeTextSize, type TextSizeId } from './preferences';
+import { TEXT_SIZES, readCollapsedGroups, readTextSize, textZoom, writeCollapsedGroups, writeTextSize, type TextSizeId } from './preferences';
 
 // Loaded on first use, so the app opens without downloading both halves (and the rich text editor).
 const ServiceHubScreen = lazy(() => import('../screens/ServiceHubScreen').then((module) => ({ default: module.ServiceHubScreen })));
@@ -64,6 +64,14 @@ export function AppShell() {
   }, []);
   const [regionModalOpen, setRegionModalOpen] = useState(false);
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
+  // Sidebar sections the user folded (remembered in this browser).
+  const [collapsedGroups, setCollapsedGroups] = useState<string[]>(readCollapsedGroups);
+  const toggleGroup = (id: string) =>
+    setCollapsedGroups((current) => {
+      const next = current.includes(id) ? current.filter((groupId) => groupId !== id) : [...current, id];
+      writeCollapsedGroups(next);
+      return next;
+    });
 
   const { ready: permissionsReady, privileges } = usePermissions();
   // Tables the user has no Read privilege on are hidden, as in the model-driven sitemap.
@@ -165,13 +173,21 @@ export function AppShell() {
             if (!items.length && permissionsReady) return null;
             return (
             <div key={group.id} role="group" aria-label={group.label}>
-              <div className="sb-label">{group.label}</div>
-              {!permissionsReady && group.items.some((item) => item.kind === 'table') && (
+              <button
+                type="button"
+                className={`sb-label sb-group-toggle${collapsedGroups.includes(group.id) ? ' collapsed' : ''}`}
+                aria-expanded={!collapsedGroups.includes(group.id)}
+                onClick={() => toggleGroup(group.id)}
+              >
+                <span>{group.label}</span>
+                <ArrowDown2 className="sb-group-chevron" size={12} color="currentColor" />
+              </button>
+              {!collapsedGroups.includes(group.id) && !permissionsReady && group.items.some((item) => item.kind === 'table') && (
                 <div className="sb-item" aria-busy="true" style={{ cursor: 'default', opacity: 0.6 }}>
                   <span className="sb-item-text">Checking access…</span>
                 </div>
               )}
-              {items.map((item) => {
+              {!collapsedGroups.includes(group.id) && items.map((item) => {
                 const active = item.id === activeItem.id;
                 const ItemIcon = item.icon;
                 return (

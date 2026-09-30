@@ -432,3 +432,9 @@
 /* Long dialogs (record form…): the header — title, command bar, tabs — stays on top while the body scrolls,
    like a frozen row in Excel. */
 .servhub-app .detail-modal-box > .modal-hdr { position: sticky; top: 0; z-index: 6; background: var(--ds-color-surface-raised); padding-bottom: 12px; border-bottom: 1px solid var(--border); box-shadow: 0 6px 12px -10px rgba(2, 54, 53, .25); }
+/* Sidebar sections fold / unfold (model-driven sitemap groups). */
+.servhub-app .sb-group-toggle { display: flex; align-items: center; justify-content: space-between; width: calc(100% - 12px); border: none; background: none; cursor: pointer; text-align: left; font-family: inherit; }
+.servhub-app .sb-group-toggle:hover { color: var(--sidebar-text-active); }
+.servhub-app .sb-group-toggle:focus-visible { outline: 2px solid var(--ds-color-primary); outline-offset: -2px; border-radius: 6px; }
+.servhub-app .sb-group-chevron { transition: transform .2s; }
+.servhub-app .sb-group-toggle.collapsed .sb-group-chevron { transform: rotate(-90deg); }

@@ -68,3 +68,20 @@ export const writeDoctorColumns = (columns: number) => write(DOCTOR_COLUMNS_KEY,
 
 
 
+
+// ---- Sidebar: collapsed sections (like the model-driven sitemap groups) ----
+
+const COLLAPSED_GROUPS_KEY = 'servicehub.sidebar.collapsed';
+
+export function readCollapsedGroups(): string[] {
+  try {
+    const parsed: unknown = JSON.parse(read(COLLAPSED_GROUPS_KEY) ?? '[]');
+    return Array.isArray(parsed) ? parsed.filter((id): id is string => typeof id === 'string') : [];
+  } catch {
+    return [];
+  }
+}
+
+export function writeCollapsedGroups(ids: readonly string[]): void {
+  write(COLLAPSED_GROUPS_KEY, JSON.stringify(ids));
+}

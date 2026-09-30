@@ -1,5 +1,5 @@
 import { useCallback, useRef, useState, type ReactNode } from 'react';
-import { Copy, SearchNormal1, TickCircle } from 'iconsax-react';
+import { Copy, Filter, SearchNormal1, TickCircle } from 'iconsax-react';
 import { sanitizeRichText } from '../../data/formatCell';
 import { clearHubCache } from '../../data/hub/common';
 import { useAsyncData } from '../../data/useAsyncData';
@@ -108,17 +108,24 @@ export function SearchField({ label, value, placeholder, onChange }: { label: st
   );
 }
 
-/** Filter panel with the results count and "Clear All Filters". */
+/**
+ * Filter panel ("Pills" design, user choice 2026-09-30): a header with the results count and
+ * "Clear All Filters", then each filter as a rounded chip with its label inside; the search box
+ * (and a Refresh button, when the page has one) comes last, under the chips.
+ */
 export function FilterPanel({ children, summary, canClear, onClear }: { children: ReactNode; summary: string; canClear: boolean; onClear: () => void }) {
   return (
-    <div className="bento">
-      <div className="hub-filters">{children}</div>
-      <div className="hub-results-row">
+    <div className="bento filter-panel">
+      <div className="fp-head">
+        <span className="fp-title">
+          <Filter size={16} color="currentColor" variant="Bulk" /> Filters
+        </span>
         <span className="hub-count" role="status">{summary}</span>
-        <button type="button" className="btn btn-outline btn-sm" disabled={!canClear} onClick={onClear}>
+        <button type="button" className="btn btn-outline btn-sm fp-clear" disabled={!canClear} onClick={onClear}>
           Clear All Filters
         </button>
       </div>
+      <div className="hub-filters">{children}</div>
     </div>
   );
 }

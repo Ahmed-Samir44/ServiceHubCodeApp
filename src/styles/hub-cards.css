@@ -183,3 +183,31 @@
 .servhub-app .info-band .info-sections { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; padding: 18px 22px; }
 .servhub-app .info-band .info-section { padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; }
 
+/* ---- Filter panel (every hub page): "Pills" design, user choice 2026-09-30 ----
+   Each filter a rounded chip with its label inside, in a wrapping row; the search box (and Refresh)
+   last, under the chips. */
+.servhub-app .filter-panel { padding: 0; overflow: visible; }
+.servhub-app .fp-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; padding: 12px 20px; border-bottom: 1px solid var(--border); }
+.servhub-app .fp-title { display: inline-flex; align-items: center; gap: 8px; font-size: 15px; font-weight: 700; color: var(--text-primary); }
+.servhub-app .fp-clear { margin-left: auto; }
+.servhub-app .filter-panel .hub-filters { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; padding: 14px 20px 16px; }
+.servhub-app .filter-panel .hub-filter { flex-direction: row; align-items: center; gap: 2px; height: 38px; padding: 0 4px 0 14px; border: 1px solid var(--border); border-radius: 999px; background: var(--ds-color-surface-raised); transition: border-color .15s; }
+.servhub-app .filter-panel .hub-filter:hover, .servhub-app .filter-panel .hub-filter:focus-within { border-color: var(--ds-color-primary); }
+.servhub-app .filter-panel .hub-filter .field-lbl { margin: 0; white-space: nowrap; font-size: 12px; font-weight: 700; color: var(--muted); }
+.servhub-app .filter-panel .hub-filter .field-input, .servhub-app .filter-panel .hub-filter .dd-btn { height: 34px; min-height: 34px; border: none; box-shadow: none; background: transparent; padding-top: 0; padding-bottom: 0; }
+/* Search last, on its own line under the chips, with Refresh beside it. */
+.servhub-app .filter-panel .hub-search { order: 10; flex: 1 1 calc(100% - 140px); }
+.servhub-app .filter-panel .hub-search .hub-search-wrap { flex: 1; }
+.servhub-app .filter-panel .hub-filters > .btn { order: 11; border-radius: 999px; height: 38px; }
+/* With a filter applied, "Clear All Filters" turns primary teal and gives one small shake as it enables,
+   so the user notices results are filtered. */
+.servhub-app .fp-clear:not(:disabled) { background: var(--ds-color-primary); border-color: var(--ds-color-primary); color: #fff; animation: fpClearNudge .5s ease-in-out 1; }
+.servhub-app .fp-clear:not(:disabled):hover { background: var(--ds-color-primary-700); border-color: var(--ds-color-primary-700); box-shadow: 0 0 0 3px var(--ds-color-primary-line); }
+@keyframes fpClearNudge {
+  0%, 100% { transform: translateX(0); }
+  20% { transform: translateX(-3px) rotate(-1.5deg); }
+  40% { transform: translateX(3px) rotate(1.5deg); }
+  60% { transform: translateX(-2px) rotate(-1deg); }
+  80% { transform: translateX(2px) rotate(1deg); }
+}
+@media (prefers-reduced-motion: reduce) { .servhub-app .fp-clear:not(:disabled) { animation: none; } }

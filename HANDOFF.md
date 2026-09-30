@@ -47,6 +47,18 @@ Do these in order. Tick them off here as you finish.
 - [x] Published. The latest push was 2026-09-30, to solution 9e320bf3-90bc-f111-aaaf-e4fb1ef8c44e. For every later push: remove `src/DevPreview.ts` if present, run `npm run build`, **ask the user**, then run `./node_modules/.bin/pa app push --solution-id 9e320bf3-90bc-f111-aaaf-e4fb1ef8c44e`.
 - [x] Removed the SharePoint data source (`pa app remove data-source`) and the unused `read-excel-file` package.
 
+**Done 2026-09-30 (table pages, MDA parity)**
+- [x] Live column metadata (`src/data/columnMeta.ts`):
+  - Source: `EntityDefinitions(LogicalName=...)/Attributes` via the generic connector (listRows works on metadata paths). The connector "get a row" schema is the fallback, and the shipped snapshot beyond that.
+  - Only columns the snapshot lacks are added, so the snapshot keeps its choice options.
+  - Verified on real data: the new `cr18c_employee` lookup (saves as `cr18c_Employee`) → `hr_employee`.
+- [x] Lookup target: ManyToOneRelationships / LookupAttributeMetadata Targets. The target table info comes from `EntityDefinitions`.
+- [x] Lookup search as in the MDA, verified saving:
+  - Through the target's Lookup View (querytype 64: its filters and sort).
+  - Searched on its Quick Find columns.
+  - Each result shows the primary name with the view's next two columns.
+- [x] Table pages list only the system views the MDA app includes (`MDA_APP_ID` in config.ts), or all of them when the app lists none.
+
 **Phase 5: optional (only if the user asks)**
 - Redesign the remaining hub cards. Always offer 2–3 options via an in-page switcher and let the user pick; Band first.
   - Done: Bank Accounts and the Egypt Quick Links cards (both Band).

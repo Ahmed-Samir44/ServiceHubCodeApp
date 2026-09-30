@@ -26,16 +26,26 @@ Do these in order. Tick them off here as you finish.
 - [ ] EGY location photos. **Blocked on the user/IT:** read access to the EgyProductServices SharePoint site, or photos moved to /sites/Apps/SiteAssets with the Image column updated. No code work needed.
 
 **Phase 2: missing legacy features (code; can be done without the user)**
-- [ ] **Page usage logging:** the legacy `logPageUsage(screenId)` (region.html ~5970) wrote to `cr301_canvaspageusagelogs` on each screen open. Replicate it from ServiceHubScreen on section change: fire-and-forget `createRow`, never block the UI, and read the legacy fields first.
-- [ ] **Clinic names on doctor cards / profile as links** to the Procedure Clinic hub (the legacy `openProcedureClinicHub`). This needs a HubPreset with a clinic (see `HubPreset` in ServiceHubScreen). EGY only.
+- [x] Page usage logging, done 2026-09-30. It lives in `src/data/usageLog.ts`:
+  - It logs the legacy screen ids (egy/ksa prefixes for the Quick Links pages), plus doctorProfileScreen and clinicHub/Doctors/DetailsScreen.
+  - It is skipped in DEV, and it resolves domainname/fullname from systemusers by AAD object id.
+  - **Original task:** the legacy `logPageUsage(screenId)` (region.html ~5970) wrote to `cr301_canvaspageusagelogs` on each screen open. Replicate it from ServiceHubScreen on section change: fire-and-forget `createRow`, never block the UI, and read the legacy fields first.
+- [x] Clinic names on doctor cards are links, done 2026-09-30. Clicking one opens the preset `{ sectionId: 'procedure-clinics', clinic }` → `ProcedureClinicsSection initialClinic`. The legacy page has no clinics on the profile.
+  - **Original task:** to the Procedure Clinic hub (the legacy `openProcedureClinicHub`). This needs a HubPreset with a clinic (see `HubPreset` in ServiceHubScreen). EGY only.
 
 **Phase 3: engineering hygiene**
-- [ ] `git init` plus a first commit. The project is NOT under version control. Ask the user before creating a remote.
-- [ ] Code-split the big bundle (>500 kB): lazy-load `TableScreen` and the hub sections with `React.lazy`.
+- [x] Git: the repo already existed, with remote origin https://github.com/Ahmed-Samir44/ServiceHubCodeApp.git and the user identity Ahmed-Amin@andalusiagroup.net.
+  - The 2026-09-30 work was committed locally.
+  - **Never push to GitHub without asking.**
+- [x] Code split, done 2026-09-30:
+  - `ServiceHubScreen` and `TableScreen` are `React.lazy` in AppShell.
+  - The Excel writer is a dynamic import.
+  - The main chunk went from 992 kB to 467 kB.
+  - Verified in a production preview.
 
 **Phase 4: publish**
 - [x] Published. The latest push was 2026-09-30, to solution 9e320bf3-90bc-f111-aaaf-e4fb1ef8c44e. For every later push: remove `src/DevPreview.ts` if present, run `npm run build`, **ask the user**, then run `./node_modules/.bin/pa app push --solution-id 9e320bf3-90bc-f111-aaaf-e4fb1ef8c44e`.
-- [ ] Remove the unused SharePoint connection reference (`allcpgs`) from power.config.json, so users aren't asked to consent to it.
+- [x] Removed the SharePoint data source (`pa app remove data-source`) and the unused `read-excel-file` package.
 
 **Phase 5: optional (only if the user asks)**
 - Redesign the remaining hub cards. Always offer 2–3 options via an in-page switcher and let the user pick; Band first.

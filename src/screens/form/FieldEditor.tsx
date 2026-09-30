@@ -120,13 +120,13 @@ function LookupEditor({ id, meta, readOnly, value, resolveTarget, onOpenRelated,
     try {
       const table = targetTable ?? (await resolveTarget());
       if (!table) {
-        setStatus('No records can be searched for this lookup yet.');
+        setStatus('Couldn’t find which table this lookup points to.');
         return;
       }
       setTargetTable(table);
       const info = await lookupTableInfo(table);
       if (!info) {
-        setStatus('No records can be searched for this lookup yet.');
+        setStatus(`Couldn’t read the ${table} table to search it.`);
         return;
       }
       const results = await searchLookup(info, text);
@@ -202,6 +202,7 @@ function LookupEditor({ id, meta, readOnly, value, resolveTarget, onOpenRelated,
               }}
             >
               <bdi>{option.name}</bdi>
+              {option.detail && <div className="ss-row-detail"><bdi>{option.detail}</bdi></div>}
             </div>
           ))}
       </div>

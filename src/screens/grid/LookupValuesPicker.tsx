@@ -106,7 +106,10 @@ export function LookupValuesPicker({ tableEntitySet, tableLogicalName, attribute
               return (
                 <label key={option.id} className={`dd-opt dd-check${selected ? ' selected' : ''}`} dir="auto">
                   <input type="checkbox" checked={selected} onChange={() => toggle(option)} />
-                  {option.name || option.id}
+                  <span>
+                    {option.name || option.id}
+                    {option.detail && <span className="ss-row-detail">{option.detail}</span>}
+                  </span>
                 </label>
               );
             })

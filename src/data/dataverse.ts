@@ -80,6 +80,9 @@ export function setPreviewGateway(preview: DataverseGateway): void {
   gateway = preview;
 }
 
+/** True when the dev preview replaced the connector (connector-only calls are skipped then). */
+export const isPreviewGateway = () => gateway !== connectorGateway;
+
 export async function listRows(request: ListRequest): Promise<ListResult> {
   const started = performance.now();
   const data = await gateway.list(request);

@@ -1,7 +1,8 @@
 import type { TableRef } from '../app/navigation';
 import type { Region } from '../app/region';
-import { columnMeta, tableAttributes, type ColumnKind } from './columnMeta';
+import { columnMeta, loadLiveColumnMeta, tableAttributes, type ColumnKind } from './columnMeta';
 import { listRows, type DataverseRow } from './dataverse';
+import { MDA_APP_ID } from './config';
 
 /**
  * System views (savedquery) are the source of truth for each table's grid: the view's layoutxml
@@ -166,6 +167,21 @@ function toView(row: DataverseRow, idField: 'savedqueryid' | 'userqueryid', tabl
 }
 
 const VIEW_SELECT = 'name,isdefault,fetchxml,layoutxml';
+
+/**
+ * System views the model-driven app includes (app designer), as savedquery ids; null when the app
+ * can't be read. When the app lists no view of a table, the model-driven app shows all of them.
+ */
+let appViews: Promise<Set<string> | null> | null = null;
+function loadAppViewIds(): Promise<Set<string> | null> {
+  appViews ??= listRows({
+    entitySet: 'appmodulecomponents',
+    fetchXml: `<fetch><entity name="appmodulecomponent"><attribute name="objectid" /><filter><condition attribute="componenttype" operator="eq" value="26" /></filter><link-entity name="appmodule" from="appmoduleidunique" to="appmoduleidunique"><filter><condition attribute="appmoduleid" operator="eq" value="${MDA_APP_ID}" /></filter></link-entity></entity></fetch>`,
+  })
+    .then(({ rows }) => new Set(rows.map((row) => String(row.objectid ?? '').toLowerCase()).filter(Boolean)))
+    .catch(() => null);
+  return appViews;
+}
 const viewFilter = (tableLogicalName: string) => `returnedtypecode eq '${tableLogicalName}' and querytype eq 0 and statecode eq 0`;
 
 /**
@@ -176,12 +192,20 @@ export function loadViews(table: TableRef, { refresh = false } = {}): Promise<Ta
   const cached = viewCache.get(table.logicalName);
   if (cached && !refresh) return cached;
   const system = listRows({ entitySet: 'savedqueries', select: `savedqueryid,${VIEW_SELECT}`, filter: viewFilter(table.logicalName), orderBy: 'name asc' });
+  // Columns are built from the table's metadata: read it live first (new columns), see columnMeta.ts.
+  const meta = loadLiveColumnMeta(table.logicalName, table.entitySet);
   // Personal views are optional: a failure here must not hide the system views.
   const personal = listRows({ entitySet: 'userqueries', select: `userqueryid,${VIEW_SELECT}`, filter: viewFilter(table.logicalName), orderBy: 'name asc' }).catch(() => null);
-  const request = Promise.all([system, personal]).then(([systemResult, personalResult]) => [
-    ...(personalResult?.rows ?? []).map((row) => toView(row, 'userqueryid', table.logicalName)),
-    ...systemResult.rows.map((row) => toView(row, 'savedqueryid', table.logicalName)),
-  ].filter((view): view is TableView => view !== null));
+  const request = Promise.all([system, personal, loadAppViewIds(), meta]).then(([systemResult, personalResult, inApp]) => {
+    // Like the model-driven app: only the system views the app includes, unless it lists none of this table's.
+    const idOf = (row: DataverseRow) => String(row.savedqueryid ?? '').toLowerCase();
+    const limit = inApp && systemResult.rows.some((row) => inApp.has(idOf(row))) ? inApp : null;
+    const systemRows = limit ? systemResult.rows.filter((row) => limit.has(idOf(row))) : systemResult.rows;
+    return [
+      ...(personalResult?.rows ?? []).map((row) => toView(row, 'userqueryid', table.logicalName)),
+      ...systemRows.map((row) => toView(row, 'savedqueryid', table.logicalName)),
+    ].filter((view): view is TableView => view !== null);
+  });
   viewCache.set(table.logicalName, request);
   request.catch(() => viewCache.delete(table.logicalName));
   return request;

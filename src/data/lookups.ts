@@ -77,6 +77,21 @@ export function lookupTableInfo(logicalName: string): Promise<LookupTable | null
 
 const targetCache = new Map<string, Promise<string | null>>();
 
+/** The table a lookup points to, from Dataverse relationship metadata (many-to-one); null if unreadable. */
+async function relationshipTarget(tableLogicalName: string, attribute: string): Promise<string | null> {
+  try {
+    const { rows } = await listRows({
+      entitySet: `EntityDefinitions(LogicalName='${tableLogicalName}')/ManyToOneRelationships`,
+      select: 'ReferencingAttribute,ReferencedEntity',
+      filter: `ReferencingAttribute eq '${attribute}'`,
+    });
+    const target = rows[0]?.ReferencedEntity;
+    return typeof target === 'string' && target ? target : null;
+  } catch {
+    return null;
+  }
+}
+
 /** Table a lookup column points to (from the record, or from any record that has it set). */
 export function lookupTargetTable(entitySet: string, tableLogicalName: string, attribute: string, record?: DataverseRow): Promise<string | null> {
   const fromRecord = record?.[`_${attribute}_value${LOOKUP_TABLE_ANNOTATION}`];
@@ -90,7 +105,9 @@ export function lookupTargetTable(entitySet: string, tableLogicalName: string, a
         const target = rows[0]?.[`_${attribute}_value${LOOKUP_TABLE_ANNOTATION}`];
         return typeof target === 'string' ? target : null;
       })
-      .catch(() => null);
+      .catch(() => null)
+      // No record has it set yet (e.g. a newly added lookup): ask the table's relationship metadata.
+      .then((target) => target ?? relationshipTarget(tableLogicalName, attribute));
     targetCache.set(key, cached);
   }
   return cached;

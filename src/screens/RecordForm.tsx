@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { ArrowDown2, ArrowLeft, ArrowUp2, CloseCircle, Profile2User, Refresh, Share, TickCircle, Trash } from 'iconsax-react';
 import type { TableRef } from '../app/navigation';
 import { usePermissions } from '../app/permissionsContext';
-import type { ColumnMeta } from '../data/columnMeta';
+import { loadLiveColumnMeta, type ColumnMeta } from '../data/columnMeta';
 import { createRow, deleteRow, errorMessage, setRowState, updateRow, type DataverseRow } from '../data/dataverse';
 import { formatCell, richTextHtml } from '../data/formatCell';
 import { formFields, loadMainForm, type FormField, type RecordForm as RecordFormLayout } from '../data/forms';
@@ -102,7 +102,10 @@ function FormBody({ target, backTo, onBack, onOpenRelated, onNavigate, onNew, no
   const [busy, setBusy] = useState(false);
 
   const details = useAsyncData<[RecordFormLayout, DataverseRow]>(`${table.logicalName}#${target.id ?? 'new'}#${reload}`, () =>
-    Promise.all([loadMainForm(table.logicalName), target.id ? getRecord(table.entitySet, table.logicalName, target.id) : Promise.resolve({})]),
+    // Fields are built from the table's metadata: read it live first (new columns), see columnMeta.ts.
+    loadLiveColumnMeta(table.logicalName, table.entitySet).then(() =>
+      Promise.all([loadMainForm(table.logicalName), target.id ? getRecord(table.entitySet, table.logicalName, target.id) : Promise.resolve({})]),
+    ),
   );
   const [layout, row] = details.data ?? [];
   const title = row && !isNew ? formatCell(row, { name: table.primaryName, kind: 'text' }, { truncate: false }) : '';

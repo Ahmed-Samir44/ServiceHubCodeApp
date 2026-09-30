@@ -14,7 +14,8 @@ import {
   type QaTip,
   type WorkingHours,
 } from '../../data/hub/quickLinks';
-import { FilterPanel, FilterSelect, HubEmpty, HubLoad, InfoRow, RichBlock, SearchField } from './HubCommon';
+import { FilterPanel, FilterSelect, HubEmpty, HubLoad, SearchField } from './HubCommon';
+import { InfoCard } from './InfoCard';
 import { DocumentPicker } from './LibrarySections';
 
 /**
@@ -24,8 +25,6 @@ import { DocumentPicker } from './LibrarySections';
 
 const tabClass = (active: boolean) => `btn ${active ? 'btn-primary' : 'btn-outline'}`;
 
-/** Section body / notes value, or a dash. */
-const Body = ({ value, arabic }: { value: string; arabic?: boolean }) => (value ? <RichBlock value={value} arabic={arabic} /> : <p className="hub-muted">—</p>);
 
 // ---- Insurance ----
 
@@ -64,20 +63,17 @@ function EgyInsurance({ companies }: { companies: InsuranceCompany[] }) {
       {list.length === 0 ? (
         <div className="bento"><HubEmpty title="No companies found" sub="Try adjusting your filters" /></div>
       ) : (
-        <div className="hub-grid">
+        <div className="info-list">
           {list.map((c) => (
-            <article key={c.id} className="ro-card hub-card">
-              <h3 className="hub-card-title" dir="auto">{c.name}</h3>
-              <div className="hub-card-meta" dir="auto">{[c.bu?.label ?? '—', c.type?.label].filter(Boolean).join(' • ')}</div>
-              <div className="hub-subblock">
-                <div className="field-lbl">🚫 Uncovered Services</div>
-                <Body value={c.uncovered} arabic />
-              </div>
-              <div className="hub-subblock">
-                <div className="field-lbl">📝 Notes</div>
-                <Body value={c.notes} arabic />
-              </div>
-            </article>
+            <InfoCard
+              key={c.id}
+              title={c.name}
+              tags={[c.bu?.label, c.type?.label]}
+              sections={[
+                { label: 'Uncovered Services', value: c.uncovered, arabic: true },
+                { label: 'Notes', value: c.notes, arabic: true },
+              ]}
+            />
           ))}
         </div>
       )}
@@ -113,19 +109,19 @@ function EgyBookingPolicy({ policies }: { policies: BookingPolicy[] }) {
       {list.length === 0 ? (
         <div className="bento"><HubEmpty title="No booking policies found" sub="Pick another business unit" /></div>
       ) : (
-        <div className="hub-list">
+        <div className="info-list">
           {list.map((p) => (
-            <details key={p.id} className="ro-card hub-fold" open={list.length === 1}>
-              <summary className="ro-title">🏥 {p.buName || 'Business Unit'}</summary>
-              <div className="hub-subblock">
-                <div className="field-lbl">📘 Booking Policy</div>
-                <Body value={p.policy} arabic />
-              </div>
-              <div className="hub-subblock">
-                <div className="field-lbl">📝 Notes</div>
-                <Body value={p.notes} arabic />
-              </div>
-            </details>
+            <InfoCard
+              key={p.id}
+              foldable
+              open={list.length === 1}
+              title={p.buName || 'Business Unit'}
+              tags={[]}
+              sections={[
+                { label: 'Booking Policy', value: p.policy, arabic: true },
+                { label: 'Notes', value: p.notes, arabic: true },
+              ]}
+            />
           ))}
         </div>
       )}
@@ -158,22 +154,14 @@ function EgyQaTips({ tips }: { tips: QaTip[] }) {
       {list.length === 0 ? (
         <div className="bento"><HubEmpty title="No QA tips found" sub="Try adjusting your filters" /></div>
       ) : (
-        <div className="hub-grid">
+        <div className="info-list">
           {list.map((t) => (
-            <article key={t.id} className="ro-card hub-card">
-              <h3 className="hub-card-title" dir="auto">{t.name}</h3>
-              <div className="hub-card-meta">🏥 {t.buName || 'Business Unit'}{t.service && ` • ${t.service.label}`}</div>
-              <div className="hub-subblock">
-                <div className="field-lbl">Comment</div>
-                <Body value={t.comment} />
-              </div>
-              {t.details && (
-                <div className="hub-subblock">
-                  <div className="field-lbl">Details</div>
-                  <RichBlock value={t.details} />
-                </div>
-              )}
-            </article>
+            <InfoCard
+              key={t.id}
+              title={t.name}
+              tags={[t.buName, t.service?.label]}
+              sections={[{ label: 'Comment', value: t.comment }, ...(t.details ? [{ label: 'Details', value: t.details }] : [])]}
+            />
           ))}
         </div>
       )}
@@ -213,15 +201,9 @@ function EgyCrmDictionary({ entries }: { entries: CrmEntry[] }) {
       {list.length === 0 ? (
         <div className="bento"><HubEmpty title="No records found" sub="Pick another reason" /></div>
       ) : (
-        <div className="hub-grid">
+        <div className="info-list">
           {list.map((e) => (
-            <article key={e.id} className="ro-card hub-card">
-              <h3 className="hub-card-title" dir="auto">{e.name}</h3>
-              {e.reason && <div className="hub-card-meta">{e.reason.label}</div>}
-              <div className="kv-grid hub-card-body">
-                <InfoRow label="Type">{e.type || '—'}</InfoRow>
-              </div>
-            </article>
+            <InfoCard key={e.id} title={e.name} tags={[e.reason?.label]} sections={[{ label: 'Type', value: e.type }]} />
           ))}
         </div>
       )}
@@ -261,16 +243,20 @@ function EgyWorkingHours({ rows }: { rows: WorkingHours[] }) {
       {list.length === 0 ? (
         <div className="bento"><HubEmpty title="No working hours found" sub="Try adjusting your filters" /></div>
       ) : (
-        <div className="hub-grid">
+        <div className="info-list">
           {list.map((r) => (
-            <article key={r.id} className="ro-card hub-card">
-              <h3 className="hub-card-title" dir="auto">{r.department?.label || r.name || '—'}</h3>
-              <div className="hub-card-meta">🏥 {r.buName || 'Business Unit'}{r.type && ` • ${r.type.label}`}</div>
-              <div className="hub-subblock">
-                <div className="field-lbl">Working Hours</div>
-                <Body value={r.hours} />
-              </div>
-            </article>
+            // Legacy card: folded, the BU as header; opening it shows Department, Type and Working Hours.
+            <InfoCard
+              key={r.id}
+              foldable
+              title={r.buName || 'Business Unit'}
+              tags={[]}
+              sections={[
+                { label: 'Department', value: r.department?.label ?? '' },
+                { label: 'Type', value: r.type?.label ?? '' },
+                { label: 'Working Hours', value: r.hours, arabic: true },
+              ]}
+            />
           ))}
         </div>
       )}

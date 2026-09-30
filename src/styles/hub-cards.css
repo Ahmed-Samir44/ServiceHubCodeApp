@@ -134,16 +134,52 @@
 .servhub-app .ctx-sep { color: var(--muted); }
 .servhub-app .ctx-name { font-size: 17px; font-weight: 700; color: var(--text-primary); }
 .servhub-app .ctx-bar .btn { gap: 6px; }
-.servhub-app .hub-viewer-hint { font-size: 12.5px; color: var(--muted); margin: -4px 0 8px; }
 
-/* SharePoint file viewer (Excel sheets as tables, PDF / images in-page) */
-.servhub-app .spf { display: flex; flex-direction: column; gap: 10px; }
-.servhub-app .spf-bar { display: flex; align-items: center; justify-content: space-between; gap: 10px; flex-wrap: wrap; }
-.servhub-app .spf-tabs { flex-wrap: wrap; }
-.servhub-app .spf-sheet-name { font-weight: 700; color: var(--ds-color-primary); }
-.servhub-app .spf-table-wrap { max-height: 72vh; overflow: auto; border: 1px solid var(--border); border-radius: 10px; }
-.servhub-app .spf-table { border-collapse: separate; border-spacing: 0; font-size: 13.5px; min-width: 100%; }
-.servhub-app .spf-table th { position: sticky; top: 0; z-index: 1; background: var(--ds-color-surface-selected); color: var(--ds-color-primary-700); font-weight: 700; text-align: start; padding: 8px 12px; border-bottom: 1px solid var(--ds-color-primary-line); white-space: nowrap; }
-.servhub-app .spf-table td { padding: 7px 12px; border-bottom: 1px solid var(--border); border-inline-end: 1px solid var(--border); color: var(--text-primary); white-space: pre-wrap; vertical-align: top; }
-.servhub-app .spf-table tr:nth-child(even) td { background: var(--ds-color-surface-muted); }
-.servhub-app .spf-image { max-width: 100%; border-radius: 10px; border: 1px solid var(--border); }
+
+
+/* ---- Bank account card: full-width "Band" design (user choice, 2026-09-30) ---- */
+.servhub-app .bank-card { border: 1px solid var(--border); border-radius: var(--ds-radius-card); background: var(--ds-color-surface-raised); overflow: hidden; box-shadow: 0 1px 2px rgba(2, 54, 53, .04), 0 8px 20px rgba(82, 82, 100, .06); }
+.servhub-app .bank-name { font-size: 18px; font-weight: 700; color: var(--text-primary); }
+.servhub-app .bank-sub { font-size: 13px; color: var(--muted); }
+.servhub-app .bank-label { font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--text-body); }
+.servhub-app .bank-mono { font-family: var(--mono); font-size: 15px; font-weight: 600; letter-spacing: .6px; color: var(--text-primary); overflow-wrap: anywhere; }
+.servhub-app .bank-text { font-size: 16px; font-weight: 600; color: var(--text-primary); }
+.servhub-app .bank-copy { display: inline-flex; align-items: center; gap: 6px; flex: none; padding: 6px 12px; border: 1px solid var(--ds-color-primary-line); border-radius: 999px; background: var(--ds-color-surface-raised); color: var(--ds-color-primary); font: 600 12.5px var(--ds-font-family); cursor: pointer; transition: background .15s, border-color .15s; }
+.servhub-app .bank-copy:hover { background: var(--ds-color-surface-selected); border-color: var(--ds-color-primary); }
+.servhub-app .bank-copy.done { background: var(--ds-color-primary); border-color: var(--ds-color-primary); color: #fff; }
+.servhub-app .bank-notes { padding: 16px 22px 20px; border-top: 1px solid var(--border); background: var(--ds-color-surface-muted); }
+.servhub-app .bank-notes .bank-label { margin-bottom: 6px; }
+
+.servhub-app .bank-band-hdr { display: flex; align-items: center; gap: 14px; padding: 18px 22px; background: linear-gradient(90deg, #063b36, #0d594b); color: #fff; }
+.servhub-app .bank-band-hdr .bank-name { color: #fff; }
+.servhub-app .bank-band-hdr .bank-sub { color: rgba(255, 255, 255, .75); }
+.servhub-app .bank-tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 14px; padding: 18px 22px; }
+.servhub-app .bank-tile { display: flex; flex-direction: column; gap: 8px; padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; background: var(--ds-color-surface-raised); }
+.servhub-app .bank-tile-value { display: flex; align-items: center; justify-content: space-between; gap: 10px; min-height: 34px; }
+
+/* The CPG card last opened (legacy .cpg-card.active). */
+.servhub-app .hub-card-active { border-color: var(--ds-color-primary); background: var(--ds-color-surface-selected); }
+
+/* ---- Info cards (Egypt Quick Links: Insurance, Booking Policy, QA Tips, CRM Dictionary, Working Hours) ----
+   One card per row, full width, "Band" design (user choice, 2026-09-30). */
+.servhub-app .info-list { display: flex; flex-direction: column; gap: 14px; }
+.servhub-app .info-card { border: 1px solid var(--border); border-radius: var(--ds-radius-card); background: var(--ds-color-surface-raised); overflow: hidden; box-shadow: 0 1px 2px rgba(2, 54, 53, .04), 0 8px 20px rgba(82, 82, 100, .06); }
+.servhub-app .info-head { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; }
+.servhub-app .info-title { font-size: 17px; font-weight: 700; color: var(--text-primary); }
+.servhub-app .info-tags { display: flex; flex-wrap: wrap; gap: 6px; margin-left: auto; }
+.servhub-app .info-tag { padding: 3px 11px; border-radius: 999px; background: var(--ds-color-surface-selected); color: var(--ds-color-primary-700); font-size: 12.5px; font-weight: 700; }
+.servhub-app .info-label { font-size: 12px; font-weight: 700; letter-spacing: .6px; text-transform: uppercase; color: var(--text-body); margin-bottom: 6px; }
+.servhub-app .info-value { font-size: 15px; color: var(--text-primary); line-height: 1.7; }
+.servhub-app .info-fold > summary { cursor: pointer; list-style: none; }
+.servhub-app .info-fold > summary::-webkit-details-marker { display: none; }
+.servhub-app .info-fold > summary::after { content: '▼'; font-size: 11px; opacity: .7; transition: transform .2s; }
+.servhub-app .info-fold[open] > summary::after { transform: rotate(180deg); }
+.servhub-app .info-fold:not([open]) > .info-head { border-bottom: none; }
+
+.servhub-app .info-band .info-head { padding: 16px 22px; background: linear-gradient(90deg, #063b36, #0d594b); }
+.servhub-app .info-band .info-title { color: #fff; }
+.servhub-app .info-band .info-tag { background: rgba(255, 255, 255, .16); color: #fff; }
+.servhub-app .info-band .info-fold > summary::after, .servhub-app .info-band.info-fold > summary::after { color: #fff; }
+.servhub-app .info-band .info-sections { display: grid; grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); gap: 14px; padding: 18px 22px; }
+.servhub-app .info-band .info-section { padding: 14px 16px; border: 1px solid var(--border); border-radius: 12px; }
+

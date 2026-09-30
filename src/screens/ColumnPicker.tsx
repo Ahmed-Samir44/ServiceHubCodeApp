@@ -103,7 +103,7 @@ export function ColumnPicker({ current, available, customized, onApply, onReset,
                   }
                 }}
               >
-                + {column.label} <span className="code-chip">{column.name}</span>
+                + {column.label}
               </div>
             ))}
             {!addable.length && <div className="ss-empty">No more columns match.</div>}

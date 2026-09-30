@@ -72,7 +72,7 @@ export function loadPrograms(region: Region): Promise<ProgramsData> {
 export interface HomeCareRecord {
   id: string;
   name: string;
-  /** Knowledge-base document (shown in a frame). */
+  /** Knowledge-base document link(s), opened in the pop-up window. */
   documentUrl: string;
   script: string;
   buId: string;

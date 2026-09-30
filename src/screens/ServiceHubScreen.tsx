@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {
   DEFAULT_HUB_SECTION_ID,
   getHubSection,
@@ -9,6 +9,7 @@ import {
   type HubSectionId,
 } from '../app/hubSections';
 import type { Region } from '../app/region';
+import { legacyScreenId, logPageUsage } from '../data/usageLog';
 import { RegionOptions } from '../app/RegionModal';
 import { BankAccountsSection } from './hub/BankAccountsSection';
 import { CoeSection } from './hub/CoeSection';
@@ -35,14 +36,23 @@ interface ServiceHubScreenProps {
  * "Andalusia Service Hub" — the rebuilt legacy web resource. Like the legacy page it opens on
  * the region choice, then shows the legacy top nav (Doctors … Health Libraries).
  */
-/** A section opened from another one with a pre-selected specialty ("Open in Doctors Directory"). */
+/**
+ * A section opened from another one, pre-selected: a specialty ("Open in Doctors Directory") or a
+ * procedure clinic (a clinic name on a doctor card opens its clinic hub).
+ */
 export interface HubPreset {
   sectionId: HubSectionId;
-  specialty: { id: string; name: string };
+  specialty?: { id: string; name: string };
+  clinic?: string;
 }
 
 export function ServiceHubScreen({ region, onSelectRegion, sectionId, onSelectSection }: ServiceHubScreenProps) {
   const [preset, setPreset] = useState<HubPreset | null>(null);
+  // Usage log (legacy logPageUsage): one entry per section opened, under its legacy screen id.
+  const shownSectionId = region ? (isSectionInRegion(getHubSection(sectionId), region) ? sectionId : DEFAULT_HUB_SECTION_ID) : null;
+  useEffect(() => {
+    if (region && shownSectionId) logPageUsage(legacyScreenId(shownSectionId, region));
+  }, [region, shownSectionId]);
   // Nav clicks open a section clean; openWithPreset opens it pre-filtered.
   const selectSection = (id: HubSectionId) => {
     setPreset(null);
@@ -128,7 +138,7 @@ export function ServiceHubScreen({ region, onSelectRegion, sectionId, onSelectSe
 
         {/* The key includes the preset so a pre-filtered open starts fresh. */}
         <HubSectionContent
-          key={`${active.id}:${region}:${preset?.sectionId === active.id ? preset.specialty.id : ''}`}
+          key={`${active.id}:${region}:${preset?.sectionId === active.id ? (preset.specialty?.id ?? preset.clinic ?? '') : ''}`}
           section={active}
           region={region}
           preset={preset?.sectionId === active.id ? preset : null}
@@ -143,11 +153,11 @@ export function ServiceHubScreen({ region, onSelectRegion, sectionId, onSelectSe
 function HubSectionContent({ section, region, preset, onOpenWithPreset }: { section: HubSection; region: Region; preset: HubPreset | null; onOpenWithPreset: (preset: HubPreset) => void }) {
   switch (section.id) {
     case 'doctors':
-      return <DoctorsSection region={region} initialSpecialtyId={preset?.specialty.id} />;
+      return <DoctorsSection region={region} initialSpecialtyId={preset?.specialty?.id} onOpenClinic={region === 'EGY' ? (clinic) => onOpenWithPreset({ sectionId: 'procedure-clinics', clinic }) : undefined} />;
     case 'services':
-      return <ServicesSection region={region} kind="services" initialSpecialtyId={preset?.specialty.id} />;
+      return <ServicesSection region={region} kind="services" initialSpecialtyId={preset?.specialty?.id} />;
     case 'packages':
-      return <ServicesSection region={region} kind="packages" initialSpecialtyId={preset?.specialty.id} />;
+      return <ServicesSection region={region} kind="packages" initialSpecialtyId={preset?.specialty?.id} />;
     case 'specialties':
       return (
         <SpecialtiesSection
@@ -161,7 +171,7 @@ function HubSectionContent({ section, region, preset, onOpenWithPreset }: { sect
     case 'locations':
       return <LocationsSection region={region} />;
     case 'procedure-clinics':
-      return <ProcedureClinicsSection region={region} />;
+      return <ProcedureClinicsSection region={region} initialClinic={preset?.clinic} />;
     case 'bank-accounts':
       return <BankAccountsSection region={region} />;
     case 'offers':

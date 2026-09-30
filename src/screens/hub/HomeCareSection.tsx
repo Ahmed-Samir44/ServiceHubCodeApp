@@ -1,10 +1,8 @@
 import { useState } from 'react';
-import { ArrowLeft, DocumentText, ExportSquare, Note1 } from 'iconsax-react';
+import { ArrowLeft, DocumentText, Note1 } from 'iconsax-react';
 import type { Region } from '../../app/region';
 import { clearHubCache } from '../../data/hub/common';
-import { canEmbed, embedUrl, openInNewTab } from '../../data/hub/library';
-import { viewableSharePointFile } from '../../data/sharepointFiles';
-import { SharePointFileViewer } from './SharePointFileViewer';
+import { openInPopup } from '../../data/fileLinks';
 import { loadHomeCare, type HomeCareRecord } from '../../data/hub/programs';
 import { useAsyncData } from '../../data/useAsyncData';
 import { HubEmpty, HubError, HubLoading, RichBlock } from './HubCommon';
@@ -48,8 +46,8 @@ export function HomeCareSection({ region }: { region: Region }) {
   const tab = (active: boolean) => `btn ${active ? 'btn-primary' : 'btn-outline'}`;
 
   if (sel.open) {
+    // Only scripts open here; Knowledge Base documents open in the pop-up window.
     const record = sel.open;
-    const isDocument = sel.mode === 'kb';
     return (
       <>
         <button type="button" className="back-link" onClick={() => setSel({ ...sel, open: null })}>
@@ -58,16 +56,8 @@ export function HomeCareSection({ region }: { region: Region }) {
         <div className="bento">
           <div className="hub-viewer-hdr">
             <h2 className="hub-profile-title" dir="auto">{record.name || 'Untitled'}</h2>
-            {isDocument && (
-              <a className="btn btn-outline btn-sm" href={record.documentUrl} target="_blank" rel="noreferrer">
-                <ExportSquare size={14} color="currentColor" /> Open in new tab
-              </a>
-            )}
           </div>
-          {isDocument ? (() => {
-              const spFile = viewableSharePointFile(record.documentUrl);
-              return spFile ? <SharePointFileViewer file={spFile} /> : <iframe className="hub-frame" src={embedUrl(record.documentUrl)} title={record.name} allow="fullscreen" />;
-            })() : record.script ? <RichBlock value={record.script} arabic /> : <p className="hub-muted">No script text.</p>}
+          {record.script ? <RichBlock value={record.script} arabic /> : <p className="hub-muted">No script text.</p>}
         </div>
       </>
     );
@@ -95,7 +85,7 @@ export function HomeCareSection({ region }: { region: Region }) {
         </div>
       )}
 
-      {sel.mode === 'kb' && <RecordTiles records={buRecords.filter((r) => r.documentUrl)} icon="📄" empty="No Knowledge Base items for this BU." onOpen={(open) => (canEmbed(open.documentUrl) ? setSel({ ...sel, open }) : openInNewTab(open.documentUrl))} />}
+      {sel.mode === 'kb' && <RecordTiles records={buRecords.filter((r) => r.documentUrl)} icon="📄" empty="No Knowledge Base items for this BU." onOpen={(open) => openInPopup(open.documentUrl.trim(), open.name)} />}
 
       {sel.mode === 'scripts' && (
         <>

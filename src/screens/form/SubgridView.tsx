@@ -1,4 +1,5 @@
 import { findTable } from '../../app/navigation';
+import { onFileLinkClick } from '../../data/fileLinks';
 import { cellLink, formatCell } from '../../data/formatCell';
 import type { FormSubgrid } from '../../data/forms';
 import { loadSubgrid } from '../../data/related';
@@ -51,7 +52,7 @@ export function SubgridView({ subgrid, parentTable, parentId, reloadKey, onOpen 
                       const url = cellLink(row, column);
                       return (
                         <td key={column.name} style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis', maxWidth: 260 }} title={text}>
-                          {url ? <a href={url} target="_blank" rel="noopener noreferrer" style={linkStyle} onClick={(event) => event.stopPropagation()}>{text}</a> : text ? <bdi>{text}</bdi> : <span className="req-dim">—</span>}
+                          {url ? <a href={url} target="_blank" rel="noopener noreferrer" style={linkStyle} onClick={(event) => onFileLinkClick(event, url, text)}>{text}</a> : text ? <bdi>{text}</bdi> : <span className="req-dim">—</span>}
                         </td>
                       );
                     })}

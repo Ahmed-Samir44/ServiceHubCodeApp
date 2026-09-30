@@ -18,6 +18,8 @@ import {
   type DoctorsData,
 } from '../../data/hub/doctors';
 import { useAsyncData } from '../../data/useAsyncData';
+import { logPageUsage } from '../../data/usageLog';
+import doctorPhotoUrl from '../../assets/doctor-photo.webp';
 import { CardFields, FilterMultiSelect, FilterPanel, FilterSelect, HubEmpty, HubError, HubLoading, RichBlock, RichValue, SearchField, type MultiOption, type Option } from './HubCommon';
 
 /**
@@ -56,7 +58,7 @@ const CARD_MAX = 500;
  * `initialSpecialtyId` pre-selects a specialty (opened from a specialty hub); `clinicName` limits the
  * directory to one procedure clinic's doctors (opened from a clinic hub).
  */
-export function DoctorsSection({ region, initialSpecialtyId = '', clinicName }: { region: Region; initialSpecialtyId?: string; clinicName?: string }) {
+export function DoctorsSection({ region, initialSpecialtyId = '', clinicName, onOpenClinic }: { region: Region; initialSpecialtyId?: string; clinicName?: string; onOpenClinic?: (clinic: string) => void }) {
   const [reload, setReload] = useState(0);
   const result = useAsyncData(`doctors:${region}:${reload}`, () => loadDoctorsData(region));
   const [filters, setFilters] = useState<DoctorFilters>({
@@ -95,7 +97,11 @@ export function DoctorsSection({ region, initialSpecialtyId = '', clinicName }: 
   const profile = profileId ? data.doctors.find((doctor) => doctor.id === profileId) : undefined;
   if (profile) return <DoctorProfile data={data} doctor={profile} onBack={() => setProfileId(null)} />;
 
-  return <DoctorsDirectory data={data} filters={filters} onFilters={setFilters} onOpenProfile={setProfileId} onRefresh={refresh} />;
+  const openProfile = (id: string) => {
+    logPageUsage('doctorProfileScreen');
+    setProfileId(id);
+  };
+  return <DoctorsDirectory data={data} filters={filters} onFilters={setFilters} onOpenProfile={openProfile} onOpenClinic={onOpenClinic} onRefresh={refresh} />;
 }
 
 // ---------------------------------------------------------------------------------------------
@@ -107,12 +113,14 @@ function DoctorsDirectory({
   filters,
   onFilters,
   onOpenProfile,
+  onOpenClinic,
   onRefresh,
 }: {
   data: DoctorsData;
   filters: DoctorFilters;
   onFilters: (filters: DoctorFilters) => void;
   onOpenProfile: (id: string) => void;
+  onOpenClinic?: (clinic: string) => void;
   onRefresh: () => void;
 }) {
   const [shown, setShown] = useState(PAGE_SIZE);
@@ -180,7 +188,7 @@ function DoctorsDirectory({
             </div>
             <div className="hub-grid hub-grid-cols" style={{ gridTemplateColumns: `repeat(${columns}, minmax(0, 1fr))` }}>
               {doctors.slice(0, shown).map((doctor) => (
-                <DoctorCard key={doctor.id} data={data} doctor={doctor} onOpenProfile={() => onOpenProfile(doctor.id)} />
+                <DoctorCard key={doctor.id} data={data} doctor={doctor} onOpenProfile={() => onOpenProfile(doctor.id)} onOpenClinic={onOpenClinic} />
               ))}
             </div>
             {shown < doctors.length && (
@@ -275,8 +283,8 @@ function filterDoctors(data: DoctorsData, filters: DoctorFilters): Doctor[] {
 
 const formatDate = (date: Date) => date.toLocaleDateString();
 
-/** The legacy page's doctor photo (same image for every doctor). */
-const DOCTOR_PHOTO_URL = 'https://ksa-portal.andalusiagroup.net/servhubdoc.png';
+/** The legacy page's doctor photo (same image for every doctor), bundled: the external host is blocked on the published app. */
+const DOCTOR_PHOTO_URL = doctorPhotoUrl;
 
 /** Round doctor photo; falls back to the icon if the image can't load (e.g. blocked host). */
 function DoctorPhoto({ large }: { large?: boolean }) {
@@ -338,7 +346,7 @@ function ExceptionFlag({ exceptions }: { exceptions: DoctorException[] }) {
 }
 
 /** Doctor card ("Split" design, chosen by the user): photo + names block, labelled fields, fee table. */
-function DoctorCard({ data, doctor, onOpenProfile }: { data: DoctorsData; doctor: Doctor; onOpenProfile: () => void }) {
+function DoctorCard({ data, doctor, onOpenProfile, onOpenClinic }: { data: DoctorsData; doctor: Doctor; onOpenProfile: () => void; onOpenClinic?: (clinic: string) => void }) {
   const exceptions = activeExceptions(data, doctor.id);
   const busById = new Map(data.bus.map((bu) => [bu.id, bu.name]));
   const currency = REGION_CURRENCY[data.region];
@@ -349,7 +357,28 @@ function DoctorCard({ data, doctor, onOpenProfile }: { data: DoctorsData; doctor
     { label: 'Sub-Specialty', value: data.subSpecialties.get(doctor.subSpecialtyId)?.name || doctor.subSpecialtyName },
     { label: 'Degree', value: data.degrees.get(doctor.degreeId)?.name || doctor.degreeLabel },
     ...(data.region === 'EGY' && doctor.examinationAge ? [{ label: 'Examination Age', value: doctor.examinationAge }] : []),
-    ...(clinics.length ? [{ label: 'Clinics', value: clinics.map((clinic) => clinic.name).join(', ') }] : []),
+    // Legacy: each clinic name is a link to its Procedure Clinic hub.
+    ...(clinics.length
+      ? [
+          {
+            label: 'Clinics',
+            value: onOpenClinic ? (
+              <span className="clinic-links">
+                {clinics.map((clinic, index) => (
+                  <span key={clinic.name || clinic.nameAr}>
+                    {index > 0 && ', '}
+                    <button type="button" className="clinic-link" onClick={() => onOpenClinic(clinic.name || clinic.nameAr)}>
+                      {clinic.name || clinic.nameAr}
+                    </button>
+                  </span>
+                ))}
+              </span>
+            ) : (
+              clinics.map((clinic) => clinic.name || clinic.nameAr).join(', ')
+            ),
+          },
+        ]
+      : []),
   ];
   const fees = data.feesByDoctor.get(doctor.id) ?? [];
 

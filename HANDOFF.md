@@ -2,7 +2,7 @@
 
 Read this first when continuing the work in a new chat. It is the single source of context. Update the **Status** section whenever something is finished.
 
-## 0. REMAINING WORK — PLAN (as of 2026-09-29; start here)
+## 0. REMAINING WORK — PLAN (updated 2026-09-30; start here)
 
 Do these in order. Tick them off here as you finish.
 
@@ -34,10 +34,13 @@ Do these in order. Tick them off here as you finish.
 - [ ] Code-split the big bundle (>500 kB): lazy-load `TableScreen` and the hub sections with `React.lazy`.
 
 **Phase 4: publish**
-- [ ] Remove `src/DevPreview.ts` if present, then `npm run build`, then **ask the user**, then `./node_modules/.bin/pa app push`. Then have the user test in the real player (not Local Play).
+- [x] Published. The latest push was 2026-09-30, to solution 9e320bf3-90bc-f111-aaaf-e4fb1ef8c44e. For every later push: remove `src/DevPreview.ts` if present, run `npm run build`, **ask the user**, then run `./node_modules/.bin/pa app push --solution-id 9e320bf3-90bc-f111-aaaf-e4fb1ef8c44e`.
+- [ ] Remove the unused SharePoint connection reference (`allcpgs`) from power.config.json, so users aren't asked to consent to it.
 
 **Phase 5: optional (only if the user asks)**
-- Redesign the remaining hub cards (Programs, Quick Links cards, Bank, Home Care). Always offer 2–3 options via an in-page switcher and let the user pick.
+- Redesign the remaining hub cards. Always offer 2–3 options via an in-page switcher and let the user pick; Band first.
+  - Done: Bank Accounts and the Egypt Quick Links cards (both Band).
+  - Left: Programs and Home Care.
 - MDA gaps on table pages: business rules, quick create, form switcher, autosave, lookup "Equals" filter.
 
 ## 1. What the project is
@@ -262,4 +265,24 @@ The Claude memory dir `C:\Users\ahmed-amin\.claude\projects\c--Users-ahmed-amin-
   - Uses the connector **HttpRequest** (not GetFileContentByPath). It tries, in order: GetFileById (sourcedoc={GUID} or d=w<hex>), then GetFileByUrl(full link), then GetFileByServerRelativePath.
   - The SDK keeps ONE dataSourcesInfo (first registered wins), so `sharepointFiles.ts` adds the HttpRequest api onto the generated `dataSourcesInfo.allcpgs.apis` at load.
   - Local Play must be fully reopened after power.config changes (it caches connection references).
-  - **Company files are encrypted / sensitivity-labelled** (they start with D0 CF 11 E0), so they can't be parsed in the browser. For those the viewer asks SharePoint for a PDF rendering (`_api/v2.0/…/content?format=pdf`, first by item id, then via `shares/u!<base64url(link)>`) and shows the PDF. **Not yet confirmed to work.** If it fails, the only options are the new tab, or unprotected copies of the sheets.
+  - **Company files are encrypted / sensitivity-labelled** (they start with D0 CF 11 E0), so they can't be parsed in the browser. **Protected files cannot be shown in-page (all routes tried 2026-09-30):** iframe/embedview are refused by SharePoint; `?format=pdf` and the `/preview` API both return 400 'Unexpected response' through the connector. The viewer now shows 'This file is protected' plus a big 'Open … in a new tab' button. Unprotected xlsx/pdf/images still render in-page. The real fix is outside the code: unprotected copies (or removing the label) for call-center read-only sheets.
+- **Published 2026-09-30** (first push, approved by the user) to env cd78a59b-e16f-e4aa-b0a1-8e450a70ed56 (org998df960).
+  - App id: e71d6478-28a9-44f4-b81e-efbdb2a20ed9. It was added to the environment's preferred solution.
+  - The user's own solution: 9e320bf3-90bc-f111-aaaf-e4fb1ef8c44e. Push to it with `pa app push --solution-id 9e320bf3-90bc-f111-aaaf-e4fb1ef8c44e` (only with the user's OK).
+  - Play link: https://apps.powerapps.com/play/e/cd78a59b-e16f-e4aa-b0a1-8e450a70ed56/app/e71d6478-28a9-44f4-b81e-efbdb2a20ed9?tenantId=c515f6b1-812f-4d6c-9542-d914e95b3df1
+  - **No iframes anywhere in the app.** Every document link (SharePoint or another site) opens in a pop-up window centred at 85% of the screen, one window per link. Final, 2026-09-30. See `src/data/fileLinks.ts`.
+    - It covers:
+      - the hub tiles (Events, Installments, Special Handling, Other Health Info, KSA Insurance / Booking / QA / CRM / Working Hours);
+      - CPGs, CAPEX, and the Home Care Knowledge Base;
+      - SharePoint link cells in grids, subgrids and forms.
+    - System Links and map links open in a new tab.
+    - A record without a link shows its button disabled ("No link yet").
+    - The window shows Office Online's embed view (`action=embedview`, `wdHideHeaders`, `wdHideGridlines`): no ribbon.
+    - Its first "Opening…" screen is app-styled.
+    - The app downloads no files (user decision). The SharePoint connector reader and the in-page table viewer were deleted.
+    - The SharePoint connection reference in power.config.json is now unused.
+    - Why not in-page:
+    - The embedview iframe was refused on the published host as well. SharePoint's `frame-ancestors` allows `*.dynamics.com` / `*.powerapps.com`, but the code app runs in its own inner host.
+    - The Excel Online (Business) connector can't be used: it needs edit rights, and most users are read-only. The sheets are designed pages (shapes), not tables.
+    - Hosting the app inside a Dynamics web resource (so Dynamics frames the sheet) was offered and declined by the user.
+  - Every later push still needs the user's explicit OK.

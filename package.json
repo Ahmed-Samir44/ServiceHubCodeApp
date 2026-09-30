@@ -25,7 +25,6 @@
     "iconsax-react": "^0.0.8",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "read-excel-file": "^9.3.10",
     "write-excel-file": "^4.1.1"
   },
   "devDependencies": {

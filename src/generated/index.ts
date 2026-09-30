@@ -4,10 +4,7 @@
  */
 
 // Models
-export * as AllCPGsModel from './models/AllCPGsModel';
-export * as CommonModels from './models/CommonModels';
 export * as MicrosoftDataverseModel from './models/MicrosoftDataverseModel';
 
 // Services
-export * from './services/AllCPGsService';
 export * from './services/MicrosoftDataverseService';

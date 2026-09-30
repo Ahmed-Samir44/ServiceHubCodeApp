@@ -1,4 +1,3 @@
-import writeXlsxFile from 'write-excel-file/universal';
 import type { DataverseRow } from './dataverse';
 import { formatCell } from './formatCell';
 import type { GridColumn } from './views';
@@ -72,6 +71,8 @@ function cellFor(row: DataverseRow, column: GridColumn): Cell | null {
 export async function exportToExcel(fileName: string, columns: readonly GridColumn[], rows: readonly DataverseRow[]): Promise<void> {
   const header = columns.map((column) => ({ value: column.label, fontWeight: 'bold' as const }));
   const body = rows.map((row) => columns.map((column) => cellFor(row, column)));
+  // Loaded only when exporting, to keep it out of the app's first download.
+  const { default: writeXlsxFile } = await import('write-excel-file/universal');
   const blob = await writeXlsxFile([header, ...body], {
     sheet: 'Data',
     columns: columns.map((column) => ({ width: Math.max(10, Math.round(column.width / 7)) })),

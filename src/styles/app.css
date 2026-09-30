@@ -109,13 +109,13 @@
 .servhub-app .hub-prices .hub-price { font-weight: 700; font-size: 13px; }
 .servhub-app .hub-gap { margin-top: 14px; }
 .servhub-app .hub-viewer-hdr { display: flex; justify-content: space-between; align-items: center; gap: 12px; margin-bottom: 12px; }
-.servhub-app .hub-frame { width: 100%; height: 72vh; border: 1px solid var(--border); border-radius: var(--r-md); background: #fff; }
 .servhub-app .hub-link-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 10px; }
 .servhub-app .hub-link-btn { display: flex; align-items: center; gap: 10px; padding: 12px 14px; border: 1.5px solid var(--border); border-radius: var(--r-lg); background: var(--surface-1, #fff); color: var(--text-primary); font: 600 12.5px var(--sans); text-align: left; text-decoration: none; cursor: pointer; transition: all .2s; }
 .servhub-app .hub-link-btn:hover { border-color: var(--gold-light); background: var(--brand-gold-100); transform: translateY(-1px); }
-.servhub-app .hub-link-btn.active, .servhub-app .hub-card-active { border-color: var(--brand-gold); background: var(--brand-gold-100); }
+.servhub-app .hub-link-btn.active { border-color: var(--brand-gold); background: var(--brand-gold-100); }
 .servhub-app .hub-link-btn:focus-visible { outline: 2px solid var(--brand-gold); outline-offset: 2px; }
-.servhub-app .hub-viewer-actions { display: inline-flex; gap: 6px; }
+.servhub-app .hub-link-btn:disabled { cursor: not-allowed; opacity: .6; transform: none; border-style: dashed; background: var(--surface-1, #fff); }
+.servhub-app .hub-link-missing { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--muted); }
 .servhub-app .hub-card-btn:disabled { opacity: .55; cursor: not-allowed; }
 .servhub-app .hub-self-start { align-self: flex-start; margin-bottom: 4px; }
 .servhub-app .hub-table-wrap { overflow-x: auto; }

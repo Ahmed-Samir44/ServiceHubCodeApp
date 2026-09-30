@@ -9,11 +9,14 @@
 .servhub-app .spl-card-inner { display: grid; grid-template-columns: 160px 1fr; height: 100%; }
 @container (max-width: 440px) {
   .servhub-app .spl-card-inner { grid-template-columns: 1fr; grid-template-rows: auto 1fr; }
-  .servhub-app .spl-side { border-radius: 16px 16px 0 0; border-right: none !important; }
 }
 
 /* ---- Names block ---- */
-.servhub-app .spl-side { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; padding: 20px 14px 16px; border-radius: 16px 0 0 16px; }
+/* Radius follows the card (minus its 1px border) so the white block never pokes past a corner. */
+.servhub-app .spl-side { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 2px; padding: 20px 14px 16px; border-radius: calc(var(--ds-radius-card, 16px) - 1px) 0 0 calc(var(--ds-radius-card, 16px) - 1px); }
+@container (max-width: 440px) {
+  .servhub-app .spl-side { border-radius: calc(var(--ds-radius-card, 16px) - 1px) calc(var(--ds-radius-card, 16px) - 1px) 0 0; border-right: none !important; }
+}
 .servhub-app .spl-side .hub-doctor-photo { width: 88px; height: 88px; margin-bottom: 10px; }
 .servhub-app .dcx-name { font: 700 16px/1.3 var(--ds-font-family); color: var(--text-primary); }
 .servhub-app .dcx-user { font-size: 13px; color: var(--muted); overflow-wrap: anywhere; }
@@ -40,3 +43,7 @@
 .servhub-app.dark .dcx-fee-table td:last-child { color: #7ce8c1; }
 
 .servhub-app .hub-toolbar { flex-wrap: wrap; }
+
+/* Clinic names on doctor cards: links to the clinic's Procedure Clinic hub (legacy). */
+.servhub-app .clinic-link { padding: 0; border: none; background: none; color: var(--ds-color-primary); font: inherit; font-weight: 600; text-decoration: underline; text-underline-offset: 2px; cursor: pointer; }
+.servhub-app .clinic-link:hover { color: var(--ds-color-primary-700); }

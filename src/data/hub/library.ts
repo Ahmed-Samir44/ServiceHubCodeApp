@@ -131,11 +131,9 @@ export function loadCapex(region: Region): Promise<CapexData> {
 const OFFICE_FILE = /\.(xlsx|xlsm|xlsb|xls|docx|docm|doc|pptx|pptm|ppt)$/i;
 
 /**
- * URL to show a document inside the page. SharePoint refuses to be framed by the code app's host,
- * except through its Office Online "embed" views, so Office files on SharePoint are turned into
- * `WopiFrame.aspx?sourcedoc=…&action=embedview` (and Doc.aspx / sharing links get action=embedview).
- * Other URLs are returned unchanged. Whether it loads still depends on the tenant's settings, so the
- * viewer always offers "Open in new tab".
+ * Office Online embed view of a SharePoint Office document (used by the pop-up window, see
+ * fileLinks.ts): Doc.aspx / sharing links get action=embedview, direct file links go through
+ * WopiFrame.aspx. Other URLs are returned unchanged.
  */
 export function embedUrl(raw: string): string {
   let url: URL;
@@ -157,11 +155,6 @@ export function embedUrl(raw: string): string {
     return `${url.origin}${site}/_layouts/15/WopiFrame.aspx?sourcedoc=${encodeURIComponent(path)}&action=embedview`;
   }
   return raw;
-}
-
-/** Whether to try showing a document inside the page (always, since SharePoint embed views are tried). */
-export function canEmbed(url: string): boolean {
-  return /^https:\/\//i.test(url.trim());
 }
 
 /** Opens a document in a new tab. */

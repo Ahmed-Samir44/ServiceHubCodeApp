@@ -34,7 +34,7 @@ export function TableScreen({ label, table, region }: TableScreenProps) {
         <h1 className="page-title">{label}</h1>
         <div className="page-sub">
           {activeView ? activeView.name : 'Active records'}
-          <span className="code-chip">{table.logicalName}</span>
+          <span className="table-pill">{label}</span>
         </div>
       </div>
       <div className="content content-wide">

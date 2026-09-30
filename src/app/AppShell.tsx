@@ -1,7 +1,5 @@
-import { useCallback, useState, type KeyboardEvent } from 'react';
+import { lazy, Suspense, useCallback, useState, type KeyboardEvent } from 'react';
 import { HambergerMenu, Moon, Sun1 } from 'iconsax-react';
-import { ServiceHubScreen } from '../screens/ServiceHubScreen';
-import { TableScreen } from '../screens/TableScreen';
 import { DEFAULT_HUB_SECTION_ID, type HubSectionId } from './hubSections';
 import { DEFAULT_NAV_ITEM_ID, NAV_GROUPS, SERVICE_HUB_ITEM, getNavItem, type NavItem } from './navigation';
 import { usePermissions } from './permissionsContext';
@@ -10,6 +8,21 @@ import { useRegionContext } from './regionContext';
 import { RegionModal } from './RegionModal';
 import { useCurrentUser } from './useCurrentUser';
 import { TEXT_SIZES, readTextSize, textZoom, writeTextSize, type TextSizeId } from './preferences';
+
+// Loaded on first use, so the app opens without downloading both halves (and the rich text editor).
+const ServiceHubScreen = lazy(() => import('../screens/ServiceHubScreen').then((module) => ({ default: module.ServiceHubScreen })));
+const TableScreen = lazy(() => import('../screens/TableScreen').then((module) => ({ default: module.TableScreen })));
+
+function ScreenLoading() {
+  return (
+    <div className="content">
+      <div className="loader-box" role="status">
+        <div className="loader-ring" />
+        <div className="loader-text">Loading…</div>
+      </div>
+    </div>
+  );
+}
 
 const THEME_STORAGE_KEY = 'servicehub.theme';
 
@@ -198,16 +211,18 @@ export function AppShell() {
         />
         {/* Text size scales the whole content area, so spacing grows with the fonts. */}
         <main className="main" style={{ zoom: textZoom(textSize) }}>
-          {activeItem.kind === 'hub' ? (
-            <ServiceHubScreen
-              region={region}
-              onSelectRegion={setRegion}
-              sectionId={hubSectionId}
-              onSelectSection={openHubSection}
-            />
-          ) : (
-            <TableScreen key={activeItem.id} label={activeItem.label} table={activeItem.table} region={region} />
-          )}
+          <Suspense fallback={<ScreenLoading />}>
+            {activeItem.kind === 'hub' ? (
+              <ServiceHubScreen
+                region={region}
+                onSelectRegion={setRegion}
+                sectionId={hubSectionId}
+                onSelectSection={openHubSection}
+              />
+            ) : (
+              <TableScreen key={activeItem.id} label={activeItem.label} table={activeItem.table} region={region} />
+            )}
+          </Suspense>
         </main>
       </div>
 

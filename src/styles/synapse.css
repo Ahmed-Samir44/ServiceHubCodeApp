@@ -291,6 +291,7 @@
 .servhub-app .kv-item .v { font-size: 14px; }
 .servhub-app .section-note { font-size: 13px; }
 .servhub-app .code-chip { border-radius: var(--ds-radius-tag); }
+.servhub-app .table-pill { display: inline-block; margin-left: 8px; padding: 2px 11px; border-radius: 999px; background: var(--ds-color-surface-selected); color: var(--ds-color-primary-700); font-size: 12.5px; font-weight: 700; vertical-align: middle; }
 
 /* ================= Pick cards / region options (hover tints were gold) ================= */
 .servhub-app .pick-card:hover,
@@ -399,10 +400,14 @@
 
 /* "Edit filters" as a right-side panel (the grid stays visible) */
 .servhub-app .side-panel-overlay { justify-content: flex-end; align-items: stretch; background: rgba(3, 17, 15, .18); backdrop-filter: none; }
-.servhub-app .side-panel { width: min(560px, 100vw); max-width: none; height: 100vh; border-radius: 0; display: flex; flex-direction: column; animation: sidePanelIn .22s var(--ds-ease-settle); }
+.servhub-app .side-panel { width: min(820px, 100vw); max-width: none; height: 100vh; border-radius: 0; display: flex; flex-direction: column; animation: sidePanelIn .22s var(--ds-ease-settle); }
 .servhub-app .side-panel .modal-body { flex: 1; overflow-y: auto; }
-.servhub-app .side-panel .attach-row { grid-template-columns: 1fr 1fr !important; }
-.servhub-app .side-panel .attach-row > :nth-child(3) { grid-column: 1 / 2; }
+/* A condition is one row like the model-driven app: field | operator | value | delete. */
+.servhub-app .side-panel .attach-row { grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.3fr) auto !important; }
+@media (max-width: 700px) {
+  .servhub-app .side-panel .attach-row { grid-template-columns: 1fr 1fr !important; }
+  .servhub-app .side-panel .attach-row > :nth-child(3) { grid-column: 1 / 2; }
+}
 @keyframes sidePanelIn { from { transform: translateX(24px); opacity: 0; } to { transform: none; opacity: 1; } }
 
 /* Lookup filter value: record chips + search */

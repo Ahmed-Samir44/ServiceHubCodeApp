@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { SearchNormal1 } from 'iconsax-react';
 import { findTable } from '../../app/navigation';
+import { onFileLinkClick } from '../../data/fileLinks';
 import type { ColumnMeta } from '../../data/columnMeta';
 import type { DataverseRow } from '../../data/dataverse';
 import { errorMessage } from '../../data/dataverse';
@@ -43,7 +44,7 @@ export function FieldEditor({ id, meta, readOnly, row, value, resolveTarget, onO
     const url = cellLink(row, meta);
     return (
       <div className="field-input" style={{ background: 'var(--neutral-200)', color: 'var(--text-body)', minHeight: 36, whiteSpace: 'pre-wrap' }} dir="auto">
-        {url ? <a href={url} target="_blank" rel="noopener noreferrer" style={linkStyle}>{text}</a> : text || '—'}
+        {url ? <a href={url} target="_blank" rel="noopener noreferrer" style={linkStyle} onClick={(event) => onFileLinkClick(event, url, text)}>{text}</a> : text || '—'}
       </div>
     );
   }

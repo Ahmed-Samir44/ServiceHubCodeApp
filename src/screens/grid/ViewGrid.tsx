@@ -23,6 +23,7 @@ import {
 import { findTable, type TableRef } from '../../app/navigation';
 import { usePermissions } from '../../app/permissionsContext';
 import { REGION_LABEL, type Region } from '../../app/region';
+import { onFileLinkClick } from '../../data/fileLinks';
 import { readColumnPrefs, writeColumnPrefs, type ColumnPrefs } from '../../data/columnPrefs';
 import { columnMeta } from '../../data/columnMeta';
 import { DATA_ORG_URL } from '../../data/config';
@@ -530,7 +531,7 @@ export function ViewGrid({
                           >
                             {/* <bdi> keeps Arabic text in the right direction without changing column alignment. */}
                             {link ? (
-                              <a href={link} target="_blank" rel="noopener noreferrer" style={linkStyle} onClick={(event) => event.stopPropagation()}>
+                              <a href={link} target="_blank" rel="noopener noreferrer" style={linkStyle} onClick={(event) => onFileLinkClick(event, link, text)}>
                                 {text}
                               </a>
                             ) : text && target && related ? (

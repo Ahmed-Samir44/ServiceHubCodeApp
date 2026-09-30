@@ -1,49 +1,20 @@
 import { useState } from 'react';
-import { CloseCircle, ExportSquare } from 'iconsax-react';
+import { ExportSquare } from 'iconsax-react';
 import type { Region } from '../../app/region';
 import { clearHubCache, foundText, includesText } from '../../data/hub/common';
-import { canEmbed, DEVICE_STATUS, embedUrl, loadCapex, loadDocuments, loadGuidelines, openInNewTab, type CapexItem, type DocumentKind, type HubDocument } from '../../data/hub/library';
+import { DEVICE_STATUS, loadCapex, loadDocuments, loadGuidelines, type CapexItem, type DocumentKind, type HubDocument } from '../../data/hub/library';
 import { imageUrl } from '../../data/hub/images';
-import { viewableSharePointFile } from '../../data/sharepointFiles';
+import { openInPopup, openLink } from '../../data/fileLinks';
 import { useAsyncData } from '../../data/useAsyncData';
-import { SharePointFileViewer } from './SharePointFileViewer';
 import { FilterPanel, FilterSelect, HubEmpty, HubError, HubLoading, RichBlock, SearchField } from './HubCommon';
 
 /**
  * Events, Installments, Special Handling, System Links, Other Health Info, CPGs and CAPEX — the
- * legacy "buttons + embedded document" screens.
+ * legacy "buttons + embedded document" screens. The code app can't frame other sites (its CSP and
+ * SharePoint's frame-ancestors), so documents open in the pop-up window; system links in a new tab.
  */
 
 const isWebUrl = (value: string) => /^https?:\/\//i.test(value.trim());
-
-/** Embedded document with an "open in new tab" fallback (some sites refuse to be framed). */
-function DocumentViewer({ doc, onClose }: { doc: HubDocument; onClose: () => void }) {
-  // SharePoint files the app can read itself are shown from their content (SharePoint refuses frames).
-  const spFile = viewableSharePointFile(doc.url);
-  return (
-    <div className="bento hub-viewer">
-      <div className="hub-viewer-hdr">
-        <div className="ro-title" dir="auto">{doc.name}</div>
-        <span className="hub-viewer-actions">
-          <a className="btn btn-outline btn-sm" href={doc.url} target="_blank" rel="noreferrer">
-            <ExportSquare size={14} color="currentColor" /> Open in new tab
-          </a>
-          <button type="button" className="btn btn-ghost btn-sm" onClick={onClose} aria-label="Close document">
-            <CloseCircle size={14} color="currentColor" /> Close
-          </button>
-        </span>
-      </div>
-      {spFile ? (
-        <SharePointFileViewer file={spFile} />
-      ) : (
-        <>
-          <p className="hub-viewer-hint">If the file doesn’t appear below, use “Open in new tab”.</p>
-          <iframe className="hub-frame" src={embedUrl(doc.url)} title={doc.name} allow="fullscreen" />
-        </>
-      )}
-    </div>
-  );
-}
 
 const DOCUMENT_UI: Record<DocumentKind, { icon: string; empty: string; newTab?: boolean }> = {
   events: { icon: '📅', empty: 'No events found' },
@@ -53,33 +24,43 @@ const DOCUMENT_UI: Record<DocumentKind, { icon: string; empty: string; newTab?: 
   'other-health-info': { icon: '🩺', empty: 'No data found' },
 };
 
-/** Buttons (one per document) with the chosen document embedded below, or opened in a new tab. */
+/**
+ * Legacy flow: a section of buttons, one per record; a click shows the record's link. The legacy page
+ * set an iframe's src; here the link opens in the pop-up window (system links: a new tab, as before).
+ */
 export function DocumentPicker({ docs, icon, empty, newTab }: { docs: readonly HubDocument[]; icon: string; empty: string; newTab?: boolean }) {
-  const [open, setOpen] = useState<HubDocument | null>(null);
-  const usable = docs.filter((doc) => isWebUrl(doc.url));
-  if (usable.length === 0) return <div className="bento"><HubEmpty title={empty} sub="Nothing is listed for this region yet." /></div>;
+  const [last, setLast] = useState('');
+  // Every record gets its button, as in the legacy page; one without a link shows disabled.
+  const listed = docs.filter((doc) => doc.name || isWebUrl(doc.url));
+  if (listed.length === 0) return <div className="bento"><HubEmpty title={empty} sub="Nothing is listed for this region yet." /></div>;
   return (
-    <>
-      <div className="bento">
-        <div className="hub-link-grid">
-          {usable.map((doc) =>
-            newTab || !canEmbed(doc.url) ? (
-              <a key={doc.id} className="hub-link-btn" href={doc.url} target="_blank" rel="noreferrer" title="Opens in a new tab">
-                <span aria-hidden="true">{icon}</span>
-                <span dir="auto">{doc.name}</span>
-                <ExportSquare className="hub-link-ext" size={14} color="currentColor" aria-hidden="true" />
-              </a>
-            ) : (
-              <button key={doc.id} type="button" className={`hub-link-btn${open?.id === doc.id ? ' active' : ''}`} aria-pressed={open?.id === doc.id} onClick={() => setOpen(doc)}>
-                <span aria-hidden="true">{icon}</span>
-                <span dir="auto">{doc.name}</span>
-              </button>
-            ),
-          )}
-        </div>
+    <div className="bento">
+      <div className="hub-link-grid">
+        {listed.map((doc) =>
+          !isWebUrl(doc.url) ? (
+            <button key={doc.id} type="button" className="hub-link-btn" disabled title="No link added yet (Iframe URL is empty)">
+              <span aria-hidden="true">{icon}</span>
+              <span dir="auto">{doc.name}</span>
+              <span className="hub-link-missing">No link yet</span>
+            </button>
+          ) : (
+            <button
+              key={doc.id}
+              type="button"
+              className={`hub-link-btn${last === doc.id ? ' active' : ''}`}
+              onClick={() => {
+                setLast(doc.id);
+                openLink(doc.url.trim(), doc.name, newTab);
+              }}
+            >
+              <span aria-hidden="true">{icon}</span>
+              <span dir="auto">{doc.name}</span>
+              {newTab && <ExportSquare className="hub-link-ext" size={14} color="currentColor" aria-hidden="true" />}
+            </button>
+          ),
+        )}
       </div>
-      {open && <DocumentViewer key={open.id} doc={open} onClose={() => setOpen(null)} />}
-    </>
+    </div>
   );
 }
 
@@ -102,7 +83,7 @@ export function DocumentsSection({ region, kind }: { region: Region; kind: Docum
 export function GuidelinesSection({ region }: { region: Region }) {
   const [reload, setReload] = useState(0);
   const [filters, setFilters] = useState({ specialty: '', search: '' });
-  const [open, setOpen] = useState<HubDocument | null>(null);
+  const [last, setLast] = useState('');
   const data = useAsyncData(`cpgs:${region}:${reload}`, () => loadGuidelines(region));
   const retry = () => {
     clearHubCache(`cpgs:${region}`);
@@ -119,16 +100,24 @@ export function GuidelinesSection({ region }: { region: Region }) {
         <FilterSelect label="Specialty" allLabel="All" value={filters.specialty} options={data.data.specialties.map((item) => ({ value: item.id, label: item.name }))} onChange={(specialty) => setFilters({ ...filters, specialty })} />
         <SearchField label="Search" value={filters.search} placeholder="Search by name…" onChange={(search) => setFilters({ ...filters, search })} />
       </FilterPanel>
-      {open && <DocumentViewer key={open.id} doc={open} onClose={() => setOpen(null)} />}
       {list.length === 0 ? (
         <div className="bento"><HubEmpty title="No CPGs found" sub="Try adjusting your filters" /></div>
       ) : (
         <div className="hub-grid hub-grid-sm">
+          {/* Legacy: clicking a CPG card marks it active and shows its link (now in the pop-up window). */}
           {list.map((item) => (
-            <button key={item.id} type="button" className={`ro-card hub-card hub-card-btn${open?.id === item.id ? ' hub-card-active' : ''}`} disabled={!isWebUrl(item.url)} onClick={() => (canEmbed(item.url) ? setOpen(item) : openInNewTab(item.url))}>
+            <button
+              key={item.id}
+              type="button"
+              className={`ro-card hub-card hub-card-btn${last === item.id ? ' hub-card-active' : ''}`}
+              disabled={!isWebUrl(item.url)}
+              onClick={() => {
+                setLast(item.id);
+                openInPopup(item.url.trim(), item.name);
+              }}
+            >
               <span className="hub-card-title" dir="auto">{item.name}</span>
               <span className="hub-card-meta">Specialty: {item.specialtyName || '—'}</span>
-              {open?.id === item.id && <span className="sbadge sbadge-gold">📖 Viewing</span>}
             </button>
           ))}
         </div>
@@ -188,11 +177,6 @@ function CapexCard({ item }: { item: CapexItem }) {
       <div className="hub-card-meta">Specialty: {item.specialtyName || '—'} | BU: {item.buName || '—'}</div>
       {item.descriptionEn && <div className="hub-subblock"><RichBlock value={item.descriptionEn} /></div>}
       {item.descriptionAr && <div className="hub-subblock"><RichBlock value={item.descriptionAr} arabic /></div>}
-      {isWebUrl(item.url) && (
-        <a className="btn btn-outline btn-sm hub-card-action hub-gap" href={item.url} target="_blank" rel="noreferrer">
-          <ExportSquare size={14} color="currentColor" /> Open document
-        </a>
-      )}
     </article>
   );
 }

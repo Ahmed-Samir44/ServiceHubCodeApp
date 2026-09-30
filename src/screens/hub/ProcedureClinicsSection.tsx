@@ -1,9 +1,10 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ArrowLeft, DocumentText, Profile2User } from 'iconsax-react';
 import type { Region } from '../../app/region';
 import { distinctClinics, loadProcedureClinics } from '../../data/hub/clinics';
 import { clearHubCache, foundText, includesText } from '../../data/hub/common';
 import { useAsyncData } from '../../data/useAsyncData';
+import { logPageUsage } from '../../data/usageLog';
 import { DoctorsSection } from './DoctorsSection';
 import { FilterPanel, FilterSelect, HubEmpty, HubError, HubLoading, RichBlock, SearchField } from './HubCommon';
 
@@ -11,8 +12,16 @@ import { FilterPanel, FilterSelect, HubEmpty, HubError, HubLoading, RichBlock, S
 
 type View = { kind: 'list' } | { kind: 'hub' | 'doctors' | 'details'; clinic: string };
 
-export function ProcedureClinicsSection({ region }: { region: Region }) {
-  const [view, setView] = useState<View>({ kind: 'list' });
+/** Legacy screen ids of the clinic views, for the usage log. */
+const VIEW_SCREENS: Record<View['kind'], string | null> = { list: null, hub: 'clinicHubScreen', doctors: 'clinicDoctorsScreen', details: 'clinicDetailsScreen' };
+
+export function ProcedureClinicsSection({ region, initialClinic }: { region: Region; initialClinic?: string }) {
+  const [view, setView] = useState<View>(initialClinic ? { kind: 'hub', clinic: initialClinic } : { kind: 'list' });
+  const screen = VIEW_SCREENS[view.kind];
+  const shownClinic = view.kind === 'list' ? '' : view.clinic;
+  useEffect(() => {
+    if (screen) logPageUsage(screen);
+  }, [screen, shownClinic]);
   const [filters, setFilters] = useState({ bu: '', search: '' });
   const [reload, setReload] = useState(0);
   const data = useAsyncData(`procedure-clinics:${region}:${reload}`, () => loadProcedureClinics(region));
@@ -88,7 +97,7 @@ export function ProcedureClinicsSection({ region }: { region: Region }) {
             <span className="ctx-name" dir="auto">{clinic}</span>
           </span>
         </div>
-        <DoctorsSection region={region} clinicName={clinic} />
+        <DoctorsSection region={region} clinicName={clinic} onOpenClinic={(name) => setView({ kind: 'hub', clinic: name })} />
       </>
     );
   }

@@ -195,8 +195,8 @@
 .servhub-app .filter-panel .hub-filter:hover, .servhub-app .filter-panel .hub-filter:focus-within { border-color: var(--ds-color-primary); }
 .servhub-app .filter-panel .hub-filter .field-lbl { margin: 0; white-space: nowrap; font-size: 12px; font-weight: 700; color: var(--muted); }
 .servhub-app .filter-panel .hub-filter .field-input, .servhub-app .filter-panel .hub-filter .dd-btn { height: 34px; min-height: 34px; border: none; box-shadow: none; background: transparent; padding-top: 0; padding-bottom: 0; }
-/* Search last, on its own line under the chips, with Refresh beside it. */
-.servhub-app .filter-panel .hub-search { order: 10; flex: 1 1 calc(100% - 140px); }
+/* Search last: at the end of the chips' row when it fits, else on the next line, with Refresh beside it. */
+.servhub-app .filter-panel .hub-search { order: 10; flex: 1 1 280px; }
 .servhub-app .filter-panel .hub-search .hub-search-wrap { flex: 1; }
 .servhub-app .filter-panel .hub-filters > .btn { order: 11; border-radius: 999px; height: 38px; }
 /* With a filter applied, "Clear All Filters" turns primary teal and gives one small shake as it enables,
@@ -211,3 +211,11 @@
   80% { transform: translateX(2px) rotate(1deg); }
 }
 @media (prefers-reduced-motion: reduce) { .servhub-app .fp-clear:not(:disabled) { animation: none; } }
+
+/* ---- Section bar (Doctors, Services, …): "Segment" design (user choice 2026-09-30), centred.
+   One rounded track on one line (scrolls sideways when narrow); the active section a filled pill. ---- */
+.servhub-app .hub-nav { display: flex; flex-wrap: nowrap; gap: 2px; width: fit-content; max-width: 100%; margin: 0 auto 16px; overflow-x: auto; padding: 4px; background: var(--ds-color-surface-muted); border: 1px solid var(--border); border-radius: 999px; scrollbar-width: thin; }
+.servhub-app .hn-item { display: inline-flex; align-items: center; gap: 6px; flex: none; white-space: nowrap; padding: 8px 8px; border: none; border-radius: 999px; background: none; cursor: pointer; font: 600 13.5px var(--ds-font-family); color: var(--text-body); transition: background .15s, color .15s, box-shadow .15s; }
+.servhub-app .hn-item:hover { background: var(--ds-color-surface-raised); color: var(--text-primary); }
+.servhub-app .hn-item.active { background: var(--ds-color-primary); color: #fff; box-shadow: 0 4px 10px rgba(18, 110, 92, .25); }
+.servhub-app .hn-item:focus-visible { outline: 2px solid var(--ds-color-primary); outline-offset: 2px; }

@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { REGION_CURRENCY, type Region } from '../../app/region';
 import { clearHubCache, foundText } from '../../data/hub/common';
-import { loadServiceLookups, queryServices, type PriceSort, type ServiceItem, type ServiceKind, type ServiceLookups } from '../../data/hub/services';
+import { loadServiceLookups, queryServices, type ServiceItem, type ServiceKind, type ServiceLookups } from '../../data/hub/services';
 import { useAsyncData } from '../../data/useAsyncData';
 import { Box, Health, Microscope, Scan, Scissor } from 'iconsax-react';
 import { CopyChip, FilterPanel, FilterSelect, HubEmpty, HubError, HubLoading, SearchField } from './HubCommon';
@@ -15,10 +15,9 @@ interface ServiceFilters {
   specialtyId: string;
   categoryId: string;
   search: string;
-  sort: PriceSort;
 }
 
-const NO_FILTERS: ServiceFilters = { buId: '', specialtyId: '', categoryId: '', search: '', sort: 'none' };
+const NO_FILTERS: ServiceFilters = { buId: '', specialtyId: '', categoryId: '', search: '' };
 
 const NOUN: Record<ServiceKind, string> = { services: 'service', packages: 'package' };
 
@@ -39,7 +38,7 @@ function ServicesList({ region, kind, lookups, initialSpecialtyId }: { region: R
   const [filters, setFilters] = useState<ServiceFilters>({ ...NO_FILTERS, specialtyId: initialSpecialtyId });
   const [attempt, setAttempt] = useState(0);
   const search = useDebounced(filters.search);
-  const query = { kind, region, buId: filters.buId, specialtyId: filters.specialtyId, categoryId: filters.categoryId, search, sort: filters.sort };
+  const query = { kind, region, buId: filters.buId, specialtyId: filters.specialtyId, categoryId: filters.categoryId, search, sort: 'none' as const };
   const results = usePagedQuery(JSON.stringify({ ...query, attempt }), (page) => queryServices({ ...query, page }, lookups));
   const set = <K extends keyof ServiceFilters>(key: K, value: ServiceFilters[K]) => setFilters((prev) => ({ ...prev, [key]: value }));
   const hasFilters = JSON.stringify(filters) !== JSON.stringify(NO_FILTERS);
@@ -67,22 +66,6 @@ function ServicesList({ region, kind, lookups, initialSpecialtyId }: { region: R
           <FilterSelect label="Category" allLabel="All Categories" value={filters.categoryId} options={categories.map((category) => ({ value: category.id, label: category.name }))} onChange={(value) => set('categoryId', value)} />
         )}
         <SearchField label={kind === 'services' ? 'Search Services' : 'Search Packages'} value={filters.search} placeholder="Search by name (Arabic/English) or code…" onChange={(value) => set('search', value)} />
-        <div className="hub-filter hub-filter-wide">
-          <span className="field-lbl">Sort by Price</span>
-          <div className="seg-group" role="group" aria-label="Sort by price">
-            {(
-              [
-                ['none', 'Default'],
-                ['asc', 'Low to High ↑'],
-                ['desc', 'High to Low ↓'],
-              ] as const
-            ).map(([value, label]) => (
-              <button key={value} type="button" className={`seg-btn${filters.sort === value ? ' active' : ''}`} aria-pressed={filters.sort === value} onClick={() => set('sort', value)}>
-                {label}
-              </button>
-            ))}
-          </div>
-        </div>
       </FilterPanel>
 
       {results.loading ? (

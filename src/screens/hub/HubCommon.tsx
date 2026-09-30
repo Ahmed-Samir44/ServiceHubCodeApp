@@ -111,7 +111,8 @@ export function SearchField({ label, value, placeholder, onChange }: { label: st
 /**
  * Filter panel ("Pills" design, user choice 2026-09-30): a header with the results count and
  * "Clear All Filters", then each filter as a rounded chip with its label inside; the search box
- * (and a Refresh button, when the page has one) comes last, under the chips.
+ * (and a Refresh button, when the page has one) comes last: at the end of the chips' row when it
+ * fits, else on the next line.
  */
 export function FilterPanel({ children, summary, canClear, onClear }: { children: ReactNode; summary: string; canClear: boolean; onClear: () => void }) {
   return (

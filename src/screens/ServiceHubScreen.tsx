@@ -94,7 +94,7 @@ export function ServiceHubScreen({ region, onSelectRegion, sectionId, onSelectSe
         <div className="page-sub">{heading.subtitle}</div>
       </div>
       <div className="content content-wide hub-page">
-        <nav className="filter-bar" aria-label="Service Hub sections">
+        <nav className="hub-nav" aria-label="Service Hub sections">
           {nav.map((entry) => {
             const isActive = entry.kind === 'section' ? entry.section.id === active.id : entry.group.id === active.group;
             const label = entry.kind === 'section' ? entry.section.label : entry.group.label;
@@ -104,7 +104,7 @@ export function ServiceHubScreen({ region, onSelectRegion, sectionId, onSelectSe
               <button
                 key={entry.kind === 'section' ? entry.section.id : entry.group.id}
                 type="button"
-                className={`btn ${isActive ? 'btn-primary' : 'btn-outline'}`}
+                className={`hn-item${isActive ? ' active' : ''}`}
                 aria-current={isActive ? 'page' : undefined}
                 onClick={() => selectSection(target)}
               >

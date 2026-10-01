@@ -17,7 +17,7 @@ Use it as the brief for a new project: copy the architecture, the data layer, th
 | Data | Generic Dataverse connector (`shared_commondataserviceforapps`), OAuth (each user's own connection) |
 | Icons | `iconsax-react` |
 | Rich text editor | TipTap 3 (StarterKit, table, text-align, text-style), sanitised with DOMPurify |
-| Excel export | `write-excel-file/universal` (no Web Workers; the host may block them), loaded on demand |
+| Excel export | `write-excel-file`'s **synchronous** generator (`generateXlsxFileSync`, fflate `zipSync`), loaded on demand. The public entry zips with async `zip`, which runs on Web Workers, and the code app's CSP (`worker-src 'none'`) blocks them: the export hangs forever on "Exporting…". The sync module isn't in the package's exports map, so it's aliased in `vite.config.ts` (`write-excel-file-sync`) and declared in `src/env.d.ts`. Test exports under `worker-src 'none'`. |
 | Fonts | `@fontsource/urbanist` (UI), `@fontsource/jetbrains-mono` (codes, IBANs) |
 
 Commands:

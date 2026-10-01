@@ -59,6 +59,14 @@ Do these in order. Tick them off here as you finish.
   - Each result shows the primary name with the view's next two columns.
 - [x] Table pages list only the system views the MDA app includes (`MDA_APP_ID` in config.ts), or all of them when the app lists none.
 
+**Done 2026-10-01: live**
+- [x] The published app reads from LIVE (org2f45e702, MDA appid b40cd966-2e2d-444c-9fb7-9ba067e1f335). These are the defaults in config.ts.
+  - DT New (org319b4ea9) is dev; use it through .env.development.local.
+- [x] Privileges come from RetrieveUserPrivileges (no read access to security roles needed). The role-based read is the fallback.
+- [x] An end user (shared the app) opened it on live. Licence OK, and buttons are hidden without privileges. The legacy "Service Hub APP - …" roles apply.
+- [ ] Import the DT New solution into live: the Employee column (cr18c_employee) and the new views.
+- [ ] Share the app with all users (an AAD group is easiest).
+
 **Phase 5: optional (only if the user asks)**
 - Redesign the remaining hub cards. Always offer 2–3 options via an in-page switcher and let the user pick; Band first.
   - Done: Bank Accounts and the Egypt Quick Links cards (both Band).

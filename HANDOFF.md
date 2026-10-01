@@ -6,6 +6,8 @@ Read this first when continuing the work in a new chat. It is the single source 
 
 Do these in order. Tick them off here as you finish.
 
+**Reuse for other systems:** `CODE_APP_PLAYBOOK.md` holds the rules and lessons. `CODE_APP_KIT.md` is one file the user attaches in a new chat; it contains the playbook, all styles and the reusable source. After changing styles, the playbook or the engine, regenerate the kit with `node scripts/build-kit.mjs`.
+
 **Phase 1: real-data verification (the user tests in Local Play; fix whatever breaks)**
 - [ ] Hub pages on real data, EGY and KSA. Highest risk (never run live):
   - Upcoming Offers: `new_plannedoffers` with `new_planvalidity` / `new_hasfinalapproval`.

@@ -23,7 +23,8 @@ Do these in order. Tick them off here as you finish.
   - Rich text.
   - The new Dropdown inside **Edit filters** (a modal; check it isn't clipped).
   - The Search box icon fix.
-- [ ] EGY location photos. **Blocked on the user/IT:** read access to the EgyProductServices SharePoint site, or photos moved to /sites/Apps/SiteAssets with the Image column updated. No code work needed.
+- [x] EGY location photos: done by the user/IT (confirmed 2026-10-01). No code change was needed.
+- [x] Excel export on the published app: confirmed working by the user 2026-10-01 (zipSync fix).
 
 **Phase 2: missing legacy features (code; can be done without the user)**
 - [x] Page usage logging, done 2026-09-30. It lives in `src/data/usageLog.ts`:

@@ -458,7 +458,7 @@ function LanguageText({ english, arabic, empty }: { english: string; arabic: str
 
 type Fee = DoctorsData['feesByDoctor'] extends Map<string, (infer F)[]> ? F : never;
 
-/** Consultation fees: one row per business unit, one column per fee type that has any value. */
+/** Consultation fees: per business unit, one line per fee type that has any value (no sideways scroll). */
 function FeesTable({ fees, busById, currency }: { fees: Fee[]; busById: Map<string, string>; currency: string }) {
   if (!fees.length) return <p className="hub-muted">No consultation fees information available</p>;
   const columns = (
@@ -469,32 +469,30 @@ function FeesTable({ fees, busById, currency }: { fees: Fee[]; busById: Map<stri
       ['walkIn', 'Walk-in'],
     ] as const
   ).filter(([key]) => fees.some((fee) => fee[key]));
+  const buName = (fee: Fee) => (
+    <>
+      {fee.firstPriority && <span title="First Priority">🥇 </span>}
+      {busById.get(fee.buId) ?? 'N/A'}
+    </>
+  );
   return (
-    <div className="pf-table-wrap">
-      <table className="dcx-fee-table pf-fee-table">
-        <thead>
-          <tr>
-            <th>Business Unit</th>
-            {columns.map(([key, label]) => (
-              <th key={key}>{label}</th>
-            ))}
-          </tr>
-        </thead>
-        <tbody>
-          {fees.map((fee, index) => (
-            <tr key={index} className={fee.firstPriority ? 'first' : undefined}>
-              <td>
-                {fee.firstPriority && <span title="First Priority">🥇 </span>}
-                {busById.get(fee.buId) ?? 'N/A'}
-              </td>
-              {columns.map(([key]) => (
-                <td key={key}>{fee[key] ? `${fee[key]} ${currency}` : '—'}</td>
+    <>
+      <div className="fee-list">
+        {fees.map((fee, index) => (
+          <div key={index} className={`fee-bu${fee.firstPriority ? ' first' : ''}`}>
+            <div className="fee-bu-name">{buName(fee)}</div>
+            <div className="fee-values">
+              {columns.map(([key, label]) => (
+                <div key={key} className={`fee-value${key === 'original' ? ' main' : ''}`}>
+                  <span className="fee-label">{label}</span>
+                  <span className="fee-amount">{fee[key] ? `${fee[key]} ${currency}` : '—'}</span>
+                </div>
               ))}
-            </tr>
-          ))}
-        </tbody>
-      </table>
-    </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </>
   );
 }
 

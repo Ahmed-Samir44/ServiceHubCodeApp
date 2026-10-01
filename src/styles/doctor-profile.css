@@ -24,17 +24,11 @@
 .servhub-app .pf-facts { margin: 0; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); }
 .servhub-app .pf-facts .svc-f dd { font-size: 15px; }
 .servhub-app .pf-exceptions { display: flex; flex-direction: column; gap: 6px; margin-top: 14px; }
-.servhub-app .pf-table-wrap { overflow-x: auto; }
-.servhub-app .pf-fee-table { min-width: 320px; }
-.servhub-app .pf-fee-table th:not(:first-child), .servhub-app .pf-fee-table td:not(:first-child) { text-align: right; }
-.servhub-app .pf-fee-table td:not(:first-child) { font-weight: 700; color: var(--ds-color-primary-700); white-space: nowrap; }
-.servhub-app .pf-fee-table td:not(:first-child):not(:nth-child(2)) { font-weight: 600; color: var(--text-primary); }
 
 /* Sidebar layout */
 .servhub-app .pf-sidebar-layout { display: grid; grid-template-columns: minmax(300px, 360px) 1fr; gap: 16px; align-items: start; }
 .servhub-app .pf-aside { position: sticky; top: 64px; display: flex; flex-direction: column; gap: 10px; margin-bottom: 0; }
 .servhub-app .pf-aside .pf-title { margin: 12px 0 4px; }
-.servhub-app .pf-aside .pf-fee-table { min-width: 0; }
 .servhub-app .pf-main { min-width: 0; }
 @media (max-width: 980px) {
   .servhub-app .pf-sidebar-layout { grid-template-columns: 1fr; }
@@ -46,5 +40,18 @@
 .servhub-app .rich-value p { margin: 0; }
 .servhub-app .rich-text table { display: block; max-width: 100%; overflow-x: auto; border-collapse: collapse; }
 .servhub-app .rich-text td, .servhub-app .rich-text th { border: 1px solid var(--border); padding: 4px 8px; }
-.servhub-app .pf-aside .pf-fee-table th { white-space: nowrap; font-size: 10.5px; letter-spacing: .3px; padding: 7px 8px; }
-.servhub-app .pf-aside .pf-fee-table td { padding: 8px; }
+
+/* ---- Consultation fees in the profile, without sideways scrolling: per BU a header, then one
+   line per fee type (label left, amount right). ---- */
+.servhub-app .fee-list { display: flex; flex-direction: column; gap: 10px; }
+.servhub-app .fee-bu { border: 1px solid var(--ds-color-primary-line); border-radius: 12px; overflow: hidden; background: var(--ds-color-surface-raised); }
+.servhub-app .fee-bu.first { border-color: var(--ds-color-analytics); }
+.servhub-app .fee-bu-name { font-weight: 700; color: var(--ds-color-primary-700); }
+.servhub-app .fee-label { font-size: 11.5px; font-weight: 700; letter-spacing: .5px; text-transform: uppercase; color: var(--muted); }
+.servhub-app .fee-amount { font-weight: 600; color: var(--text-primary); white-space: nowrap; }
+.servhub-app .fee-value.main .fee-amount { color: var(--ds-color-primary); font-weight: 700; }
+.servhub-app .fee-bu-name { padding: 8px 12px; background: var(--ds-color-surface-selected); border-bottom: 1px solid var(--ds-color-primary-line); }
+.servhub-app .fee-bu.first .fee-bu-name { background: var(--ds-color-analytics-soft); }
+.servhub-app .fee-values { padding: 4px 12px; }
+.servhub-app .fee-value { display: flex; justify-content: space-between; align-items: center; gap: 10px; padding: 7px 0; border-bottom: 1px dashed var(--border); }
+.servhub-app .fee-value:last-child { border-bottom: none; }

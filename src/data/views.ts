@@ -16,8 +16,10 @@ export interface GridColumn {
   label: string;
   kind: ColumnKind;
   width: number;
-  /** Column comes from a linked table (`alias.attribute`): shown, but not sortable/filterable from the grid. */
+  /** Column comes from a linked table (`alias.attribute`); sorted and filtered through that link. */
   linked: boolean;
+  /** Logical name of the linked table, for a linked column (its metadata: kind, choice options). */
+  entity?: string;
 }
 
 export interface TableView {
@@ -87,6 +89,7 @@ function columnFor(name: string, width: number, tableLogicalName: string, aliase
     kind: known?.kind ?? 'text',
     width: width > 0 ? width : DEFAULT_COLUMN_WIDTH,
     linked: dot > 0,
+    entity: dot > 0 ? linked?.entity : undefined,
   };
 }
 

@@ -35,7 +35,8 @@ export function ColumnMenu({ anchor, sortedDescending, canMoveLeft, canMoveRight
   const menuRef = useRef<HTMLDivElement>(null);
   const [editingWidth, setEditingWidth] = useState(false);
   const [widthDraft, setWidthDraft] = useState(String(width));
-  const sortable = !anchor.column.linked;
+  // Linked-table columns sort and filter too (through their link), beyond the model-driven grid.
+  const sortable = true;
 
   useEffect(() => {
     const close = (event: MouseEvent) => {

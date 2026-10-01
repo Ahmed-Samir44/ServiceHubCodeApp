@@ -173,11 +173,16 @@ export function applyGridQuery(fetchXml: string, query: GridQuery): string {
   }
 
   if (query.sort) {
+    // One sort at a time: drop the view's orders, on the table and on its links.
     directChildren(entity, 'order').forEach((order) => entity.removeChild(order));
+    Array.from(entity.getElementsByTagName('link-entity')).forEach((link) => directChildren(link, 'order').forEach((order) => link.removeChild(order)));
+    // A linked-table column (`alias.attribute`) is sorted inside its link-entity.
+    const dot = query.sort.attribute.indexOf('.');
+    const link = dot > 0 ? Array.from(entity.getElementsByTagName('link-entity')).find((item) => item.getAttribute('alias') === query.sort?.attribute.slice(0, dot)) : undefined;
     const order = doc.createElement('order');
-    order.setAttribute('attribute', query.sort.attribute);
+    order.setAttribute('attribute', link ? query.sort.attribute.slice(dot + 1) : query.sort.attribute);
     order.setAttribute('descending', query.sort.descending ? 'true' : 'false');
-    entity.appendChild(order);
+    (link ?? entity).appendChild(order);
   }
   return new XMLSerializer().serializeToString(doc);
 }
@@ -188,7 +193,15 @@ export function viewSort(fetchXml: string): { attribute: string; descending: boo
   const entity = doc && rootEntity(doc);
   const order = entity ? directChildren(entity, 'order')[0] : undefined;
   const attribute = order?.getAttribute('attribute');
-  return attribute ? { attribute, descending: order?.getAttribute('descending') === 'true' } : null;
+  if (attribute) return { attribute, descending: order?.getAttribute('descending') === 'true' };
+  // A sort on a linked-table column sits inside its link-entity (`alias.attribute`).
+  for (const link of entity ? Array.from(entity.getElementsByTagName('link-entity')) : []) {
+    const linkOrder = directChildren(link, 'order')[0];
+    const linkAttribute = linkOrder?.getAttribute('attribute');
+    const alias = link.getAttribute('alias');
+    if (linkAttribute && alias) return { attribute: `${alias}.${linkAttribute}`, descending: linkOrder?.getAttribute('descending') === 'true' };
+  }
+  return null;
 }
 
 // ---- Operators offered in the filter editor (labels as in the model-driven "Edit filters") ----

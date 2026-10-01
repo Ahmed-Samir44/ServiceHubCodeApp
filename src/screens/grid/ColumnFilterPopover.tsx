@@ -25,8 +25,13 @@ interface ColumnFilterPopoverProps {
  * Column filters are ANDed with the view's filter, like the MDA grid.
  */
 export function ColumnFilterPopover({ tableLogicalName, tableEntitySet, column, left, top, current, onApply, onClear, onClose }: ColumnFilterPopoverProps) {
-  const meta = columnMeta(tableLogicalName, column.name);
-  const operators = operatorsFor(meta?.kind ?? 'text', meta?.multiSelect ?? false);
+  // A linked-table column takes its kind and options from that table.
+  const linkedMeta = column.linked && column.entity ? columnMeta(column.entity, column.name.slice(column.name.indexOf('.') + 1)) : undefined;
+  const meta = column.linked ? linkedMeta : columnMeta(tableLogicalName, column.name);
+  // Lookup values of a linked table can't be picked here (the picker works on this table): only "contains data".
+  const linkedLookup = column.linked && meta?.kind === 'lookup';
+  const allOperators = operatorsFor(meta?.kind ?? 'text', meta?.multiSelect ?? false);
+  const operators = linkedLookup ? allOperators.filter((option) => option.value === 'not-null' || option.value === 'null') : allOperators;
   // Like the MDA: text/lookups "Contains", choices pick values from a list, dates "On".
   const kind = meta?.kind ?? 'text';
   const defaultOperator =

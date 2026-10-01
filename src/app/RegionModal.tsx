@@ -1,3 +1,4 @@
+import { ArrowRight2 } from 'iconsax-react';
 import { REGION_CURRENCY, REGION_LABEL, REGION_MARK, REGIONS, type Region } from './region';
 
 interface RegionOptionsProps {
@@ -5,37 +6,47 @@ interface RegionOptionsProps {
   onSelect: (region: Region) => void;
 }
 
-/** The EGY / KSA choice cards — used inline on the Service Hub landing and inside the modal. */
+/**
+ * The EGY / KSA choice as tiles (the region code as a large watermark) — used on the Service Hub
+ * landing and inside the modal.
+ */
 export function RegionOptions({ current, onSelect }: RegionOptionsProps) {
   return (
-    <>
+    <div className="rl-grid">
       {REGIONS.map((region) => (
-        <div
+        <button
           key={region}
-          className="region-opt"
-          role="button"
-          tabIndex={0}
+          type="button"
+          className={`rl-card${region === current ? ' current' : ''}`}
           aria-pressed={region === current}
           onClick={() => onSelect(region)}
-          onKeyDown={(event) => {
-            if (event.key === 'Enter' || event.key === ' ') {
-              event.preventDefault();
-              onSelect(region);
-            }
-          }}
         >
-          <div className="region-flag">{REGION_MARK[region]}</div>
-          <div>
-            <div className="region-name">
-              {REGION_LABEL[region]} ({region})
-            </div>
-            <div className="region-hint">
-              {region === current ? 'Current region' : `Business units and prices in ${REGION_CURRENCY[region]}`}
-            </div>
-          </div>
-        </div>
+          <span className="rl-watermark" aria-hidden="true">
+            {REGION_MARK[region]}
+          </span>
+          <span className="rl-top">
+            <span className="rl-mark">{REGION_MARK[region]}</span>
+            <span className="rl-title">
+              <span className="rl-name">{REGION_LABEL[region]}</span>
+              <span className="rl-code">{region}</span>
+            </span>
+          </span>
+          <span className="rl-line">
+            {region === current ? (
+              'Current region'
+            ) : (
+              <>
+                Business units and prices in <b>{REGION_CURRENCY[region]}</b>
+              </>
+            )}
+          </span>
+          <span className="rl-go">
+            Open {REGION_LABEL[region]}
+            <ArrowRight2 size={14} color="currentColor" />
+          </span>
+        </button>
       ))}
-    </>
+    </div>
   );
 }
 
@@ -53,7 +64,7 @@ export function RegionModal({ current, onSelect, onCancel }: RegionModalProps) {
         if (event.target === event.currentTarget) onCancel();
       }}
     >
-      <div className="modal-box" role="dialog" aria-modal="true" aria-labelledby="region-modal-title">
+      <div className="modal-box region-modal" role="dialog" aria-modal="true" aria-labelledby="region-modal-title">
         <div className="modal-hdr">
           <div className="modal-title" id="region-modal-title">Select Your Region</div>
           <div className="modal-sub">Choose a region to view doctors, services and offers</div>

@@ -70,8 +70,8 @@ export function ServiceHubScreen({ region, onSelectRegion, sectionId, onSelectSe
           <h1 className="page-title">Select Your Region</h1>
           <div className="page-sub">Choose a region to view doctors</div>
         </div>
-        <div className="content">
-          <div className="bento">
+        <div className="content content-wide">
+          <div className="rl">
             <RegionOptions current={null} onSelect={onSelectRegion} />
           </div>
         </div>

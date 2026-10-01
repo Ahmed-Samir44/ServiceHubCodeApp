@@ -219,3 +219,39 @@
 .servhub-app .hn-item:hover { background: var(--ds-color-surface-raised); color: var(--text-primary); }
 .servhub-app .hn-item.active { background: var(--ds-color-primary); color: #fff; box-shadow: 0 4px 10px rgba(18, 110, 92, .25); }
 .servhub-app .hn-item:focus-visible { outline: 2px solid var(--ds-color-primary); outline-offset: 2px; }
+
+/* ---- Region choice (Service Hub landing and the change-region dialog): two tiles with the
+   region code as a large watermark. ---- */
+.servhub-app .rl { max-width: 980px; margin: 0 auto; }
+.servhub-app .rl-grid { width: 100%; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 18px; }
+.servhub-app .rl-card { position: relative; overflow: hidden; display: flex; flex-direction: column; justify-content: space-between; gap: 18px; min-height: 240px; padding: 26px; text-align: left; cursor: pointer; font-family: var(--ds-font-family); color: var(--text-primary); background: var(--ds-color-surface-raised); border: 1px solid var(--border); border-radius: var(--ds-radius-card); box-shadow: 0 1px 2px rgba(2, 54, 53, .04), 0 8px 20px rgba(82, 82, 100, .06); transition: transform .2s, box-shadow .2s, border-color .2s; }
+.servhub-app .rl-card:hover { transform: translateY(-3px); border-color: var(--ds-color-primary-line); box-shadow: var(--ds-shadow-sm); }
+.servhub-app .rl-card:focus-visible { outline: none; box-shadow: var(--ds-focus-ring); }
+.servhub-app .rl-card.current { border-color: var(--ds-color-primary); }
+.servhub-app .rl-watermark { position: absolute; right: -10px; bottom: -34px; font-size: 150px; font-weight: 800; line-height: 1; color: var(--ds-color-primary); opacity: .07; pointer-events: none; transition: opacity .2s; }
+.servhub-app .rl-card:hover .rl-watermark { opacity: .13; }
+.servhub-app .rl-top { display: flex; align-items: center; gap: 14px; }
+.servhub-app .rl-mark { width: 52px; height: 52px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 14px; font-weight: 800; font-size: 18px; letter-spacing: .5px; color: #fff; background: linear-gradient(135deg, var(--ds-color-primary-500), var(--ds-color-primary-800)); }
+.servhub-app .rl-title { display: flex; flex-direction: column; gap: 2px; }
+.servhub-app .rl-name { font-size: 24px; font-weight: 700; }
+.servhub-app .rl-code { font-size: 12px; font-weight: 700; letter-spacing: 1px; color: var(--muted); }
+.servhub-app .rl-line { font-size: 14px; color: var(--text-body); }
+.servhub-app .rl-line b { color: var(--ds-color-primary-700); }
+.servhub-app .rl-go { position: relative; align-self: flex-start; display: inline-flex; align-items: center; gap: 6px; padding: 9px 16px; border-radius: 999px; font-size: 14px; font-weight: 700; color: #fff; background: var(--ds-color-primary); box-shadow: var(--ds-shadow-button); }
+.servhub-app .rl-go svg { transition: transform .2s; }
+.servhub-app .rl-card:hover .rl-go svg { transform: translateX(3px); }
+
+/* In the dialog: smaller tiles, side by side. */
+.servhub-app .region-modal .rl-grid { gap: 10px; margin-bottom: 12px; }
+.servhub-app .region-modal .rl-card { min-height: 0; padding: 16px; gap: 12px; }
+.servhub-app .region-modal .rl-top { flex-direction: column; align-items: flex-start; gap: 10px; }
+.servhub-app .region-modal .rl-mark { width: 40px; height: 40px; font-size: 14px; border-radius: 11px; }
+.servhub-app .region-modal .rl-name { font-size: 17px; }
+.servhub-app .region-modal .rl-line { font-size: 12.5px; }
+.servhub-app .region-modal .rl-go { font-size: 12.5px; padding: 7px 12px; }
+.servhub-app .region-modal .rl-watermark { font-size: 96px; bottom: -22px; }
+
+@media (max-width: 720px) {
+  .servhub-app .rl .rl-grid { grid-template-columns: 1fr; }
+  .servhub-app .rl .rl-card { min-height: 190px; }
+}

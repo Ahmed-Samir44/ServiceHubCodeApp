@@ -6,6 +6,8 @@ import { powerApps } from "@microsoft/power-apps-vite/plugin"
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react(), powerApps()],
+  // Fixed port so the Local Play link (…_localAppUrl=http://localhost:5182/) never changes.
+  server: { port: 5182, strictPort: true },
   resolve: {
     alias: {
       // write-excel-file's public entry zips with fflate's async `zip`, which runs on Web Workers;

@@ -176,6 +176,7 @@ Grid (`src/screens/grid/ViewGrid.tsx`):
 - View picker with region default; "Active records" only when no view.
 - **Quick Find** search box on the Quick Find columns.
 - Column header menu: Sort A→Z / Z→A, **Clear sort**, Filter by, **Clear filter**; sort arrows (↑↓), chevron on hover.
+- **Columns from related tables** (a view's link-entity columns, e.g. "Doctor Name Ar (Doctor Name)") sort and filter too, like the MDA: the `<order>` goes inside the matching `<link-entity>` (by alias), conditions carry `entityname="<alias>"`, and a linked lookup column offers only "contains data / does not contain data".
 - Column filters like the MDA:
   - Operators per type.
   - **Lookup "Equals" is a record picker** (multi-select → `in` / `not-in`).
@@ -365,7 +366,8 @@ Bank account variant: Band header (bank icon, name, BU), then the fields as tile
 Other picks:
 
 - **Doctor card "Split":** a white names block with a teal photo ring (bundled photo), labelled fields, a fee table, and a full-width "Visit Doctor Profile" button. 4 per row by default (2/3/4 switch); it stacks under 440px (container query). The corner radius follows the card radius minus 1px.
-- **Doctor profile "Sidebar"** layout.
+- **Doctor profile "Sidebar"** layout. Its fee table is **"Rows"**: per business unit a tinted header, then one line per fee type (label left, amount right, dashed dividers). Narrow side cards never get a sideways scroll bar, so don't put wide tables in them.
+- **Region / scope choice "Tiles"**: two tall cards side by side, each with a gradient mark (EG / SA), the name and code, one hint line, a filled "Open …" pill, and the code as a large faded watermark in the corner. The same tiles, smaller, sit in the change-region dialog, with the current one outlined and labelled "Current region". One column on phones.
 - **COE:** one card per row, field pills, empty fields hidden.
 - **Back links** look like the light outline button, not pills.
 - **Dropdowns:** one custom single-select (`src/screens/Dropdown.tsx`) everywhere, never native `<select>`.

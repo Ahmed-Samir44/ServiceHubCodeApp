@@ -71,13 +71,19 @@ function cellFor(row: DataverseRow, column: GridColumn): Cell | null {
 export async function exportToExcel(fileName: string, columns: readonly GridColumn[], rows: readonly DataverseRow[]): Promise<void> {
   const header = columns.map((column) => ({ value: column.label, fontWeight: 'bold' as const }));
   const body = rows.map((row) => columns.map((column) => cellFor(row, column)));
-  // Loaded only when exporting, to keep it out of the app's first download.
-  const { default: writeXlsxFile } = await import('write-excel-file/universal');
-  const blob = await writeXlsxFile([header, ...body], {
-    sheet: 'Data',
-    columns: columns.map((column) => ({ width: Math.max(10, Math.round(column.width / 7)) })),
-    stickyRowsCount: 1,
-  }).toBlob();
+  // Loaded only when exporting, to keep it out of the app's first download. The synchronous zip is
+  // used because the code app's CSP blocks Web Workers, which the async one needs (vite.config.ts).
+  const { generateXlsxFileSync } = await import('write-excel-file-sync');
+  const blob = await generateXlsxFileSync(
+    [header, ...body],
+    {
+      sheet: 'Data',
+      columns: columns.map((column) => ({ width: Math.max(10, Math.round(column.width / 7)) })),
+      stickyRowsCount: 1,
+    },
+    undefined,
+    async (content) => new Uint8Array(await content.arrayBuffer()),
+  );
 
   const url = URL.createObjectURL(blob);
   const link = document.createElement('a');

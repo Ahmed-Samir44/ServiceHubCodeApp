@@ -1,5 +1,7 @@
 import { getContext } from '@microsoft/power-apps/app';
 import { NAV_GROUPS } from '../app/navigation';
+import { MicrosoftDataverseService } from '../generated';
+import { DATA_ORG_URL } from './config';
 import { listRows } from './dataverse';
 
 /**
@@ -56,11 +58,48 @@ export function setPreviewPrivileges(privileges: UserPrivileges): void {
   previewPrivileges = privileges;
 }
 
+/** How the privileges were read (shown in development to check it). */
+export let privilegesSource = 'not read';
+
+/** Raw call to the data org (functions answer with an object, not a `value` list). */
+async function callDataOrg(path: string): Promise<Record<string, unknown> | null> {
+  const result = await MicrosoftDataverseService.ListRecordsWithOrganization(DATA_ORG_URL, path);
+  if (result.error || !result.data || typeof result.data !== 'object') return null;
+  return result.data as Record<string, unknown>;
+}
+
+/**
+ * The user's own privileges through RetrieveUserPrivileges, as the model-driven app does. Any user
+ * may ask this about themselves, so it doesn't need read access to security roles (which the
+ * role-based read below does). Null when the function can't be called here.
+ */
+async function privilegesFromFunction(): Promise<Set<string> | null> {
+  try {
+    const me = await callDataOrg('WhoAmI');
+    const userId = typeof me?.UserId === 'string' ? me.UserId : await currentUserId();
+    if (!userId) return null;
+    const answer = await callDataOrg(`systemusers(${userId})/Microsoft.Dynamics.CRM.RetrieveUserPrivileges()`);
+    const list = answer?.RolePrivileges;
+    if (!Array.isArray(list) || !list.length) return null;
+    return new Set(list.map((item) => String((item as { PrivilegeName?: unknown }).PrivilegeName ?? '').toLowerCase()).filter(Boolean));
+  } catch {
+    return null;
+  }
+}
+
 export async function loadUserPrivileges(): Promise<UserPrivileges> {
   if (previewPrivileges) return previewPrivileges;
+  const fromFunction = await privilegesFromFunction();
+  if (fromFunction) {
+    privilegesSource = `RetrieveUserPrivileges (${fromFunction.size} privileges)`;
+    return { known: true, can: (table, action) => fromFunction.has(privilegeName(table, action)) };
+  }
   try {
     const userId = await currentUserId();
-    if (!userId) return ALLOW_ALL;
+    if (!userId) {
+      privilegesSource = 'user not found: every button shown, Dataverse still refuses what is not allowed';
+      return ALLOW_ALL;
+    }
     const tables = NAV_GROUPS.flatMap((group) => group.items).flatMap((item) => (item.kind === 'table' ? [item.table.logicalName] : []));
     const names = tables.flatMap((table) => (Object.keys(ACTIONS) as PrivilegeAction[]).map((action) => privilegeName(table, action)));
     const user = escapeXml(userId);
@@ -75,8 +114,10 @@ export async function loadUserPrivileges(): Promise<UserPrivileges> {
       }),
     ]);
     const granted = new Set([...direct.rows, ...viaTeams.rows].map((row) => String(row.name ?? '').toLowerCase()));
+    privilegesSource = `security roles (${granted.size} privileges)`;
     return { known: true, can: (table, action) => granted.has(privilegeName(table, action)) };
   } catch {
+    privilegesSource = 'could not be read: every button shown, Dataverse still refuses what is not allowed';
     return ALLOW_ALL;
   }
 }

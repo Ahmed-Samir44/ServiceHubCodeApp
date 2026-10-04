@@ -189,7 +189,7 @@ Sidebar:
 Grid (`src/screens/grid/ViewGrid.tsx`):
 
 - View picker with region default; "Active records" only when no view.
-- **Fixed top, scrolling rows:** the page header, command bar, view bar and column headers stay put; only the rows scroll, inside a box sized to the window height left (`grid-scroll`, measured against the page content, not the document, since the sidebar can be taller; sticky `thead th`, with no inline `position` on header cells or sticky breaks). The pager stays visible under it. Table pages are **dense** so the rows get the height: a slim one-line header (`PageHeader compact`), 34px command and view bars, no visible "View" label (screen-reader only), tighter card padding.
+- **Fixed top, scrolling rows:** the page header, command bar, view bar and column headers stay put; only the rows scroll, inside a box that shows **14 rows** (user choice; `VISIBLE_ROWS`, measured from the real header and row heights, divided by the CSS zoom, plus the horizontal scroll bar) (`grid-scroll`; sticky `thead th`, with no inline `position` on header cells or sticky breaks). The pager stays visible under it. Table pages are **dense** so the rows get the height: a slim one-line header (`PageHeader compact`), 34px command and view bars, no visible "View" label (screen-reader only), tighter card padding.
 - **Rows:** a click selects the row (highlighted, checkbox ticked; Ctrl / ⌘ adds to the selection), a **double-click opens the record**, Enter opens it too. Same in form subgrids.
 - **Quick Find** search box on the Quick Find columns.
 - Column header menu: Sort A→Z / Z→A, **Clear sort**, Filter by, **Clear filter**; sort arrows (↑↓), chevron on hover.
@@ -6112,6 +6112,8 @@ import { ColumnFilterPopover } from './ColumnFilterPopover';
 import { FilterEditor } from './FilterEditor';
 
 const PAGE_SIZE = 50;
+/** Rows shown at once on table pages before the rows box scrolls (user choice 2026-10-04). */
+const VISIBLE_ROWS = 14;
 const MIN_COLUMN_WIDTH = 50;
 const MAX_COLUMN_WIDTH = 800;
 const EXPORT_PAGE_SIZE = 5000;
@@ -6366,32 +6368,23 @@ export function ViewGrid({
   };
 
   // Like the model-driven grid: the page header, command bar and column headers stay put and only the
-  // rows scroll. The rows box takes the window height left after what's above and below it.
+  // rows scroll. The rows box shows VISIBLE_ROWS rows (user choice), measured from the real header and
+  // row heights, plus the horizontal scroll bar when there is one.
   useLayoutEffect(() => {
     const box = gridScrollRef.current;
     if (!box) return;
     const fit = () => {
-      // Measure at natural height, so a short list never stays capped from an earlier, smaller fit.
-      const previous = box.style.maxHeight;
-      box.style.maxHeight = 'none';
-      const rect = box.getBoundingClientRect();
-      // What sits under the rows inside the page (pager, card and page padding), not the sidebar.
-      const page = box.closest('.content') ?? box.parentElement ?? box;
-      const below = page.getBoundingClientRect().bottom - rect.bottom;
-      box.style.maxHeight = previous;
-      const top = rect.top + window.scrollY;
-      const next = Math.max(260, Math.floor((window.innerHeight - top - below) / cssZoom(box)));
+      const head = box.querySelector('thead')?.getBoundingClientRect().height ?? 0;
+      const row = box.querySelector('tbody tr')?.getBoundingClientRect().height ?? 0;
+      if (!row) return;
+      const scrollBar = box.offsetHeight - box.clientHeight;
+      const next = Math.ceil((head + row * VISIBLE_ROWS) / cssZoom(box)) + scrollBar;
       setGridMaxHeight((current) => (current === next ? current : next));
     };
     fit();
-    const observer = new ResizeObserver(fit);
-    if (box.parentElement) observer.observe(box.parentElement);
     window.addEventListener('resize', fit);
-    return () => {
-      observer.disconnect();
-      window.removeEventListener('resize', fit);
-    };
-  }, [rows.length]);
+    return () => window.removeEventListener('resize', fit);
+  }, [rows.length, columns.length]);
 
   return (
     <>

@@ -208,7 +208,7 @@ Grid (`src/screens/grid/ViewGrid.tsx`):
   - **Rich text as readable text** (paragraphs, line breaks, bullets kept, wrapped cell), capped at Excel's 32,767 characters.
 - Column picker: display names only (**never show logical names**).
 - Bulk edit, delete, assign, share, activate / deactivate on selection, each gated by privilege.
-- Page header: the **view name is the title** (like the MDA) and the table name appears once, in a pill (`.table-pill`); never the table name twice, never the logical name.
+- Page header: the **table name is the title** and the **current view is in the pill** beside it (`.table-pill`; user choice); never a name twice, never the logical name.
 
 Form (`src/screens/RecordForm.tsx`):
 
@@ -5252,11 +5252,11 @@ export function TableScreen({ label, table, region }: TableScreenProps) {
   return (
     <>
       <PageHeader
-        // Like the MDA: the view is the page title; the table's name sits once, in the pill.
-        title={activeView ? activeView.name : 'Active records'}
+        // The table is the page title; the current view sits in the pill beside it (user choice).
+        title={label}
         icon={Element3}
         compact
-        subtitle={<span className="table-pill">{label}</span>}
+        subtitle={<span className="table-pill">{activeView ? activeView.name : 'Active records'}</span>}
       />
       <div className="content content-wide">
         <div className="bento">

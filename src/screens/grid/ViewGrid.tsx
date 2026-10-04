@@ -52,7 +52,7 @@ import { FilterEditor } from './FilterEditor';
 
 const PAGE_SIZE = 50;
 /** Rows shown at once on table pages before the rows box scrolls (user choice 2026-10-04). */
-const VISIBLE_ROWS = 14;
+const VISIBLE_ROWS = 12;
 const MIN_COLUMN_WIDTH = 50;
 const MAX_COLUMN_WIDTH = 800;
 const EXPORT_PAGE_SIZE = 5000;

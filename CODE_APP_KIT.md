@@ -189,7 +189,7 @@ Sidebar:
 Grid (`src/screens/grid/ViewGrid.tsx`):
 
 - View picker with region default; "Active records" only when no view.
-- **Fixed top, scrolling rows:** the page header, command bar, view bar and column headers stay put; only the rows scroll, inside a box that shows **14 rows** (user choice; `VISIBLE_ROWS`, measured from the real header and row heights, divided by the CSS zoom, plus the horizontal scroll bar) (`grid-scroll`; sticky `thead th`, with no inline `position` on header cells or sticky breaks). The pager stays visible under it. Table pages are **dense** so the rows get the height: a slim one-line header (`PageHeader compact`), 34px command and view bars, no visible "View" label (screen-reader only), tighter card padding.
+- **Fixed top, scrolling rows:** the page header, command bar, view bar and column headers stay put; only the rows scroll, inside a box that shows **12 rows** (user choice; `VISIBLE_ROWS`, measured from the real header and row heights, divided by the CSS zoom, plus the horizontal scroll bar) (`grid-scroll`; sticky `thead th`, with no inline `position` on header cells or sticky breaks). The pager stays visible under it. Table pages are **dense** so the rows get the height: a slim one-line header (`PageHeader compact`), 34px command and view bars, no visible "View" label (screen-reader only), tighter card padding.
 - **Rows:** a click selects the row (highlighted, checkbox ticked; Ctrl / ⌘ adds to the selection), a **double-click opens the record**, Enter opens it too. Same in form subgrids.
 - **Quick Find** search box on the Quick Find columns.
 - Column header menu: Sort A→Z / Z→A, **Clear sort**, Filter by, **Clear filter**; sort arrows (↑↓), chevron on hover.
@@ -6113,7 +6113,7 @@ import { FilterEditor } from './FilterEditor';
 
 const PAGE_SIZE = 50;
 /** Rows shown at once on table pages before the rows box scrolls (user choice 2026-10-04). */
-const VISIBLE_ROWS = 14;
+const VISIBLE_ROWS = 12;
 const MIN_COLUMN_WIDTH = 50;
 const MAX_COLUMN_WIDTH = 800;
 const EXPORT_PAGE_SIZE = 5000;

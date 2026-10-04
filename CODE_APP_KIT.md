@@ -192,6 +192,7 @@ Grid (`src/screens/grid/ViewGrid.tsx`):
 - **Fixed top, scrolling rows:** the page header, command bar, view bar and column headers stay put; only the rows scroll, and **the whole page fits the window** (user choice; no page scroll): the rows box (`grid-scroll`) takes the window height left after what is above it and under it (pager, paddings), measured against the page content, divided by the CSS zoom; the shell is `100vh - top bar` so the page is never taller than the window; sticky `thead th`, with no inline `position` on header cells or sticky breaks). The pager stays visible under it. Table pages are **dense** so the rows get the height: a slim one-line header (`PageHeader compact`), 34px command and view bars, no visible "View" label (screen-reader only), tighter card padding, and a slim pager (26px buttons).
 - **Rows:** a click selects the row (highlighted, checkbox ticked; Ctrl / ⌘ adds to the selection), a **double-click opens the record**, Enter opens it too. Same in form subgrids.
 - **Quick Find** search box on the Quick Find columns.
+- **Column headers are pills** (`.col-head`, user request): a light-teal rounded chip per header (grids and subgrids); the chip of a sorted or filtered column is filled teal with white text and icons; dark mode uses mint text on a faint mint chip.
 - Column header menu: Sort A→Z / Z→A, **Clear sort**, Filter by, **Clear filter**; sort arrows (↑↓), chevron on hover.
 - **Columns from related tables** (a view's link-entity columns, e.g. "Doctor Name Ar (Doctor Name)") sort and filter too, like the MDA: the `<order>` goes inside the matching `<link-entity>` (by alias), conditions carry `entityname="<alias>"`, and a linked lookup column offers only "contains data / does not contain data".
 - Column filters like the MDA:
@@ -1385,6 +1386,23 @@ html:has(.servhub-app.dark) { scrollbar-color: rgba(64, 255, 184, .35) #1c1d22; 
 .servhub-app .req-table tr:hover td { background: var(--ds-color-surface-hover); }
 .servhub-app .req-table tbody tr[aria-selected="true"] td { background: var(--ds-color-surface-selected); }
 .servhub-app.dark .req-table th { background: #202126; color: var(--text-body); }
+/* Column headers as pills (user request 2026-10-04): grid headers are buttons that open the column
+   menu; a sorted or filtered column's pill is filled. */
+.servhub-app .req-table thead th { background: var(--ds-color-surface-raised); padding: 6px 10px; }
+.servhub-app.dark .req-table thead th { background: var(--ds-color-surface-raised); }
+.servhub-app .col-head { display: inline-flex; align-items: center; gap: 5px; max-width: 100%; padding: 5px 12px; border-radius: 999px; cursor: pointer;
+  font: 600 13px var(--ds-font-family); color: var(--ds-color-primary-700); background: var(--ds-color-surface-selected); border: 1px solid var(--ds-color-primary-line);
+  transition: background .15s, border-color .15s, color .15s; }
+.servhub-app span.col-head { cursor: default; }
+.servhub-app .col-head > span { overflow: hidden; text-overflow: ellipsis; }
+.servhub-app button.col-head:hover, .servhub-app button.col-head[aria-expanded="true"] { background: var(--ds-color-primary-100); border-color: var(--ds-color-primary-200); }
+.servhub-app button.col-head:focus-visible { outline: none; box-shadow: var(--ds-focus-ring); }
+.servhub-app .col-head.active { background: var(--ds-color-primary); border-color: var(--ds-color-primary); color: #fff; }
+.servhub-app .col-head.active:hover { background: var(--ds-color-primary-700); }
+.servhub-app .col-head.active .col-sort-icon, .servhub-app .col-head.active .col-filtered-icon { color: #fff; }
+.servhub-app.dark .col-head { color: var(--ds-color-primary-300); background: rgba(64, 255, 184, .08); border-color: rgba(64, 255, 184, .2); }
+.servhub-app.dark button.col-head:hover, .servhub-app.dark button.col-head[aria-expanded="true"] { background: rgba(64, 255, 184, .16); border-color: rgba(64, 255, 184, .32); }
+.servhub-app.dark .col-head.active { color: #fff; background: var(--ds-color-primary); border-color: var(--ds-color-primary); }
 /* Grid rows box: scrolls both ways; the column headers stick to its top (like the model-driven grid). */
 .servhub-app .grid-scroll { overflow: auto; overscroll-behavior: contain; border-radius: var(--ds-radius-control); }
 .servhub-app .content:has(.grid-scroll) { padding-top: 12px; padding-bottom: 16px; }
@@ -6569,7 +6587,7 @@ export function ViewGrid({
                           type="button"
                           aria-haspopup="menu"
                           title={column.label}
-                          style={{ ...linkStyle, color: 'inherit', textDecoration: 'none', textTransform: 'inherit', letterSpacing: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 4, maxWidth: '100%' }}
+                          className={`col-head${sorted !== null || filteredColumns.has(column.name) ? ' active' : ''}`}
                           onClick={(event) => openMenu(column, event.currentTarget)}
                         >
                           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{column.label}</span>
@@ -8428,7 +8446,7 @@ export function SubgridView({ subgrid, parentTable, parentId, reloadKey, onOpen 
             <thead>
               <tr>
                 {data.data.view.columns.map((column) => (
-                  <th key={column.name} style={{ minWidth: Math.min(column.width, 220) }}>{column.label}</th>
+                  <th key={column.name} style={{ minWidth: Math.min(column.width, 220) }}><span className="col-head">{column.label}</span></th>
                 ))}
               </tr>
             </thead>

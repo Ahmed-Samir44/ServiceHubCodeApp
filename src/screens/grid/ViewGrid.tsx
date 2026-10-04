@@ -501,7 +501,7 @@ export function ViewGrid({
                           type="button"
                           aria-haspopup="menu"
                           title={column.label}
-                          style={{ ...linkStyle, color: 'inherit', textDecoration: 'none', textTransform: 'inherit', letterSpacing: 'inherit', display: 'inline-flex', alignItems: 'center', gap: 4, maxWidth: '100%' }}
+                          className={`col-head${sorted !== null || filteredColumns.has(column.name) ? ' active' : ''}`}
                           onClick={(event) => openMenu(column, event.currentTarget)}
                         >
                           <span style={{ overflow: 'hidden', textOverflow: 'ellipsis' }}>{column.label}</span>

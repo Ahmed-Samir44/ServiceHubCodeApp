@@ -39,7 +39,7 @@ export function SubgridView({ subgrid, parentTable, parentId, reloadKey, onOpen 
             <thead>
               <tr>
                 {data.data.view.columns.map((column) => (
-                  <th key={column.name} style={{ minWidth: Math.min(column.width, 220) }}>{column.label}</th>
+                  <th key={column.name} style={{ minWidth: Math.min(column.width, 220) }}><span className="col-head">{column.label}</span></th>
                 ))}
               </tr>
             </thead>

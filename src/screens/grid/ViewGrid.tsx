@@ -51,8 +51,8 @@ import { ColumnFilterPopover } from './ColumnFilterPopover';
 import { FilterEditor } from './FilterEditor';
 
 const PAGE_SIZE = 50;
-/** Rows shown at once on table pages before the rows box scrolls (user choice 2026-10-04). */
-const VISIBLE_ROWS = 12;
+/** Smallest rows box on very short windows (then the page scrolls a little instead). */
+const MIN_GRID_HEIGHT = 200;
 const MIN_COLUMN_WIDTH = 50;
 const MAX_COLUMN_WIDTH = 800;
 const EXPORT_PAGE_SIZE = 5000;
@@ -307,22 +307,31 @@ export function ViewGrid({
   };
 
   // Like the model-driven grid: the page header, command bar and column headers stay put and only the
-  // rows scroll. The rows box shows VISIBLE_ROWS rows (user choice), measured from the real header and
-  // row heights, plus the horizontal scroll bar when there is one.
+  // rows scroll. The whole page fits the window (user choice): the rows box takes the height left
+  // after what's above it and what sits under it (pager, card and page padding).
   useLayoutEffect(() => {
     const box = gridScrollRef.current;
     if (!box) return;
     const fit = () => {
-      const head = box.querySelector('thead')?.getBoundingClientRect().height ?? 0;
-      const row = box.querySelector('tbody tr')?.getBoundingClientRect().height ?? 0;
-      if (!row) return;
-      const scrollBar = box.offsetHeight - box.clientHeight;
-      const next = Math.ceil((head + row * VISIBLE_ROWS) / cssZoom(box)) + scrollBar;
+      // Measure at natural height, so a short list never stays capped from an earlier, smaller fit.
+      const previous = box.style.maxHeight;
+      box.style.maxHeight = 'none';
+      const rect = box.getBoundingClientRect();
+      const page = box.closest('.content') ?? box.parentElement ?? box;
+      const below = page.getBoundingClientRect().bottom - rect.bottom;
+      box.style.maxHeight = previous;
+      const top = rect.top + window.scrollY;
+      const next = Math.max(MIN_GRID_HEIGHT, Math.floor((window.innerHeight - top - below) / cssZoom(box)));
       setGridMaxHeight((current) => (current === next ? current : next));
     };
     fit();
+    const observer = new ResizeObserver(fit);
+    if (box.parentElement) observer.observe(box.parentElement);
     window.addEventListener('resize', fit);
-    return () => window.removeEventListener('resize', fit);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', fit);
+    };
   }, [rows.length, columns.length]);
 
   return (

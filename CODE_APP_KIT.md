@@ -189,7 +189,7 @@ Sidebar:
 Grid (`src/screens/grid/ViewGrid.tsx`):
 
 - View picker with region default; "Active records" only when no view.
-- **Fixed top, scrolling rows:** the page header, command bar, view bar and column headers stay put; only the rows scroll, inside a box that shows **12 rows** (user choice; `VISIBLE_ROWS`, measured from the real header and row heights, divided by the CSS zoom, plus the horizontal scroll bar) (`grid-scroll`; sticky `thead th`, with no inline `position` on header cells or sticky breaks). The pager stays visible under it. Table pages are **dense** so the rows get the height: a slim one-line header (`PageHeader compact`), 34px command and view bars, no visible "View" label (screen-reader only), tighter card padding.
+- **Fixed top, scrolling rows:** the page header, command bar, view bar and column headers stay put; only the rows scroll, and **the whole page fits the window** (user choice; no page scroll): the rows box (`grid-scroll`) takes the window height left after what is above it and under it (pager, paddings), measured against the page content, divided by the CSS zoom; the shell is `100vh - top bar` so the page is never taller than the window; sticky `thead th`, with no inline `position` on header cells or sticky breaks). The pager stays visible under it. Table pages are **dense** so the rows get the height: a slim one-line header (`PageHeader compact`), 34px command and view bars, no visible "View" label (screen-reader only), tighter card padding.
 - **Rows:** a click selects the row (highlighted, checkbox ticked; Ctrl / ⌘ adds to the selection), a **double-click opens the record**, Enter opens it too. Same in form subgrids.
 - **Quick Find** search box on the Quick Find columns.
 - Column header menu: Sort A→Z / Z→A, **Clear sort**, Filter by, **Clear filter**; sort arrows (↑↓), chevron on hover.
@@ -1305,6 +1305,8 @@ html:has(.servhub-app.dark) { scrollbar-color: rgba(64, 255, 184, .35) #1c1d22; 
 .servhub-app { background: var(--ds-shell-bg); background-attachment: fixed; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 .servhub-app .navbar { background: var(--ds-shell-nav); height: 52px; }
 .servhub-app .sidebar { top: 52px; height: calc(100vh - 52px); width: 236px; }
+/* The shell sits under the 52px top bar, so it fills the rest of the window, not a full extra 100vh. */
+.servhub-app .shell { min-height: calc(100vh - 52px); }
 .servhub-app .sb-label { font-size: 12px; letter-spacing: 1.2px; }
 .servhub-app .sb-item { font-size: 14px; padding: 9px 12px; }
 .servhub-app .sb-item:hover { background: rgba(255, 255, 255, .06); }
@@ -6112,8 +6114,8 @@ import { ColumnFilterPopover } from './ColumnFilterPopover';
 import { FilterEditor } from './FilterEditor';
 
 const PAGE_SIZE = 50;
-/** Rows shown at once on table pages before the rows box scrolls (user choice 2026-10-04). */
-const VISIBLE_ROWS = 12;
+/** Smallest rows box on very short windows (then the page scrolls a little instead). */
+const MIN_GRID_HEIGHT = 200;
 const MIN_COLUMN_WIDTH = 50;
 const MAX_COLUMN_WIDTH = 800;
 const EXPORT_PAGE_SIZE = 5000;
@@ -6368,22 +6370,31 @@ export function ViewGrid({
   };
 
   // Like the model-driven grid: the page header, command bar and column headers stay put and only the
-  // rows scroll. The rows box shows VISIBLE_ROWS rows (user choice), measured from the real header and
-  // row heights, plus the horizontal scroll bar when there is one.
+  // rows scroll. The whole page fits the window (user choice): the rows box takes the height left
+  // after what's above it and what sits under it (pager, card and page padding).
   useLayoutEffect(() => {
     const box = gridScrollRef.current;
     if (!box) return;
     const fit = () => {
-      const head = box.querySelector('thead')?.getBoundingClientRect().height ?? 0;
-      const row = box.querySelector('tbody tr')?.getBoundingClientRect().height ?? 0;
-      if (!row) return;
-      const scrollBar = box.offsetHeight - box.clientHeight;
-      const next = Math.ceil((head + row * VISIBLE_ROWS) / cssZoom(box)) + scrollBar;
+      // Measure at natural height, so a short list never stays capped from an earlier, smaller fit.
+      const previous = box.style.maxHeight;
+      box.style.maxHeight = 'none';
+      const rect = box.getBoundingClientRect();
+      const page = box.closest('.content') ?? box.parentElement ?? box;
+      const below = page.getBoundingClientRect().bottom - rect.bottom;
+      box.style.maxHeight = previous;
+      const top = rect.top + window.scrollY;
+      const next = Math.max(MIN_GRID_HEIGHT, Math.floor((window.innerHeight - top - below) / cssZoom(box)));
       setGridMaxHeight((current) => (current === next ? current : next));
     };
     fit();
+    const observer = new ResizeObserver(fit);
+    if (box.parentElement) observer.observe(box.parentElement);
     window.addEventListener('resize', fit);
-    return () => window.removeEventListener('resize', fit);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', fit);
+    };
   }, [rows.length, columns.length]);
 
   return (

@@ -212,6 +212,8 @@
 .servhub-app { background: var(--ds-shell-bg); background-attachment: fixed; font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; }
 .servhub-app .navbar { background: var(--ds-shell-nav); height: 52px; }
 .servhub-app .sidebar { top: 52px; height: calc(100vh - 52px); width: 236px; }
+/* The shell sits under the 52px top bar, so it fills the rest of the window, not a full extra 100vh. */
+.servhub-app .shell { min-height: calc(100vh - 52px); }
 .servhub-app .sb-label { font-size: 12px; letter-spacing: 1.2px; }
 .servhub-app .sb-item { font-size: 14px; padding: 9px 12px; }
 .servhub-app .sb-item:hover { background: rgba(255, 255, 255, .06); }

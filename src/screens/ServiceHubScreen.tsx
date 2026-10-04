@@ -12,6 +12,8 @@ import type { Region } from '../app/region';
 import { legacyScreenId, logPageUsage } from '../data/usageLog';
 import { RegionOptions } from '../app/RegionModal';
 import { RegionMap } from './hub/RegionMap';
+import { Global } from 'iconsax-react';
+import { PageHeader } from './PageHeader';
 import { BankAccountsSection } from './hub/BankAccountsSection';
 import { CoeSection } from './hub/CoeSection';
 import { DoctorsSection } from './hub/DoctorsSection';
@@ -67,10 +69,7 @@ export function ServiceHubScreen({ region, onSelectRegion, sectionId, onSelectSe
   if (!region) {
     return (
       <>
-        <div className="page-hdr">
-          <h1 className="page-title">Select Your Region</h1>
-          <div className="page-sub">Choose a region to view doctors</div>
-        </div>
+        <PageHeader title="Select Your Region" subtitle="Choose a region to view doctors" icon={Global} />
         <div className="content content-wide">
           <div className="rmap-stage">
             <RegionMap onSelect={onSelectRegion} />
@@ -93,10 +92,7 @@ export function ServiceHubScreen({ region, onSelectRegion, sectionId, onSelectSe
 
   return (
     <>
-      <div className="page-hdr">
-        <h1 className="page-title">{heading.title}</h1>
-        <div className="page-sub">{heading.subtitle}</div>
-      </div>
+      <PageHeader title={heading.title} subtitle={heading.subtitle} icon={active.icon} />
       <div className="content content-wide hub-page">
         <nav className="hub-nav" aria-label="Service Hub sections">
           {nav.map((entry) => {

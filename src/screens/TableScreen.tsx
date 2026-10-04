@@ -5,6 +5,7 @@ import type { Region } from '../app/region';
 import { useAsyncData } from '../data/useAsyncData';
 import { loadViews, pickView, readDefaultView } from '../data/views';
 import { ViewGrid } from './grid/ViewGrid';
+import { PageHeader } from './PageHeader';
 import { useToasts } from './grid/useToasts';
 import { RecordForm, type FormTarget } from './RecordForm';
 
@@ -30,13 +31,16 @@ export function TableScreen({ label, table, region }: TableScreenProps) {
 
   return (
     <>
-      <div className="page-hdr">
-        <h1 className="page-title">{label}</h1>
-        <div className="page-sub">
-          {activeView ? activeView.name : 'Active records'}
-          <span className="table-pill">{label}</span>
-        </div>
-      </div>
+      <PageHeader
+        title={label}
+        icon={Element3}
+        subtitle={
+          <>
+            {activeView ? activeView.name : 'Active records'}
+            <span className="table-pill">{label}</span>
+          </>
+        }
+      />
       <div className="content content-wide">
         <div className="bento">
           {views.loading && (

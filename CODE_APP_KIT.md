@@ -383,6 +383,7 @@ Other picks:
 
 - **Doctor card "Split":** a white names block with a teal photo ring (bundled photo), labelled fields, a fee table, and a full-width "Visit Doctor Profile" button. 4 per row by default (2/3/4 switch); it stacks under 440px (container query). The corner radius follows the card radius minus 1px.
 - **Doctor profile "Sidebar"** layout. Its fee table is **"Rows"**: per business unit a tinted header, then one line per fee type (label left, amount right, dashed dividers). Narrow side cards never get a sideways scroll bar, so don't put wide tables in them.
+- **Page header "Band" (2026-10-04):** every page title is one `PageHeader` component: a rounded deep-teal gradient strip (the Band card colours) with the page's icon in a translucent tile (mint icon), white title, 75% white subtitle; table pages keep the table-name pill (white translucent). Glass card and Accent bar were rejected; the old plain title over a border line was "not nice".
 - **Region landing "Map" (2026-10-04):** a rendered glass map disc (a photo-real render the user supplied, bundled in `src/assets/region-disc.jpg`; CSS cannot draw that glass) on a light stage that matches the render's backdrop, edges feathered with a mask. A `mix-blend-mode: color` layer gives it the chosen **"Sage"** hue (primary-700 at 20%), a soft multiply glow sits on each region, and glass teardrop pins (EG / SA) carry glass cards with name, currency and an "Open …" button. Silver (no tint), a minty tint and Emerald were rejected. Phones and the change-region dialog use the Tiles below.
 - **Region / scope choice "Tiles"**: two tall cards side by side, each with a gradient mark (EG / SA), the name and code, one hint line, a filled "Open …" pill, and the code as a large faded watermark in the corner. The same tiles, smaller, sit in the change-region dialog, with the current one outlined and labelled "Current region". One column on phones.
 - **COE:** one card per row, field pills, empty fields hidden.
@@ -1317,10 +1318,21 @@ html:has(.servhub-app.dark) { scrollbar-color: rgba(64, 255, 184, .35) #1c1d22; 
 .servhub-app .nav-dot { background: var(--ds-color-primary-mint); }
 .servhub-app .region-chip { font-size: 13px; }
 
-.servhub-app .page-hdr { background: transparent; border-bottom: 1px solid var(--border); padding: 18px 24px; }
-.servhub-app.dark .page-hdr { background: transparent; }
-.servhub-app .page-title { font-size: clamp(19px, 1.65vw, 24px); font-weight: 700; letter-spacing: 0; line-height: 1.2; }
+/* Page header (PageHeader.tsx) = "Band" (user choice 2026-10-04): the deep-teal gradient of the Band
+   cards as a rounded strip, white title, the page's icon in a translucent tile. */
+.servhub-app .page-hdr, .servhub-app.dark .page-hdr { display: flex; align-items: center; gap: 14px; margin: 16px 24px 0; padding: 20px 24px; border: none; border-radius: var(--ds-radius-card);
+  background: radial-gradient(420px 160px at 0% 0%, rgba(64, 255, 184, .16), transparent 70%), linear-gradient(90deg, #063b36, #0d594b); box-shadow: var(--ds-shadow-sm); }
+.servhub-app .ph-text { min-width: 0; }
+.servhub-app .page-title { font-size: clamp(19px, 1.65vw, 24px); font-weight: 700; letter-spacing: 0; line-height: 1.2; color: #fff; }
 .servhub-app .page-sub { font-size: 14px; color: var(--muted); }
+.servhub-app .page-hdr .page-sub { color: rgba(255, 255, 255, .75); }
+.servhub-app .ph-icon { width: 46px; height: 46px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 13px;
+  color: var(--ds-color-primary-mint); background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .18); }
+.servhub-app .page-hdr .table-pill { background: rgba(255, 255, 255, .16); color: #fff; }
+@media (max-width: 640px) {
+  .servhub-app .page-hdr, .servhub-app.dark .page-hdr { margin: 12px 12px 0; padding: 14px 16px; }
+  .servhub-app .ph-icon { width: 38px; height: 38px; }
+}
 
 /* ================= Surfaces ================= */
 .servhub-app .bento { background: var(--ds-color-surface-raised); border-radius: var(--ds-radius-card); box-shadow: var(--ds-shadow-sm); border-color: var(--border); padding: 20px; }
@@ -5169,6 +5181,7 @@ import type { Region } from '../app/region';
 import { useAsyncData } from '../data/useAsyncData';
 import { loadViews, pickView, readDefaultView } from '../data/views';
 import { ViewGrid } from './grid/ViewGrid';
+import { PageHeader } from './PageHeader';
 import { useToasts } from './grid/useToasts';
 import { RecordForm, type FormTarget } from './RecordForm';
 
@@ -5194,13 +5207,16 @@ export function TableScreen({ label, table, region }: TableScreenProps) {
 
   return (
     <>
-      <div className="page-hdr">
-        <h1 className="page-title">{label}</h1>
-        <div className="page-sub">
-          {activeView ? activeView.name : 'Active records'}
-          <span className="table-pill">{label}</span>
-        </div>
-      </div>
+      <PageHeader
+        title={label}
+        icon={Element3}
+        subtitle={
+          <>
+            {activeView ? activeView.name : 'Active records'}
+            <span className="table-pill">{label}</span>
+          </>
+        }
+      />
       <div className="content content-wide">
         <div className="bento">
           {views.loading && (

@@ -58,9 +58,6 @@ export function setPreviewPrivileges(privileges: UserPrivileges): void {
   previewPrivileges = privileges;
 }
 
-/** How the privileges were read (shown in development to check it). */
-export let privilegesSource = 'not read';
-
 /** Raw call to the data org (functions answer with an object, not a `value` list). */
 async function callDataOrg(path: string): Promise<Record<string, unknown> | null> {
   const result = await MicrosoftDataverseService.ListRecordsWithOrganization(DATA_ORG_URL, path);
@@ -91,13 +88,11 @@ export async function loadUserPrivileges(): Promise<UserPrivileges> {
   if (previewPrivileges) return previewPrivileges;
   const fromFunction = await privilegesFromFunction();
   if (fromFunction) {
-    privilegesSource = `RetrieveUserPrivileges (${fromFunction.size} privileges)`;
     return { known: true, can: (table, action) => fromFunction.has(privilegeName(table, action)) };
   }
   try {
     const userId = await currentUserId();
     if (!userId) {
-      privilegesSource = 'user not found: every button shown, Dataverse still refuses what is not allowed';
       return ALLOW_ALL;
     }
     const tables = NAV_GROUPS.flatMap((group) => group.items).flatMap((item) => (item.kind === 'table' ? [item.table.logicalName] : []));
@@ -114,10 +109,8 @@ export async function loadUserPrivileges(): Promise<UserPrivileges> {
       }),
     ]);
     const granted = new Set([...direct.rows, ...viaTeams.rows].map((row) => String(row.name ?? '').toLowerCase()));
-    privilegesSource = `security roles (${granted.size} privileges)`;
     return { known: true, can: (table, action) => granted.has(privilegeName(table, action)) };
   } catch {
-    privilegesSource = 'could not be read: every button shown, Dataverse still refuses what is not allowed';
     return ALLOW_ALL;
   }
 }

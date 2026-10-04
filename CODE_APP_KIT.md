@@ -4295,9 +4295,6 @@ export function setPreviewPrivileges(privileges: UserPrivileges): void {
   previewPrivileges = privileges;
 }
 
-/** How the privileges were read (shown in development to check it). */
-export let privilegesSource = 'not read';
-
 /** Raw call to the data org (functions answer with an object, not a `value` list). */
 async function callDataOrg(path: string): Promise<Record<string, unknown> | null> {
   const result = await MicrosoftDataverseService.ListRecordsWithOrganization(DATA_ORG_URL, path);
@@ -4328,13 +4325,11 @@ export async function loadUserPrivileges(): Promise<UserPrivileges> {
   if (previewPrivileges) return previewPrivileges;
   const fromFunction = await privilegesFromFunction();
   if (fromFunction) {
-    privilegesSource = `RetrieveUserPrivileges (${fromFunction.size} privileges)`;
     return { known: true, can: (table, action) => fromFunction.has(privilegeName(table, action)) };
   }
   try {
     const userId = await currentUserId();
     if (!userId) {
-      privilegesSource = 'user not found: every button shown, Dataverse still refuses what is not allowed';
       return ALLOW_ALL;
     }
     const tables = NAV_GROUPS.flatMap((group) => group.items).flatMap((item) => (item.kind === 'table' ? [item.table.logicalName] : []));
@@ -4351,10 +4346,8 @@ export async function loadUserPrivileges(): Promise<UserPrivileges> {
       }),
     ]);
     const granted = new Set([...direct.rows, ...viaTeams.rows].map((row) => String(row.name ?? '').toLowerCase()));
-    privilegesSource = `security roles (${granted.size} privileges)`;
     return { known: true, can: (table, action) => granted.has(privilegeName(table, action)) };
   } catch {
-    privilegesSource = 'could not be read: every button shown, Dataverse still refuses what is not allowed';
     return ALLOW_ALL;
   }
 }
@@ -4687,7 +4680,6 @@ import { ArrowDown2, HambergerMenu, Moon, Sun1 } from 'iconsax-react';
 import { DEFAULT_HUB_SECTION_ID, type HubSectionId } from './hubSections';
 import { DEFAULT_NAV_ITEM_ID, NAV_GROUPS, SERVICE_HUB_ITEM, getNavItem, type NavItem } from './navigation';
 import { usePermissions } from './permissionsContext';
-import { privilegesSource } from '../data/permissions';
 import { REGION_LABEL, REGION_MARK, type Region } from './region';
 import { useRegionContext } from './regionContext';
 import { RegionModal } from './RegionModal';
@@ -4853,7 +4845,6 @@ export function AppShell() {
             <div className="sb-app">ServiceHub</div>
             <div className="sb-org">ANDALUSIA GROUP</div>
             {/* Development only: how the signed-in user's privileges were read (see permissions.ts). */}
-            {import.meta.env.DEV && permissionsReady && <div className="sb-org" style={{ textTransform: 'none', letterSpacing: 0, marginTop: 4 }}>Permissions: {privilegesSource}</div>}
           </div>
           {NAV_GROUPS.map((group) => {
             const items = group.items.filter(isVisible);

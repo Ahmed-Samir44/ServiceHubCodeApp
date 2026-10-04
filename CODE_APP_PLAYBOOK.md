@@ -174,6 +174,7 @@ Sidebar:
 Grid (`src/screens/grid/ViewGrid.tsx`):
 
 - View picker with region default; "Active records" only when no view.
+- **Rows:** a click selects the row (highlighted, checkbox ticked; Ctrl / ⌘ adds to the selection), a **double-click opens the record**, Enter opens it too. Same in form subgrids.
 - **Quick Find** search box on the Quick Find columns.
 - Column header menu: Sort A→Z / Z→A, **Clear sort**, Filter by, **Clear filter**; sort arrows (↑↓), chevron on hover.
 - **Columns from related tables** (a view's link-entity columns, e.g. "Doctor Name Ar (Doctor Name)") sort and filter too, like the MDA: the `<order>` goes inside the matching `<link-entity>` (by alias), conditions carry `entityname="<alias>"`, and a linked lookup column offers only "contains data / does not contain data".

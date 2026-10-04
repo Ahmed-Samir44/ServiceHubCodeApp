@@ -29,7 +29,7 @@ Generated from the ServiceHub repo (https://github.com/Ahmed-Samir44/ServiceHubC
 
 Everything learned building **ServiceHub** (a Power Apps code app that replaced a model-driven app's table pages and a legacy D365 HTML web resource), written so the next system can be built the same way without repeating the journey. Each rule says what to do and why.
 
-Use it as the brief for a new project: copy the architecture, the data layer, the security model, the MDA-parity checklist, the design system and the working rules. The ServiceHub repo is the reference implementation; file paths below point into it.
+Use it as the brief for a new project (§12 is the from-scratch setup, §13 how every mechanism works with the exact queries): copy the architecture, the data layer, the security model, the MDA-parity checklist, the design system and the working rules. The ServiceHub repo is the reference implementation; file paths below point into it.
 
 ---
 
@@ -195,7 +195,7 @@ The rule from the user: **"everything like the model-driven app."** Before calli
 
 Sidebar:
 
-- Built from the MDA **sitemap** (groups → tables); a table hides when the user lacks Read.
+- A hard-coded copy of the MDA **sitemap** (`NAV_GROUPS` in `src/app/navigation.ts`: groups → tables, same names and order), not read at run time; a table hides when the user lacks Read (§13.1).
 - **Sections fold and unfold** (click the group label; chevron rotates; folded groups remembered in localStorage per browser).
 
 Grid (`src/screens/grid/ViewGrid.tsx`):
@@ -470,6 +470,149 @@ Shell tooling lessons (Windows):
 | Styles | `src/styles/synapse.css` (tokens and overrides), `hub-cards.css`, `doctor-card-styles.css`, `doctor-profile.css`, `app.css` |
 | Dev preview (mock) | `reference/dev/DevPreview.ts` |
 | Project status | `HANDOFF.md` |
+
+
+---
+
+## 12. New project from scratch (step by step)
+
+Do these in order. Commands assume Windows with Git Bash; `pa` is the CLI from `@microsoft/power-apps-cli` (a devDependency), always run as `./node_modules/.bin/pa`.
+
+**12.1 What to collect first (ask the user)**
+
+| Item | Example (ServiceHub) | Where it's used |
+| --- | --- | --- |
+| App environment (where the code app is installed and shared) | `cd78a59b-…` (org998df960) | `pa app init`, `pa app push` |
+| Data org URL (where the tables and security roles live) | `https://org2f45e702.crm4.dynamics.com` | `DATA_ORG_URL` |
+| Model-driven app id (whose views, sitemap and parity we copy) | `b40cd966-…` | `MDA_APP_ID` |
+| Solution id in the app environment | `9e320bf3-…` | `pa app push --solution-id` |
+| Dev data org (optional, for Local Play) | `https://org319b4ea9.crm4.dynamics.com` | `.env.development.local` |
+| The MDA sitemap: groups, tables (display name, logical name, entity set, primary name column) | General → New Doctor Datasets (`cr301_newdoctordataset`, `cr301_newdoctordatasets`, `cr301_title`) | `NAV_GROUPS` |
+| Any legacy page being replaced (HTML web resource source) | `region.html` | §6 |
+
+**12.2 Create the project**
+
+1. `npm create vite@latest <name> -- --template react-ts`, `cd <name>`.
+2. Copy `package.json` (dependencies in §1 and in the kit), `vite.config.ts` (port pinned, `powerApps()` plugin, the `write-excel-file-sync` alias), `tsconfig*.json`, `eslint.config.js`, `index.html`, `src/main.tsx` (fonts then style sheets in order), `src/env.d.ts`. `npm install`.
+3. `./node_modules/.bin/pa auth` and sign in with the maker account.
+4. `./node_modules/.bin/pa app init` and choose the **app** environment. It writes `power.config.json` (app id, environment id, connection references). Don't hand-edit it afterwards.
+5. Add the generic Dataverse connector once: `./node_modules/.bin/pa app add data-source --connector dataverse --table <any table> --org-url <data org url>`. This generates `src/generated/services/MicrosoftDataverseService.ts` (+ models). Every call in the app goes through its `*WithOrganization` operations with `DATA_ORG_URL`, so one connector reaches every table in the data org (§2). Never edit `src/generated/**`.
+6. Copy the style sheets (`tokens.css`, `base.css`, `app.css`, `synapse.css`, then component sheets) and the engine (`src/data/*`, `src/app/*`, `src/screens/*` from the kit).
+7. Set `src/data/config.ts`: `DATA_ORG_URL`, `MDA_APP_ID`. For dev, create `.env.development.local` with `VITE_DATA_ORG_URL=` and `VITE_MDA_APP_ID=` (read only by `npm run dev`).
+8. Write `NAV_GROUPS` in `src/app/navigation.ts` from the MDA sitemap (12.1). Each table: `table('<Display name>', '<logicalname>', '<entityset>', '<primary name column>')`.
+9. Column snapshot (optional but recommended): save each table's connector schema JSON into `reference/dataverse-schemas/` (`pa app add data-source --connector dataverse --table <t> --org-url <org>` writes it under `.power/schemas`; copy it), then `npm run labels` → `src/data/columnLabels.generated.ts`. Live metadata fills anything missing at run time (§13.8).
+10. `npx tsc -b`, `npx eslint src`, `npm run build`, `npm run dev` → open the **Local Play** link it prints (`https://apps.powerapps.com/play/e/<env>/a/local?_localAppUrl=http://localhost:<port>/&_localConnectionUrl=…`). On first open approve the connection.
+11. Publish only with the user's OK: `./node_modules/.bin/pa app push --solution-id <solution>`. Share the app with users (a security group) in the app environment; their roles come from the data environment (§4).
+
+**12.3 Sanity checks before showing the user**
+
+- Sidebar shows only tables the signed-in user can read.
+- A table opens on the region / default view, the view list matches the MDA app's views, sorting / filters / search / paging / export work.
+- A record opens on double-click with the MDA's main form (tabs, sections, subgrids), lookups search like the MDA, save / deactivate / delete / assign / share show only with the privilege.
+- `grep -l <org> dist/assets/*.js` shows only the intended org.
+
+---
+
+## 13. How each mechanism works (exact queries)
+
+Everything below calls the gateway in `src/data/dataverse.ts`. Reads: `ListRecordsWithOrganization(DATA_ORG_URL, entitySet, PREFER, …, select, filter, orderBy, …, fetchXml, top)` with `PREFER = odata.include-annotations="OData.Community.Display.V1.FormattedValue,Microsoft.Dynamics.CRM.*"`. The entity set may be a metadata or function path. Results: `{ rows, moreRecords (@Microsoft.Dynamics.CRM.morerecords), totalCount (@Microsoft.Dynamics.CRM.totalrecordcount) }`. Create: `CreateRecordWithOrganization('return=representation', …)`. Update: `UpdateRecordWithOrganization('return=minimal', …)` (PATCH). Delete: `DeleteRecordWithOrganization`. Actions: `PerformUnboundActionWithOrganization(DATA_ORG_URL, name, body)`. Errors are shown verbatim (the Dataverse message).
+
+### 13.1 Sidebar and shell
+
+- `NAV_GROUPS` (hard-coded copy of the MDA sitemap): groups `{ id, label, items }`; items are a hub page or `{ kind: 'table', id: logicalName, label, table: { logicalName, entitySet, primaryName } }`. Primary key is always `<logicalName>id`.
+- Visible item: `kind === 'hub' || (permissionsReady && privileges.can(logicalName, 'read'))`. While privileges load, a group shows "Checking access…"; a group with nothing visible disappears.
+- Groups fold; the folded ids are kept in localStorage `servicehub.sidebar.collapsed`.
+- Screens are lazy (`React.lazy` + `Suspense`); the table screen is keyed by the table so it remounts per table.
+- Other local state: `servicehub.theme`, `servicehub.textsize` (CSS `zoom` on `<main>`), sessionStorage `selectedRegion`.
+
+### 13.2 Views (the view picker)
+
+`loadViews(table)` (cached per table) runs four calls in parallel:
+
+1. System views: `savedqueries`, `$select=savedqueryid,name,isdefault,fetchxml,layoutxml`, `$filter=returnedtypecode eq '<table>' and querytype eq 0 and statecode eq 0`, `$orderby=name asc`.
+2. Personal views: `userqueries`, same filter (failure ignored).
+3. The MDA app's views (once per session), on `appmodulecomponents`:
+
+   ```xml
+   <fetch><entity name="appmodulecomponent"><attribute name="objectid" />
+     <filter><condition attribute="componenttype" operator="eq" value="26" /></filter>
+     <link-entity name="appmodule" from="appmoduleidunique" to="appmoduleidunique">
+       <filter><condition attribute="appmoduleid" operator="eq" value="<MDA_APP_ID>" /></filter>
+     </link-entity></entity></fetch>
+   ```
+
+   `componenttype 26` = view. If any of this table's views is in that set, show only those; if none is, show all (the MDA's rule).
+4. Live column metadata (13.8), so labels are current.
+
+Columns come from `layoutxml`: every `<cell name width>` without `ishidden="1"` (width ≤ 0 → 150). A cell named `alias.attr` is a column from a related table: the alias maps to `<link-entity alias name to>`, label = `<attr label> (<lookup label>)`. Result per view: `{ id, name, isDefault, personal, region, fetchXml, layoutXml, columns[] }`; personal views first.
+
+Default view: user's saved default (localStorage `servicehub.defaultview.<table>`) → a system view whose name says the region (`EGY|Egypt` / `KSA|Saudi`) → `isdefault` → first. The pill in the page header shows the current view's name.
+
+Quick Find columns: `savedqueries` with `querytype eq 4` (default one), the `<filter isquickfindfields="1">` conditions with `operator="like"` and no `entityname`.
+
+### 13.3 The grid query (sort, filter, search, paging)
+
+Every render builds: `applyGridQuery(withAttributes(view.fetchXml, columnNames), { filter, sort, search })`, then `pageFetchXml(…, page, 50)`.
+
+- `withAttributes`: adds `<attribute name>` for chosen base-table columns missing from the view (not for `<all-attributes>`, not for linked columns).
+- **Sort** (column menu A→Z / Z→A): remove the root's and every link-entity's `<order>`; for `alias.attr` add `<order attribute="attr" descending>` inside that `<link-entity>`, else on the root. One sort at a time. The header arrow shows the user's sort or the view's first `<order>`.
+- **Filters**: the view's root `<filter>` children are parsed into a tree (`and`/`or` groups, conditions with `entityname` written as `alias.attr`, named lookups `in` → `eq` with `uiNames`). When the user filters, the root's direct `<filter>`s are replaced by the written tree; link-entity filters stay. Column filters (callout under a header) are ANDed onto the view filter; "Edit filters" (side panel, one row per condition) edits the whole tree. Operators per kind: text `eq ne like not-like begins-with not-begin-with ends-with not-end-with not-null null`; number `eq ne gt ge lt le not-null null`; date `on on-or-after on-or-before today yesterday this-week this-month last-month this-year last-x-days next-x-days not-null null`; choice `eq ne in not-in not-null null`; multi-choice `contain-values not-contain-values not-null null`; lookup `eq ne like not-like not-null null` (Equals is a record picker, several records → `in` with `<value uiname uitype>`). "Contains" is stored as `%v%`. A linked lookup column offers only null / not-null.
+- **Search this view** (Enter): one `<filter type="or">` with `<condition operator="like">` per Quick Find column (fallback: primary name), sibling of the other filters (so ANDed). Text → `text%` (begins with); `*text` → `%text%`; `%`, `_`, `[` escaped.
+- **Paging**: if `<fetch top>` exists, no paging (Dataverse forbids both). Else set `page`, `count="50"`, `returntotalrecordcount="true"`, remove `paging-cookie`. Next is enabled by `morerecords`; total shows "5,000+" at the 5000 cap.
+- **Export**: page only = loaded rows; all pages = loop `count=5000` pages while `morerecords`, cap 50,000 rows; then typed cells (§1 Excel).
+- **Columns**: picker (view columns + any table column), drag widths (50–800 px, divided by CSS zoom), move left/right, kept in localStorage `servicehub.columns.<table>.<viewId>` (`{ columns?, widths? }`).
+- **Rows**: click selects (Ctrl / ⌘ adds), double-click or Enter opens; selection resets when the query changes. The rows box fills the window height left (no page scroll), headers sticky.
+- **Command bar**: New (create), Edit (write; 1 record → form, several → bulk edit), Delete (delete), Refresh, Activate / Deactivate (write), Assign (assign), Share (share), Email a Link (`mailto:` with `<org>/main.aspx?pagetype=entityrecord&etn=<table>&id=<id>`), Export.
+
+### 13.4 Forms
+
+- **Which form**: `systemforms`, `$select=formid,name,formxml,isdefault`, `$filter=objecttypecode eq '<table>' and type eq 2 and formactivationstate eq 1` (2 = Main, 1 = active), `$orderby=name asc`; take `isdefault`, else the first. Cached per table.
+- **Parsing formxml** (`DOMParser`, `application/xml`): every `<tab>` → `<section>` → `<cell>` not `visible="false"`. Label = the element's own `<labels><label languagecode="1033" description>` (else first label). A cell's first `<control>` with `datafieldname` is a field (each field once; header-only fields aren't shown). A control is a **subgrid** when it has `<TargetEntityType>` and either classid `{e7a81278-8635-4d9e-8d4d-59480b391c5b}` / `…5c` or a `<RelationshipName>`; read `TargetEntityType`, `RelationshipName`, `ViewId` from its `<parameters>`. Web resources, spacers, timelines and quick views are skipped. Empty sections and tabs are dropped.
+- **Rich text**: a control whose `<controlDescription>` holds a `customControl` named `*RichTextEditor*`, or a Memo column whose metadata `FormatName` is `RichText` (`EntityDefinitions(LogicalName='<t>')/Attributes/Microsoft.Dynamics.CRM.MemoAttributeMetadata?$select=LogicalName,FormatName`), or a value that looks like HTML. Shown sanitised (DOMPurify), edited with TipTap.
+- **Fallback** when no form parses: one tab with every column except system ones, sorted by label.
+- **Required / read-only** come from column metadata, not formxml. A field is read-only when the user can't save, the column isn't valid for create/update, it's a system column (`createdon, modifiedon, createdby, modifiedby, createdonbehalfby, modifiedonbehalfby, ownerid, owningbusinessunit, statecode, statuscode, versionnumber`), or it's a lookup without a navigation property.
+- **Loading a record**: `<entityset>?$filter=<table>id eq <id>&$top=1` (all columns, with annotations). Title = primary name; "Inactive" badge when `statecode = 1`; footer shows owner, status, created / modified by and on.
+- **Saving**: only changed fields are sent. Values: empty → `null`; multi-choice → `"1,2"`; two-option → boolean; choice / number → number; dates `yyyy-mm-dd`; rich text as HTML; lookups → `"<SchemaName>@odata.bind": "/<entityset>(<id>)"` (clear: `null`). Required check on new records for all required fields, on existing records only for the edited ones (imports can hold empty required fields). Create returns the new id; Save / Save & Close / Save & New behave like the MDA.
+- **Commands**: Deactivate / Activate = PATCH `{ statecode: 1|0 }` (Dataverse sets the default status reason); Delete; Assign = PATCH `{"ownerid@odata.bind": "/systemusers(<id>)"}` or `/teams(<id>)` (picker: active users `isdisabled eq false and accessmode ne 3`, owner teams `teamtype eq 0`); Share = action `GrantAccess` with `Target { <table>id, @odata.type }`, `PrincipalAccess { Principal, AccessMask: "ReadAccess, WriteAccess, …" }`. Each gated by its privilege.
+- **Navigation**: previous / next through the grid page's ids; lookups and subgrid rows open the related record on a stack with "Back to …"; an unsaved-changes confirm guards every way out.
+
+### 13.5 Subgrids
+
+1. Related table: from the sidebar list, else `EntityDefinitions` (13.6).
+2. The lookup on the related table that points back to the parent: try its lookup columns (system owner / created-by lookups excluded), the ones whose name appears in the `RelationshipName` first, and take the first whose target table is the parent.
+3. View: the subgrid's `ViewId` (`savedqueries?$filter=savedqueryid eq <id>`), else the related table's default view.
+4. FetchXML: the view plus `<filter type="and"><condition attribute="<backlookup>" operator="eq" value="<parentId>"/></filter>`, page 1 of 10, total count. "Showing the first 10 records" when there are more.
+5. New, unsaved records show "save the record first". Rows select on click and open on double-click.
+
+### 13.6 Lookups
+
+- **Target table**: the record's `_x_value@Microsoft.Dynamics.CRM.lookuplogicalname`; else sample one record with the lookup set (`<fetch top="1">… operator="not-null"`); else `EntityDefinitions(LogicalName='<t>')/ManyToOneRelationships?$select=ReferencingAttribute,ReferencedEntity&$filter=ReferencingAttribute eq '<attr>'`; else `…/Attributes/Microsoft.Dynamics.CRM.LookupAttributeMetadata?$select=LogicalName,Targets&$filter=LogicalName eq '<attr>'`.
+- **Target info** (entity set, primary name): sidebar table → known system tables (`systemuser/systemusers/fullname`, `team/teams/name`, `businessunit/businessunits/name`, `account`, `contact`, `transactioncurrency`) → `EntityDefinitions?$select=LogicalName,EntitySetName,PrimaryNameAttribute&$filter=LogicalName eq '<t>'`.
+- **Search** (form editor: on focus and typing; filter picker: 250 ms debounce): the target's **Lookup View** (`savedqueries`, `querytype eq 64`, default one). Keep its filters and sort, drop paging, `top="15"`, add the id / primary name / first two view columns, and an OR of `like %text%` on the primary name plus the Quick Find text columns. No Lookup View → OData `contains()` on those columns.
+- **Display**: primary name (or "(No name)"), with the view's next two columns under it. Selected value shows as a link that opens the record.
+
+### 13.7 Permissions
+
+- `WhoAmI` → `UserId` (fallback: Power Apps context `user.objectId` → `systemusers?$filter=azureactivedirectoryobjectid eq <oid>`).
+- `systemusers(<UserId>)/Microsoft.Dynamics.CRM.RetrieveUserPrivileges()` → `RolePrivileges[].PrivilegeName`, lowercased into a set (any depth counts).
+- `privileges.can(table, action)` checks `prv<Create|Read|Write|Delete|Assign|Share><logicalname>` (lowercased). Used by the sidebar (read), command bar and form (create, write, delete, assign, share).
+- Fallback: FetchXML over `privilege` → `roleprivileges` → `role` (`parentrootroleid`) → `systemuserroles` (and `teamroles` → `teammembership`). If everything fails: every button shows and Dataverse refuses what isn't allowed.
+- `PermissionsProvider` loads once per session and exposes `{ ready, privileges }`.
+
+### 13.8 Column metadata
+
+- Snapshot: `npm run labels` reads `reference/dataverse-schemas/*.json` (connector schemas: `x-ms-dataverse-type`, `title`, `x-ms-enum-values`, `required`, `x-ms-read-only`, `maxLength`, `x-ms-schema-name`) and writes `COLUMN_META[table][attr] = { l: label, k: kind, o: options, m: multi, b: two-option, r: required, ro: read-only, x: max length, s: navigation property }`.
+- Live (once per table per session, 6 s cap, skipped in the mock): `EntityDefinitions(LogicalName='<t>')/Attributes?$select=LogicalName,AttributeType,SchemaName,DisplayName,RequiredLevel,IsValidForCreate,IsValidForUpdate,AttributeOf`; skip `AttributeOf` companions; kinds as in §3.2; required = `ApplicationRequired|SystemRequired`; read-only = not valid for create and update; lookup navigation property = `SchemaName`. Fallback: the connector row schema. Live adds only columns the snapshot lacks (choice options aren't read live).
+
+### 13.9 Files, formatting, export
+
+- Cell text: the `FormattedValue` annotation first (choices, lookups, dates, money), else raw; booleans Yes / No; HTML flattened to one line; 160 characters in grid cells.
+- URL cells are links; SharePoint documents open in the app-styled pop-up (85%, centred, Office embed view), other links in a new tab (§7).
+- Excel: header bold, numbers and dates typed, HTML to readable text, 32,767-character cap, sheet "Data", first row frozen, file "<table> - <view>.xlsx".
+
+### 13.10 Dev preview (mock) for screenshots
+
+`reference/dev/DevPreview.ts` swaps the gateway (`setPreviewGateway`) for canned rows per entity set and sets allow-all privileges. To use: copy it to `src/DevPreview.ts`, add `import './DevPreview'` as the first line of `src/main.tsx`, test with Playwright (`playwright-core` + installed Chrome) against `npm run dev`, then **remove both** (Local Play shares the dev server). Metadata, functions and SharePoint calls can't be mocked: test those on Local Play.
 
 ---
 

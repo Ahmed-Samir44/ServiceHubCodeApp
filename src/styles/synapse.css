@@ -297,7 +297,12 @@
 .servhub-app .content:has(.grid-scroll) { padding-top: 12px; padding-bottom: 16px; }
 /* Table pages are dense like the model-driven app: slim header, command bar and view bar, so the
    height goes to the rows. */
-.servhub-app .content:has(.grid-scroll) > .bento { padding: 12px 14px; }
+.servhub-app .content:has(.grid-scroll) > .bento { padding: 12px 14px 6px; }
+.servhub-app .content:has(.grid-scroll) { padding-bottom: 10px; }
+/* Slim pager under the rows box. */
+.servhub-app .grid-scroll + .pagination { padding: 6px 4px 2px; gap: 8px; }
+.servhub-app .grid-scroll + .pagination .btn-sm { height: 26px; min-width: 28px; padding: 0 6px; }
+.servhub-app .grid-scroll + .pagination .pg-arrow { font-size: 14px; }
 .servhub-app .page-hdr.compact, .servhub-app.dark .page-hdr.compact { margin: 12px 24px 0; padding: 10px 16px; gap: 12px; border-radius: 14px; }
 .servhub-app .page-hdr.compact .ph-icon { width: 34px; height: 34px; border-radius: 10px; }
 .servhub-app .page-hdr.compact .ph-icon svg { width: 18px; height: 18px; }

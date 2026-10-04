@@ -189,7 +189,7 @@ Sidebar:
 Grid (`src/screens/grid/ViewGrid.tsx`):
 
 - View picker with region default; "Active records" only when no view.
-- **Fixed top, scrolling rows:** the page header, command bar, view bar and column headers stay put; only the rows scroll, and **the whole page fits the window** (user choice; no page scroll): the rows box (`grid-scroll`) takes the window height left after what is above it and under it (pager, paddings), measured against the page content, divided by the CSS zoom; the shell is `100vh - top bar` so the page is never taller than the window; sticky `thead th`, with no inline `position` on header cells or sticky breaks). The pager stays visible under it. Table pages are **dense** so the rows get the height: a slim one-line header (`PageHeader compact`), 34px command and view bars, no visible "View" label (screen-reader only), tighter card padding.
+- **Fixed top, scrolling rows:** the page header, command bar, view bar and column headers stay put; only the rows scroll, and **the whole page fits the window** (user choice; no page scroll): the rows box (`grid-scroll`) takes the window height left after what is above it and under it (pager, paddings), measured against the page content, divided by the CSS zoom; the shell is `100vh - top bar` so the page is never taller than the window; sticky `thead th`, with no inline `position` on header cells or sticky breaks). The pager stays visible under it. Table pages are **dense** so the rows get the height: a slim one-line header (`PageHeader compact`), 34px command and view bars, no visible "View" label (screen-reader only), tighter card padding, and a slim pager (26px buttons).
 - **Rows:** a click selects the row (highlighted, checkbox ticked; Ctrl / ⌘ adds to the selection), a **double-click opens the record**, Enter opens it too. Same in form subgrids.
 - **Quick Find** search box on the Quick Find columns.
 - Column header menu: Sort A→Z / Z→A, **Clear sort**, Filter by, **Clear filter**; sort arrows (↑↓), chevron on hover.
@@ -1390,7 +1390,12 @@ html:has(.servhub-app.dark) { scrollbar-color: rgba(64, 255, 184, .35) #1c1d22; 
 .servhub-app .content:has(.grid-scroll) { padding-top: 12px; padding-bottom: 16px; }
 /* Table pages are dense like the model-driven app: slim header, command bar and view bar, so the
    height goes to the rows. */
-.servhub-app .content:has(.grid-scroll) > .bento { padding: 12px 14px; }
+.servhub-app .content:has(.grid-scroll) > .bento { padding: 12px 14px 6px; }
+.servhub-app .content:has(.grid-scroll) { padding-bottom: 10px; }
+/* Slim pager under the rows box. */
+.servhub-app .grid-scroll + .pagination { padding: 6px 4px 2px; gap: 8px; }
+.servhub-app .grid-scroll + .pagination .btn-sm { height: 26px; min-width: 28px; padding: 0 6px; }
+.servhub-app .grid-scroll + .pagination .pg-arrow { font-size: 14px; }
 .servhub-app .page-hdr.compact, .servhub-app.dark .page-hdr.compact { margin: 12px 24px 0; padding: 10px 16px; gap: 12px; border-radius: 14px; }
 .servhub-app .page-hdr.compact .ph-icon { width: 34px; height: 34px; border-radius: 10px; }
 .servhub-app .page-hdr.compact .ph-icon svg { width: 18px; height: 18px; }

@@ -53,6 +53,7 @@ export const NAV_GROUPS: readonly NavGroup[] = [
       table('ServHub Specialty Mappings', 'cr18c_servhubspecialtymapping', 'cr18c_servhubspecialtymappings', 'cr18c_name'),
       table('Procedcure Clinics', 'servhub_procedcureclinc', 'servhub_procedcureclincs', 'servhub_clinic'),
       table('New Offer Datasets', 'cr301_newofferdataset', 'cr301_newofferdatasets', 'cr301_title'),
+      table('Planned Offers', 'new_plannedoffer', 'new_plannedoffers', 'new_newcolumn'),
       table('ServHub Programs', 'cr18c_servhubprogram', 'cr18c_servhubprograms', 'cr18c_name'),
       table('ServHub HomeCares', 'cr18c_servhubhomecare', 'cr18c_servhubhomecares', 'cr18c_name'),
       table('Specialty KSA_Service_Hubs', 'cr301_specialtyksa_service_hub', 'cr301_specialtyksa_service_hubs', 'cr301_title'),

@@ -48,6 +48,7 @@ const ENGINE = [
   'src/app/permissionsContext.ts',
   'src/app/useCurrentUser.ts',
   'src/screens/TableScreen.tsx',
+  'src/screens/PageHeader.tsx',
   'src/screens/RecordForm.tsx',
   'src/screens/ColumnPicker.tsx',
   'src/screens/Dropdown.tsx',
@@ -89,6 +90,18 @@ const header = `# Code App Kit: build a new system with the same design and beha
 3. Change only what belongs to the new system: the org URL and MDA app id in \`src/data/config.ts\`, the generated data sources (\`src/generated\`, \`.power/schemas\` come from \`pa\`, never hand-edit them), and the pages and tables of the new system. Remove the ServiceHub-only imports from \`AppShell.tsx\` (the Service Hub screen, regions).
 4. Keep the styles exactly (Part 2) so the look is identical: Synapse teal tokens, Urbanist font, Band cards, Pills filters, Segment nav, Tiles.
 5. Work with the user as Part 1 §9 says: Egyptian Arabic replies, short and simple; designs offered in the page with a switcher; every push only after an explicit OK.
+
+**Bootstrap a new system (in this order):**
+
+1. \`npm create vite@latest <name> -- --template react-ts\`, then replace \`package.json\`, \`vite.config.ts\`, the \`tsconfig*.json\`, \`eslint.config.js\`, \`index.html\`, \`src/main.tsx\`, \`src/App.tsx\`, \`src/env.d.ts\` with Part 3, and \`npm install\`.
+2. \`./node_modules/.bin/pa auth\` (sign in), then \`./node_modules/.bin/pa app init\` in the **app** environment. That writes \`power.config.json\`.
+3. Add the generic Dataverse connector (it creates \`src/generated/**\`, which the data layer imports as \`MicrosoftDataverseService\`): \`./node_modules/.bin/pa app add data-source --connector dataverse --table <any table> --org-url <data org url>\`. Every call then goes through the \`*WithOrganization\` operations with \`DATA_ORG_URL\` (Part 1 §2–3), so one connector serves every table.
+4. Copy Parts 2 and 4 to the same paths. Set \`DATA_ORG_URL\` and \`MDA_APP_ID\` in \`src/data/config.ts\` (or \`.env.development.local\` for dev).
+5. \`npm run labels\` creates \`src/data/columnLabels.generated.ts\` (the column snapshot; live metadata is merged over it at run time).
+6. Replace the ServiceHub-only parts (Part 4 "Supporting" files: regions, hub sections) with the new system's pages; the sidebar, tables, views, forms, lookups and privileges come from the MDA app by itself.
+7. \`npx tsc -b\`, \`npx eslint src\`, \`npm run build\`, then \`npm run dev\` and open the Local Play link. Push only with the user's OK: \`./node_modules/.bin/pa app push --solution-id <solution>\`.
+
+**Not in this file (supply or recreate):** \`src/generated/**\` and \`power.config.json\` (made by \`pa\`), \`columnLabels.generated.ts\` (made by \`npm run labels\`), binary assets (the doctor photo, the region map render \`region-disc.jpg\`: images can't live in Markdown; the region landing component \`RegionMap.tsx\` is ServiceHub-specific and described in Part 1 §8.2).
 
 Generated from the ServiceHub repo (https://github.com/Ahmed-Samir44/ServiceHubCodeApp) by \`scripts/build-kit.mjs\`. ${new Date().toISOString().slice(0, 10)}.
 

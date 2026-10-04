@@ -11,6 +11,7 @@ import {
 import type { Region } from '../app/region';
 import { legacyScreenId, logPageUsage } from '../data/usageLog';
 import { RegionOptions } from '../app/RegionModal';
+import { RegionMap } from './hub/RegionMap';
 import { BankAccountsSection } from './hub/BankAccountsSection';
 import { CoeSection } from './hub/CoeSection';
 import { DoctorsSection } from './hub/DoctorsSection';
@@ -71,8 +72,11 @@ export function ServiceHubScreen({ region, onSelectRegion, sectionId, onSelectSe
           <div className="page-sub">Choose a region to view doctors</div>
         </div>
         <div className="content content-wide">
-          <div className="rl">
-            <RegionOptions current={null} onSelect={onSelectRegion} />
+          <div className="rmap-stage">
+            <RegionMap onSelect={onSelectRegion} />
+            <div className="rl rl-phone">
+              <RegionOptions current={null} onSelect={onSelectRegion} />
+            </div>
           </div>
         </div>
       </>

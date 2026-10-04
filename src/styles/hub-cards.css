@@ -255,3 +255,65 @@
   .servhub-app .rl .rl-grid { grid-template-columns: 1fr; }
   .servhub-app .rl .rl-card { min-height: 190px; }
 }
+
+/* ---- Service Hub landing: the rendered glass map disc (src/assets/region-disc.jpg), tinted to the
+   system teal, with a glass pin and card per region. The pin's tip sits on the region; the card
+   (name, currency, Open button) floats beside it. Phones get the tiles instead. ---- */
+.servhub-app .rmap-stage { position: relative; overflow: hidden; padding: 24px; border-radius: var(--ds-radius-card);
+  background:
+    radial-gradient(420px 260px at 8% 92%, rgba(255, 214, 160, .22), transparent 70%),
+    radial-gradient(380px 240px at 92% 80%, rgba(64, 255, 184, .10), transparent 70%),
+    linear-gradient(180deg, #edf1f2 0%, #dfe4e6 55%, #cfd6d8 100%); /* matches the render's own backdrop */
+  border: 1px solid var(--border); box-shadow: var(--ds-shadow-sm); }
+
+.servhub-app .rmap { position: relative; width: min(1100px, 100%); margin: 0 auto; aspect-ratio: 1470 / 704; isolation: isolate; }
+.servhub-app .rmap-img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; user-select: none;
+  /* Feather every edge so the photo melts into the stage. */
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+  -webkit-mask-composite: source-in;
+  mask-image: linear-gradient(90deg, transparent, #000 14%, #000 86%, transparent), linear-gradient(180deg, transparent, #000 12%, #000 88%, transparent);
+  mask-composite: intersect; }
+/* "Sage" (user choice 2026-10-04): a light teal hue over the silver glass; the render keeps its light and depth. */
+.servhub-app .rmap-tint { position: absolute; inset: 0; pointer-events: none; mix-blend-mode: color; opacity: .2;
+  background: radial-gradient(ellipse 31% 40% at 50% 49%, var(--ds-color-primary-700) 0%, var(--ds-color-primary-700) 70%, transparent 100%); }
+/* A soft light on each region, stronger when its pin is hovered. */
+.servhub-app .rmap-glow { position: absolute; width: 15%; aspect-ratio: 1.6; transform: translate(-50%, -38%); border-radius: 50%; pointer-events: none;
+  background: radial-gradient(closest-side, var(--ds-color-primary-500), transparent); mix-blend-mode: multiply; opacity: .3; transition: opacity .25s; }
+.servhub-app .rmap-glow.hover { opacity: .55; }
+
+.servhub-app .rmap-pin { position: absolute; width: 0; height: 0; padding: 0; border: none; background: none; cursor: pointer; font-family: var(--ds-font-family); }
+.servhub-app .rmap-pin:focus-visible { outline: none; }
+.servhub-app .rmap-pin:focus-visible .rmap-label { box-shadow: var(--ds-focus-ring), var(--ds-shadow-sm); }
+/* Teardrop: a square with three round corners, turned so the sharp corner points down at the spot. */
+.servhub-app .rmap-drop { position: absolute; left: -38px; bottom: 12px; width: 76px; height: 76px; display: flex; align-items: center; justify-content: center;
+  border-radius: 50% 50% 50% 0; transform: rotate(-45deg);
+  background: linear-gradient(135deg, rgba(255, 255, 255, .9), rgba(255, 255, 255, .4)); border: 1px solid rgba(255, 255, 255, .95);
+  box-shadow: 0 16px 28px rgba(2, 54, 53, .22), inset 0 1px 0 #fff; backdrop-filter: blur(8px); transition: transform .25s var(--ds-ease-settle); }
+.servhub-app .rmap-mark { transform: rotate(45deg); width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; border-radius: 14px;
+  font-weight: 800; font-size: 18px; letter-spacing: .5px; color: #fff; background: linear-gradient(135deg, var(--ds-color-primary-500), var(--ds-color-primary-800));
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, .3); }
+.servhub-app .rmap-pin::after { content: ''; position: absolute; left: -15px; top: -5px; width: 30px; height: 10px; border-radius: 50%; background: rgba(2, 54, 53, .3); filter: blur(3px); }
+.servhub-app .rmap-pin:hover .rmap-drop, .servhub-app .rmap-pin:focus-visible .rmap-drop { transform: translateY(-8px) rotate(-45deg); }
+
+.servhub-app .rmap-label { position: absolute; bottom: 36px; display: flex; flex-direction: column; gap: 5px; width: max-content; max-width: 250px; padding: 14px 18px;
+  border-radius: 16px; background: linear-gradient(145deg, rgba(255, 255, 255, .78), rgba(255, 255, 255, .5)); border: 1px solid rgba(255, 255, 255, .95);
+  box-shadow: 0 18px 40px rgba(2, 54, 53, .14), inset 0 1px 0 #fff; backdrop-filter: blur(14px);
+  transition: transform .25s var(--ds-ease-settle), border-color .2s; }
+.servhub-app .rmap-pin-left .rmap-label { right: 52px; align-items: flex-end; text-align: right; }
+.servhub-app .rmap-pin-right .rmap-label { left: 52px; align-items: flex-start; text-align: left; }
+.servhub-app .rmap-pin:hover .rmap-label { border-color: var(--ds-color-primary-200); transform: translateY(-4px); }
+.servhub-app .rmap-name { font-size: 24px; font-weight: 700; color: var(--ds-color-text-primary); }
+.servhub-app .rmap-hint { font-size: 13px; color: var(--ds-color-text-secondary); }
+.servhub-app .rmap-hint b { color: var(--ds-color-primary-700); }
+.servhub-app .rmap-go { display: inline-flex; align-items: center; gap: 6px; margin-top: 6px; padding: 8px 16px; border-radius: 999px; font-size: 13.5px; font-weight: 700;
+  color: #fff; background: var(--ds-color-primary); box-shadow: var(--ds-shadow-button); }
+.servhub-app .rmap-go svg { transition: transform .2s; }
+.servhub-app .rmap-pin:hover .rmap-go svg { transform: translateX(3px); }
+
+.servhub-app .rl-phone { display: none; }
+@media (max-width: 900px) {
+  .servhub-app .rmap { display: none; }
+  .servhub-app .rl-phone { display: block; position: relative; width: 100%; }
+  .servhub-app .rmap-stage { padding: 16px; }
+}
+.servhub-app.dark .rl-line b { color: var(--ds-color-primary-300); }

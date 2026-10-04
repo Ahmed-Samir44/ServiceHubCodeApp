@@ -189,6 +189,7 @@ Sidebar:
 Grid (`src/screens/grid/ViewGrid.tsx`):
 
 - View picker with region default; "Active records" only when no view.
+- **Fixed top, scrolling rows:** the page header, command bar, view bar and column headers stay put; only the rows scroll, inside a box sized to the window height left (`grid-scroll`, measured against the page content, not the document, since the sidebar can be taller; sticky `thead th`, with no inline `position` on header cells or sticky breaks). The pager stays visible under it.
 - **Rows:** a click selects the row (highlighted, checkbox ticked; Ctrl / ⌘ adds to the selection), a **double-click opens the record**, Enter opens it too. Same in form subgrids.
 - **Quick Find** search box on the Quick Find columns.
 - Column header menu: Sort A→Z / Z→A, **Clear sort**, Filter by, **Clear filter**; sort arrows (↑↓), chevron on hover.
@@ -1382,6 +1383,11 @@ html:has(.servhub-app.dark) { scrollbar-color: rgba(64, 255, 184, .35) #1c1d22; 
 .servhub-app .req-table tr:hover td { background: var(--ds-color-surface-hover); }
 .servhub-app .req-table tbody tr[aria-selected="true"] td { background: var(--ds-color-surface-selected); }
 .servhub-app.dark .req-table th { background: #202126; color: var(--text-body); }
+/* Grid rows box: scrolls both ways; the column headers stick to its top (like the model-driven grid). */
+.servhub-app .grid-scroll { overflow: auto; overscroll-behavior: contain; border-radius: var(--ds-radius-control); }
+.servhub-app .content:has(.grid-scroll) { padding-bottom: 20px; }
+/* Sticky also anchors the resize handle (absolute) inside each header cell. */
+.servhub-app .req-table thead th { position: sticky; top: 0; z-index: 2; }
 
 /* ================= Tags & key/values ================= */
 .servhub-app .sbadge { border-radius: var(--ds-radius-tag); font: 600 12px var(--ds-font-family); padding: 2px 8px; letter-spacing: 0; }
@@ -6040,7 +6046,7 @@ export function useDismiss(ref: RefObject<HTMLElement | null>, open: boolean, on
 
 ````tsx
 import { Dropdown } from '../Dropdown';
-import { useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
+import { useLayoutEffect, useRef, useState, type PointerEvent as ReactPointerEvent } from 'react';
 import { cssZoom } from '../../app/preferences';
 import {
   Add,
@@ -6138,6 +6144,8 @@ export function ViewGrid({
   const canShare = privileges.can(table.logicalName, 'share');
   const [recordDialog, setRecordDialog] = useState<'bulk-edit' | 'assign' | 'share' | null>(null);
   const [page, setPage] = useState(1);
+  const gridScrollRef = useRef<HTMLDivElement>(null);
+  const [gridMaxHeight, setGridMaxHeight] = useState<number>();
   const [reload, setReload] = useState(0);
   const [prefs, setPrefs] = useState<ColumnPrefs>(() => readColumnPrefs(table.logicalName, view.id));
   const [pickerOpen, setPickerOpen] = useState(false);
@@ -6343,6 +6351,34 @@ export function ViewGrid({
     setMenu(null);
   };
 
+  // Like the model-driven grid: the page header, command bar and column headers stay put and only the
+  // rows scroll. The rows box takes the window height left after what's above and below it.
+  useLayoutEffect(() => {
+    const box = gridScrollRef.current;
+    if (!box) return;
+    const fit = () => {
+      // Measure at natural height, so a short list never stays capped from an earlier, smaller fit.
+      const previous = box.style.maxHeight;
+      box.style.maxHeight = 'none';
+      const rect = box.getBoundingClientRect();
+      // What sits under the rows inside the page (pager, card and page padding), not the sidebar.
+      const page = box.closest('.content') ?? box.parentElement ?? box;
+      const below = page.getBoundingClientRect().bottom - rect.bottom;
+      box.style.maxHeight = previous;
+      const top = rect.top + window.scrollY;
+      const next = Math.max(260, Math.floor((window.innerHeight - top - below) / cssZoom(box)));
+      setGridMaxHeight((current) => (current === next ? current : next));
+    };
+    fit();
+    const observer = new ResizeObserver(fit);
+    if (box.parentElement) observer.observe(box.parentElement);
+    window.addEventListener('resize', fit);
+    return () => {
+      observer.disconnect();
+      window.removeEventListener('resize', fit);
+    };
+  }, [rows.length]);
+
   return (
     <>
       {/* Command bar */}
@@ -6489,7 +6525,7 @@ export function ViewGrid({
       )}
       {records.data && rows.length > 0 && (
         <>
-          <div style={{ overflowX: 'auto' }}>
+          <div ref={gridScrollRef} className="grid-scroll" style={{ maxHeight: gridMaxHeight }}>
             {/* Fixed layout: each column is exactly its width; wider than the box = horizontal scroll. */}
             <table className="req-table" style={{ tableLayout: 'fixed', minWidth: 40 + columns.reduce((sum, column) => sum + column.width, 0) }}>
               <thead>
@@ -6505,7 +6541,7 @@ export function ViewGrid({
                   {columns.map((column) => {
                     const sorted = effectiveSort?.attribute === column.name ? effectiveSort.descending : null;
                     return (
-                      <th key={column.name} style={{ width: column.width, position: 'relative', overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
+                      <th key={column.name} style={{ width: column.width, overflow: 'hidden', whiteSpace: 'nowrap', textOverflow: 'ellipsis' }}>
                         <button
                           type="button"
                           aria-haspopup="menu"

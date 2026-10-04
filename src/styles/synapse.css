@@ -290,6 +290,11 @@
 .servhub-app .req-table tr:hover td { background: var(--ds-color-surface-hover); }
 .servhub-app .req-table tbody tr[aria-selected="true"] td { background: var(--ds-color-surface-selected); }
 .servhub-app.dark .req-table th { background: #202126; color: var(--text-body); }
+/* Grid rows box: scrolls both ways; the column headers stick to its top (like the model-driven grid). */
+.servhub-app .grid-scroll { overflow: auto; overscroll-behavior: contain; border-radius: var(--ds-radius-control); }
+.servhub-app .content:has(.grid-scroll) { padding-bottom: 20px; }
+/* Sticky also anchors the resize handle (absolute) inside each header cell. */
+.servhub-app .req-table thead th { position: sticky; top: 0; z-index: 2; }
 
 /* ================= Tags & key/values ================= */
 .servhub-app .sbadge { border-radius: var(--ds-radius-tag); font: 600 12px var(--ds-font-family); padding: 2px 8px; letter-spacing: 0; }

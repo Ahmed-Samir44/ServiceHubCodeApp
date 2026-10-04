@@ -189,7 +189,7 @@ Sidebar:
 Grid (`src/screens/grid/ViewGrid.tsx`):
 
 - View picker with region default; "Active records" only when no view.
-- **Fixed top, scrolling rows:** the page header, command bar, view bar and column headers stay put; only the rows scroll, inside a box sized to the window height left (`grid-scroll`, measured against the page content, not the document, since the sidebar can be taller; sticky `thead th`, with no inline `position` on header cells or sticky breaks). The pager stays visible under it.
+- **Fixed top, scrolling rows:** the page header, command bar, view bar and column headers stay put; only the rows scroll, inside a box sized to the window height left (`grid-scroll`, measured against the page content, not the document, since the sidebar can be taller; sticky `thead th`, with no inline `position` on header cells or sticky breaks). The pager stays visible under it. Table pages are **dense** so the rows get the height: a slim one-line header (`PageHeader compact`), 34px command and view bars, no visible "View" label (screen-reader only), tighter card padding.
 - **Rows:** a click selects the row (highlighted, checkbox ticked; Ctrl / ⌘ adds to the selection), a **double-click opens the record**, Enter opens it too. Same in form subgrids.
 - **Quick Find** search box on the Quick Find columns.
 - Column header menu: Sort A→Z / Z→A, **Clear sort**, Filter by, **Clear filter**; sort arrows (↑↓), chevron on hover.
@@ -1385,7 +1385,20 @@ html:has(.servhub-app.dark) { scrollbar-color: rgba(64, 255, 184, .35) #1c1d22; 
 .servhub-app.dark .req-table th { background: #202126; color: var(--text-body); }
 /* Grid rows box: scrolls both ways; the column headers stick to its top (like the model-driven grid). */
 .servhub-app .grid-scroll { overflow: auto; overscroll-behavior: contain; border-radius: var(--ds-radius-control); }
-.servhub-app .content:has(.grid-scroll) { padding-bottom: 20px; }
+.servhub-app .content:has(.grid-scroll) { padding-top: 12px; padding-bottom: 16px; }
+/* Table pages are dense like the model-driven app: slim header, command bar and view bar, so the
+   height goes to the rows. */
+.servhub-app .content:has(.grid-scroll) > .bento { padding: 12px 14px; }
+.servhub-app .page-hdr.compact, .servhub-app.dark .page-hdr.compact { margin: 12px 24px 0; padding: 10px 16px; gap: 12px; border-radius: 14px; }
+.servhub-app .page-hdr.compact .ph-icon { width: 34px; height: 34px; border-radius: 10px; }
+.servhub-app .page-hdr.compact .ph-icon svg { width: 18px; height: 18px; }
+.servhub-app .page-hdr.compact .ph-text { display: flex; align-items: baseline; flex-wrap: wrap; column-gap: 12px; }
+.servhub-app .page-hdr.compact .page-title { font-size: 19px; }
+.servhub-app .page-hdr.compact .page-sub { font-size: 13px; margin: 0; }
+.servhub-app .grid-cmdbar, .servhub-app .grid-viewbar { margin-bottom: 8px; gap: 6px !important; }
+.servhub-app .grid-cmdbar .btn, .servhub-app .grid-viewbar .btn { height: 34px; padding: 0 12px; font-size: 13.5px; }
+.servhub-app .grid-viewbar .dd-btn, .servhub-app .grid-viewbar .field-input { height: 36px; min-height: 36px; }
+.servhub-app .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; }
 /* Sticky also anchors the resize handle (absolute) inside each header cell. */
 .servhub-app .req-table thead th { position: sticky; top: 0; z-index: 2; }
 
@@ -5216,6 +5229,7 @@ export function TableScreen({ label, table, region }: TableScreenProps) {
       <PageHeader
         title={label}
         icon={Element3}
+        compact
         subtitle={
           <>
             {activeView ? activeView.name : 'Active records'}
@@ -6382,7 +6396,7 @@ export function ViewGrid({
   return (
     <>
       {/* Command bar */}
-      <div className="filter-bar" style={{ alignItems: 'center', gap: 8 }}>
+      <div className="filter-bar grid-cmdbar" style={{ alignItems: 'center', gap: 8 }}>
         {/* Buttons follow the user's privileges on this table, as in the model-driven command bar. */}
         {canCreate && (
           <button type="button" className="btn btn-primary" onClick={onNewRecord}>
@@ -6446,9 +6460,9 @@ export function ViewGrid({
       </div>
 
       {/* View picker + filters + columns + keyword search */}
-      <div className="filter-bar" style={{ alignItems: 'flex-end' }}>
+      <div className="filter-bar grid-viewbar" style={{ alignItems: 'center' }}>
         <div className="form-field" style={{ minWidth: 260, marginBottom: 0 }}>
-          <label className="field-lbl" htmlFor={`view-${table.logicalName}`}>View</label>
+          <label className="field-lbl sr-only" htmlFor={`view-${table.logicalName}`}>View</label>
           <Dropdown
             id={`view-${table.logicalName}`}
             value={view.id}

@@ -34,6 +34,7 @@ export function TableScreen({ label, table, region }: TableScreenProps) {
       <PageHeader
         title={label}
         icon={Element3}
+        compact
         subtitle={
           <>
             {activeView ? activeView.name : 'Active records'}

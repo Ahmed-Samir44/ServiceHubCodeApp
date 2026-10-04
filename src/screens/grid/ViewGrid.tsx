@@ -335,7 +335,7 @@ export function ViewGrid({
   return (
     <>
       {/* Command bar */}
-      <div className="filter-bar" style={{ alignItems: 'center', gap: 8 }}>
+      <div className="filter-bar grid-cmdbar" style={{ alignItems: 'center', gap: 8 }}>
         {/* Buttons follow the user's privileges on this table, as in the model-driven command bar. */}
         {canCreate && (
           <button type="button" className="btn btn-primary" onClick={onNewRecord}>
@@ -399,9 +399,9 @@ export function ViewGrid({
       </div>
 
       {/* View picker + filters + columns + keyword search */}
-      <div className="filter-bar" style={{ alignItems: 'flex-end' }}>
+      <div className="filter-bar grid-viewbar" style={{ alignItems: 'center' }}>
         <div className="form-field" style={{ minWidth: 260, marginBottom: 0 }}>
-          <label className="field-lbl" htmlFor={`view-${table.logicalName}`}>View</label>
+          <label className="field-lbl sr-only" htmlFor={`view-${table.logicalName}`}>View</label>
           <Dropdown
             id={`view-${table.logicalName}`}
             value={view.id}

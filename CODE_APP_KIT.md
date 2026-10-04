@@ -8,7 +8,7 @@
 4. Keep the styles exactly (Part 2) so the look is identical: Synapse teal tokens, Urbanist font, Band cards, Pills filters, Segment nav, Tiles.
 5. Work with the user as Part 1 §9 says: Egyptian Arabic replies, short and simple; designs offered in the page with a switcher; every push only after an explicit OK.
 
-Generated from the ServiceHub repo (https://github.com/Ahmed-Samir44/ServiceHubCodeApp) by `scripts/build-kit.mjs`. 2026-10-01.
+Generated from the ServiceHub repo (https://github.com/Ahmed-Samir44/ServiceHubCodeApp) by `scripts/build-kit.mjs`. 2026-10-04.
 
 ---
 
@@ -1366,6 +1366,7 @@ html:has(.servhub-app.dark) { scrollbar-color: rgba(64, 255, 184, .35) #1c1d22; 
 .servhub-app .req-table th { height: 40px; padding: 8px 16px; font: 600 14px var(--ds-font-family); text-transform: none; letter-spacing: 0; color: var(--text-body); background: var(--ds-color-neutral-50); }
 .servhub-app .req-table td { height: 40px; padding: 8px 16px; }
 .servhub-app .req-table tr:hover td { background: var(--ds-color-surface-hover); }
+.servhub-app .req-table tbody tr[aria-selected="true"] td { background: var(--ds-color-surface-selected); }
 .servhub-app.dark .req-table th { background: #202126; color: var(--text-body); }
 
 /* ================= Tags & key/values ================= */
@@ -6465,10 +6466,12 @@ export function ViewGrid({
                   return (
                     <tr
                       key={id ?? index}
-                      style={id ? { cursor: 'pointer' } : undefined}
                       tabIndex={id ? 0 : undefined}
                       aria-selected={id ? selected.includes(id) : undefined}
-                      onClick={id ? () => onOpenRecord(id, pageIds) : undefined}
+                      // Like the model-driven grid: a click selects the row (Ctrl / ⌘ adds to the
+                      // selection), a double-click opens the record.
+                      onClick={id ? (event) => (event.ctrlKey || event.metaKey ? toggle(id) : setSelection({ key: selectionKey, ids: [id] })) : undefined}
+                      onDoubleClick={id ? () => { window.getSelection()?.removeAllRanges(); onOpenRecord(id, pageIds); } : undefined}
                       onKeyDown={(event) => {
                         if (id && event.key === 'Enter') onOpenRecord(id, pageIds);
                       }}
@@ -8245,6 +8248,7 @@ export function RichTextField({ id, html, readOnly, onChange }: RichTextFieldPro
 ### `src/screens/form/SubgridView.tsx`
 
 ````tsx
+import { useState } from 'react';
 import { findTable } from '../../app/navigation';
 import { onFileLinkClick } from '../../data/fileLinks';
 import { cellLink, formatCell } from '../../data/formatCell';
@@ -8268,6 +8272,7 @@ const linkStyle = { color: 'var(--gold-dark)', textDecoration: 'underline' } as 
 export function SubgridView({ subgrid, parentTable, parentId, reloadKey, onOpen }: SubgridViewProps) {
   const data = useAsyncData(`${subgrid.id}#${parentId}#${reloadKey}`, () => loadSubgrid(subgrid, parentTable, parentId));
   const opensInHub = data.data ? findTable(data.data.table.logicalName) : undefined;
+  const [picked, setPicked] = useState<string | null>(null);
 
   return (
     <div className="action-card">
@@ -8293,7 +8298,13 @@ export function SubgridView({ subgrid, parentTable, parentId, reloadKey, onOpen 
                 const id = row[`${data.data?.table.logicalName}id`];
                 const target = typeof id === 'string' && opensInHub ? { table: opensInHub.table, label: opensInHub.label, id } : null;
                 return (
-                  <tr key={typeof id === 'string' ? id : index} style={target ? { cursor: 'pointer' } : undefined} onClick={target ? () => onOpen(target) : undefined}>
+                  // Like the model-driven subgrid: a click selects the row, a double-click opens it.
+                  <tr
+                    key={typeof id === 'string' ? id : index}
+                    aria-selected={target ? picked === target.id : undefined}
+                    onClick={target ? () => setPicked(target.id) : undefined}
+                    onDoubleClick={target ? () => { window.getSelection()?.removeAllRanges(); onOpen(target); } : undefined}
+                  >
                     {data.data?.view.columns.map((column) => {
                       const text = formatCell(row, column);
                       const url = cellLink(row, column);

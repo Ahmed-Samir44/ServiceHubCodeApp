@@ -505,10 +505,12 @@ export function ViewGrid({
                   return (
                     <tr
                       key={id ?? index}
-                      style={id ? { cursor: 'pointer' } : undefined}
                       tabIndex={id ? 0 : undefined}
                       aria-selected={id ? selected.includes(id) : undefined}
-                      onClick={id ? () => onOpenRecord(id, pageIds) : undefined}
+                      // Like the model-driven grid: a click selects the row (Ctrl / ⌘ adds to the
+                      // selection), a double-click opens the record.
+                      onClick={id ? (event) => (event.ctrlKey || event.metaKey ? toggle(id) : setSelection({ key: selectionKey, ids: [id] })) : undefined}
+                      onDoubleClick={id ? () => { window.getSelection()?.removeAllRanges(); onOpenRecord(id, pageIds); } : undefined}
                       onKeyDown={(event) => {
                         if (id && event.key === 'Enter') onOpenRecord(id, pageIds);
                       }}

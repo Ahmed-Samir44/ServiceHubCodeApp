@@ -1,3 +1,4 @@
+import { useState } from 'react';
 import { findTable } from '../../app/navigation';
 import { onFileLinkClick } from '../../data/fileLinks';
 import { cellLink, formatCell } from '../../data/formatCell';
@@ -21,6 +22,7 @@ const linkStyle = { color: 'var(--gold-dark)', textDecoration: 'underline' } as 
 export function SubgridView({ subgrid, parentTable, parentId, reloadKey, onOpen }: SubgridViewProps) {
   const data = useAsyncData(`${subgrid.id}#${parentId}#${reloadKey}`, () => loadSubgrid(subgrid, parentTable, parentId));
   const opensInHub = data.data ? findTable(data.data.table.logicalName) : undefined;
+  const [picked, setPicked] = useState<string | null>(null);
 
   return (
     <div className="action-card">
@@ -46,7 +48,13 @@ export function SubgridView({ subgrid, parentTable, parentId, reloadKey, onOpen 
                 const id = row[`${data.data?.table.logicalName}id`];
                 const target = typeof id === 'string' && opensInHub ? { table: opensInHub.table, label: opensInHub.label, id } : null;
                 return (
-                  <tr key={typeof id === 'string' ? id : index} style={target ? { cursor: 'pointer' } : undefined} onClick={target ? () => onOpen(target) : undefined}>
+                  // Like the model-driven subgrid: a click selects the row, a double-click opens it.
+                  <tr
+                    key={typeof id === 'string' ? id : index}
+                    aria-selected={target ? picked === target.id : undefined}
+                    onClick={target ? () => setPicked(target.id) : undefined}
+                    onDoubleClick={target ? () => { window.getSelection()?.removeAllRanges(); onOpen(target); } : undefined}
+                  >
                     {data.data?.view.columns.map((column) => {
                       const text = formatCell(row, column);
                       const url = cellLink(row, column);

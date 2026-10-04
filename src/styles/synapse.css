@@ -277,6 +277,7 @@
 .servhub-app .req-table th { height: 40px; padding: 8px 16px; font: 600 14px var(--ds-font-family); text-transform: none; letter-spacing: 0; color: var(--text-body); background: var(--ds-color-neutral-50); }
 .servhub-app .req-table td { height: 40px; padding: 8px 16px; }
 .servhub-app .req-table tr:hover td { background: var(--ds-color-surface-hover); }
+.servhub-app .req-table tbody tr[aria-selected="true"] td { background: var(--ds-color-surface-selected); }
 .servhub-app.dark .req-table th { background: #202126; color: var(--text-body); }
 
 /* ================= Tags & key/values ================= */

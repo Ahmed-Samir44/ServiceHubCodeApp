@@ -32,15 +32,11 @@ export function TableScreen({ label, table, region }: TableScreenProps) {
   return (
     <>
       <PageHeader
-        title={label}
+        // Like the MDA: the view is the page title; the table's name sits once, in the pill.
+        title={activeView ? activeView.name : 'Active records'}
         icon={Element3}
         compact
-        subtitle={
-          <>
-            {activeView ? activeView.name : 'Active records'}
-            <span className="table-pill">{label}</span>
-          </>
-        }
+        subtitle={<span className="table-pill">{label}</span>}
       />
       <div className="content content-wide">
         <div className="bento">

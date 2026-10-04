@@ -208,7 +208,7 @@ Grid (`src/screens/grid/ViewGrid.tsx`):
   - **Rich text as readable text** (paragraphs, line breaks, bullets kept, wrapped cell), capped at Excel's 32,767 characters.
 - Column picker: display names only (**never show logical names**).
 - Bulk edit, delete, assign, share, activate / deactivate on selection, each gated by privilege.
-- Page header: the view name + the table name in a pill (`.table-pill`); no logical name.
+- Page header: the **view name is the title** (like the MDA) and the table name appears once, in a pill (`.table-pill`); never the table name twice, never the logical name.
 
 Form (`src/screens/RecordForm.tsx`):
 
@@ -1332,7 +1332,7 @@ html:has(.servhub-app.dark) { scrollbar-color: rgba(64, 255, 184, .35) #1c1d22; 
 .servhub-app .page-hdr .page-sub { color: rgba(255, 255, 255, .75); }
 .servhub-app .ph-icon { width: 46px; height: 46px; flex: none; display: flex; align-items: center; justify-content: center; border-radius: 13px;
   color: var(--ds-color-primary-mint); background: rgba(255, 255, 255, .12); border: 1px solid rgba(255, 255, 255, .18); }
-.servhub-app .page-hdr .table-pill { background: rgba(255, 255, 255, .16); color: #fff; }
+.servhub-app .page-hdr .table-pill { margin-left: 0; background: rgba(255, 255, 255, .16); color: #fff; }
 @media (max-width: 640px) {
   .servhub-app .page-hdr, .servhub-app.dark .page-hdr { margin: 12px 12px 0; padding: 14px 16px; }
   .servhub-app .ph-icon { width: 38px; height: 38px; }
@@ -5252,15 +5252,11 @@ export function TableScreen({ label, table, region }: TableScreenProps) {
   return (
     <>
       <PageHeader
-        title={label}
+        // Like the MDA: the view is the page title; the table's name sits once, in the pill.
+        title={activeView ? activeView.name : 'Active records'}
         icon={Element3}
         compact
-        subtitle={
-          <>
-            {activeView ? activeView.name : 'Active records'}
-            <span className="table-pill">{label}</span>
-          </>
-        }
+        subtitle={<span className="table-pill">{label}</span>}
       />
       <div className="content content-wide">
         <div className="bento">
